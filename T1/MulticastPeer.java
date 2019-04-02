@@ -1,58 +1,75 @@
+
+package your_package;
+
+
 import java.net.*;
 import java.io.*;
 import java.util.Scanner;
 import java.util.Date;
+import java.util.Vector;
 import java.text.SimpleDateFormat;
 import java.net.DatagramSocket;
+import java.util.Queue;
+import java.util.LinkedList;
+
+import com.google.gson.Gson;
+//import org.json.JSONException;
+//import org.json.JSONObject;
 
 public class MulticastPeer{
     static long ajusteTempo;
     static SimpleDateFormat sdf;
+    static Queue <Integer> messages;
 
-    public static void main(String args[]) throws UnknownHostException {
-		// args give message contents and destination multicast group (e.g. "228.5.6.7")
-    MulticastSocket s =null;
-    sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
-    ajusteTempo = 0;
+    public void MulticastPeer(String ip_grupo) throws UnknownHostException {
+      System.out.println("To dentro") ;
+      // args give message contents and destination multicast group (e.g. "228.5.6.7")
+      MulticastSocket s = null;
+      sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+      ajusteTempo = 0;
 
-    InetAddress address = InetAddress.getLocalHost();
-    String hostIP = address.getHostAddress() ;
-    String hostName = address.getHostName();
-    System.out.println( "IP: " + hostIP + "\n" + "Name: " + hostName);
+      //fila de mensagens
+      messages  = new LinkedList<>();
 
-		try {
-      s = new MulticastSocket(6789);
+      InetAddress address = InetAddress.getLocalHost();
+      String hostIP = address.getHostAddress() ;
+      String hostName = address.getHostName();
+      System.out.println( "IP: " + hostIP + "\n" + "Name: " + hostName);
 
-      System.out.println(long2sting(timePC()));
-      ajusteTempo = 1234;
-      System.out.println(long2sting(timePC()));
+  		try {
+        s = new MulticastSocket(6789);
+
+        System.out.println(long2sting(timePC()));
+        ajusteTempo = 1234;
+        System.out.println(long2sting(timePC()));
 
 
-      // Cria thread ouvinte
-      Connection ouvinte = new Connection(s);
-      //entra no grupo
-      InetAddress group = InetAddress.getByName(args[0]);
-      s.joinGroup(group);
+        // Cria thread ouvinte
+        Connection ouvinte = new Connection(s,messages);
 
-      //le teclado
-      Scanner keyboard = new Scanner(System.in);
-      String text = "init";
+        //entra no grupo
+        InetAddress group = InetAddress.getByName(ip_grupo);
+        s.joinGroup(group);
 
-      while(true){
-        text= keyboard.nextLine();
+        //le teclado
+        Scanner keyboard = new Scanner(System.in);
+        String text = "init";
 
-        System.out.println(text);
+        while(true){
+          text= keyboard.nextLine();
 
-        //envia mensagem
-        byte [] m = text.getBytes();
-  			DatagramPacket messageOut = new DatagramPacket(m, m.length, group, 6789);
+          System.out.println(text);
 
-        s.send(messageOut);
-      }
-        //s.leaveGroup(group);
-		}catch (SocketException e){System.out.println("Socket: " + e.getMessage());
-		}catch (IOException e){System.out.println("IO: " + e.getMessage());
-		}finally {if(s != null) s.close();}
+          //envia mensagem
+          byte [] m = text.getBytes();
+    			DatagramPacket messageOut = new DatagramPacket(m, m.length, group, 6789);
+
+          s.send(messageOut);
+        }
+          //s.leaveGroup(group);
+  		}catch (SocketException e){System.out.println("Socket: " + e.getMessage());
+  		}catch (IOException e){System.out.println("IO: " + e.getMessage());
+  		}finally {if(s != null) s.close();}
 	}
 
   public static String long2sting(long time){
@@ -73,9 +90,10 @@ public class MulticastPeer{
 //Thread para leitura do Multicast
 class Connection extends Thread {
 	MulticastSocket multiSocket;
-
-	public Connection (MulticastSocket amultiSocket) {
+  Queue <Integer> messages;
+	public Connection (MulticastSocket amultiSocket, Queue <Integer> amessages) {
 			multiSocket = amultiSocket;
+      messages = amessages;
 			this.start();
 	}
 
@@ -87,6 +105,8 @@ class Connection extends Thread {
         DatagramPacket in = new DatagramPacket(buffer, buffer.length);
         multiSocket.receive(in);
         System.out.println("Received:" + new String(in.getData()));
+
+        //
       }
 		}
     catch(IOException e) {System.out.println("readline:"+e.getMessage());}
