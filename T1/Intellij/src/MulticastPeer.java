@@ -11,29 +11,29 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-public class MulticastPeer{
+public class MulticastPeer extends Thread {
 
-    static Queue <JSONObject> messages;
+    Queue <JSONObject> messages;
+    LinkedList<Processo> processos;
+    Connection threadOuvinte;
+    KeepAlive threadKeepAlive;
     MulticastSocket s;
     InetAddress group;
     int porta;
-    int id;
+    int meu_id;
 
-    public MulticastPeer(String ip_grupo, int aporta)  {
+    public MulticastPeer(String ip_grupo, int aporta) {
 
         System.out.println(ip_grupo);
         System.out.println(aporta);
-
+        meu_id = 0;
         porta = aporta;
 
         //fila de mensagens
         messages  = new LinkedList<>();
 
-        // Pegar IP da maquina
-        //InetAddress address = InetAddress.getLocalHost();
-        //String hostIP = address.getHostAddress() ;
-        //String hostName = address.getHostName();
-        //System.out.println( "IP: " + hostIP + "\n" + "Name: " + hostName);
+        //Lista de processos
+        processos = new LinkedList<Processo>();
 
         try {
             s = new MulticastSocket(porta);
@@ -44,39 +44,52 @@ public class MulticastPeer{
 
             // Cria threads
             // thread le as mensagens e salva numa fila
-            Connection threadOuvinte = new Connection(s,messages);
+            threadOuvinte = new Connection(s,messages);
             // thread envia mensagens de tempos em tempos
-            EstouVivo threadEstouVivo = new EstouVivo(s,group,porta,5000);
-            threadEstouVivo.ativa();
+            threadKeepAlive = new KeepAlive(s,group,porta,5000);
+            //threadKeepAlive.ativa();
 
             //salva o id de todos e cria o seu
-            id = criaId();
+            meu_id = criaId();
+            System.out.printf("Criado Id: %d\n",meu_id);
+            threadOuvinte.salva_id(meu_id);
 
-            JSONObject jsonRecebido;
-            while(true){
+            //s.leaveGroup(group);
+        }catch (SocketException e){System.out.println("Socket: " + e.getMessage());
+        }catch (IOException e){System.out.println("IO: " + e.getMessage());}
+
+        //Thread
+        this.start();
+    }
+
+
+    public void run()  {
+
+        JSONObject jsonRecebido;
+        try {
+            while (true) {
 
                 //Se tiver uma mensagem na fila de mensagens
-                if (messages.size()>0){
+                if (messages.size() > 0) {
                     jsonRecebido = messages.remove();
-                    System.out.println("Recebido lendo da fila: " + jsonRecebido.getString("msg"));
+                    System.out.printf(" >> (id: %d) Recebido: %s de id: %d\n",meu_id,jsonRecebido.getString("msg"),jsonRecebido.getInt("id"));
+
+                    //novo processo no grupo
+                    if (jsonRecebido.getString("msg").equals("Novo no Grupo")) {
+                        enviaMensagem("Seja bem vindo!", meu_id);
+                    }
                 }
 
                 Thread.sleep(1);
 
-                //text= keyboard.nextLine();
-
             }
-            //s.leaveGroup(group);
-        }catch (SocketException e){System.out.println("Socket: " + e.getMessage());
-        }catch (IOException e){System.out.println("IO: " + e.getMessage());
         }catch(JSONException e) {System.out.println("Json:"+e.getMessage());
-        }catch (InterruptedException e){System.out.println("Interrupt: " + e.getMessage());
-        }finally {if(s != null) s.close();}
+        }catch (InterruptedException e){System.out.println("Interrupt: " + e.getMessage());}
+
     }
 
     //envia mensagem
     public void enviaMensagem(JSONObject msg) {
-
         try {
             //json -> string -> bytes -> datagramPacket
             String json_string = msg.toString();
@@ -93,14 +106,16 @@ public class MulticastPeer{
         try {
             //cria e envia e envia mensagem de sou novo
             JSONObject jsonObj = new JSONObject();
-            jsonObj.put("msg", "novo no grupo");
-            jsonObj.put("id", 0);
+            jsonObj.put("msg", msg);
+            jsonObj.put("id", id);
             enviaMensagem(jsonObj);
         }catch(JSONException e) {System.out.println("Json:"+e.getMessage());}
     }
 
     //salva o ip de todos e cria o proprio
     public int criaId() {
+
+        //envia uma mensagem e espera a resposta do grupo
         try{
             enviaMensagem("Novo no Grupo",0);
             //espera 1 segundo
@@ -108,7 +123,27 @@ public class MulticastPeer{
 
         }catch (InterruptedException e){System.out.println("Interrupt: " + e.getMessage());}
 
-        return 1;
+
+        //le mensagem do grupo e salva cada um
+        int maior_id = 0;
+        try{
+            // Para todas as mensagens recebidas
+            JSONObject jsonRecebido;
+
+            while (messages.size()>0){
+                jsonRecebido = messages.remove();
+
+                //mensagens validas
+                if(jsonRecebido.getString("msg").equals("Seja bem vindo!")){
+                    int processo_id = jsonRecebido.getInt("id");
+                    processos.add(new Processo(processo_id));
+
+                    maior_id = maior_id>processo_id ? maior_id : processo_id;
+                }
+            }
+        }catch(JSONException e) {System.out.println("Json:"+e.getMessage());}
+
+        return maior_id+1;
     }
 
 }

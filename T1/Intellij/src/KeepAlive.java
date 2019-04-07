@@ -10,13 +10,13 @@ import java.net.MulticastSocket;
 import java.io.IOException;
 
 //Thread para leitura do Multicast
-class EstouVivo extends Thread {
+class KeepAlive extends Thread  {
     MulticastSocket multiSocket;
     DatagramPacket messageOut;
     int tempo_ms;
     boolean ligado;
 
-    public EstouVivo (MulticastSocket amultiSocket, InetAddress group, int porta, int atempo_ms) {
+    public KeepAlive (MulticastSocket amultiSocket, InetAddress group, int porta, int atempo_ms) {
         multiSocket = amultiSocket;
         tempo_ms = atempo_ms;
         ligado = false;
@@ -30,6 +30,8 @@ class EstouVivo extends Thread {
             byte[] m = msg.getBytes();
             messageOut = new DatagramPacket(m, m.length, group, porta);
         }catch(JSONException e) {System.out.println("Json:"+e.getMessage());}
+
+        //Thread
         this.start();
     }
 
