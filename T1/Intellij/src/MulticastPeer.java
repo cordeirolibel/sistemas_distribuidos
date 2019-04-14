@@ -6,9 +6,16 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.*;
+import java.security.GeneralSecurityException;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.DSAPrivateKey;
+import java.security.interfaces.DSAPublicKey;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
+
+import dsapack.DSA;
 
 public class MulticastPeer extends Thread {
 
@@ -23,10 +30,9 @@ public class MulticastPeer extends Thread {
     int porta;
     int meu_id;
     int master_id;
+    String pubKey_str;
 
-    public MulticastPeer(String ip_grupo, int aporta, int aid) {
-
-
+    public MulticastPeer(String ip_grupo, int aporta, int aid) throws GeneralSecurityException {
 
         meu_id = aid;
         master_id = 0;
@@ -35,6 +41,16 @@ public class MulticastPeer extends Thread {
         //fila de mensagens
         messages  = new LinkedList<>();
 
+        // Gerador de par de chaves
+        KeyPair kp = DSA.buildKeyPair();
+
+        // Chave privada e publica
+        DSAPrivateKey my_privKey = (DSAPrivateKey) kp.getPrivate();
+        DSAPublicKey my_pubKey = (DSAPublicKey) kp.getPublic();
+
+        // Converte chave publica para string
+        pubKey_str = DSA.publicKey2Str(my_pubKey);
+
         try {
             s = new MulticastSocket(porta);
 
@@ -42,7 +58,8 @@ public class MulticastPeer extends Thread {
             group = InetAddress.getByName(ip_grupo);
             s.joinGroup(group);
 
-            System.out.printf("[^^ %d] Fui criado no ip %s e porta %d\n",aid,ip_grupo,aporta);
+            System.out.printf("[^^ %d ] Fui criado no ip %s e porta %d\n",aid,ip_grupo,aporta);
+            System.out.println("[^^ %d ] Fui criado com pubKey " + pubKey_str);
 
             // Cria threads
             // thread le as mensagens e salva numa fila
@@ -85,8 +102,21 @@ public class MulticastPeer extends Thread {
                     //novo processo no grupo
                     switch(msg){
                         case "Novo no Grupo":
-                            enviaMensagem("Seja bem vindo!", meu_id);
-                            processos.add(id);
+                            //enviaMensagem("Seja bem vindo!", meu_id);
+                            System.out.println("[>> %d] Recebido pubKey: " + jsonRecebido.getString("pubKey") + " de id: " + id);
+
+                            // Cria json para responder ao novo processo
+                            JSONObject jsonObj = new JSONObject();
+                            jsonObj.put("msg", "Seja bem vindo!");
+                            jsonObj.put("pubKey", pubKey_str);
+                            jsonObj.put("id", meu_id);
+
+                            // Envia json de resposta ao novo processo
+                            enviaMensagem(jsonObj);
+
+                            // Cria processo na lista
+                            processos.add(id, jsonRecebido.getString("pubKey"));
+
                             if (atualizaMestre()){
                                 keep_alive_time = 0;
                             }
@@ -155,15 +185,24 @@ public class MulticastPeer extends Thread {
 
         //envia uma mensagem e espera a resposta do grupo
         try{
-            enviaMensagem("Novo no Grupo",meu_id);
+            //enviaMensagem("Novo no Grupo",meu_id);
+
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("msg", "Novo no Grupo");
+            jsonObj.put("pubKey", pubKey_str);
+            jsonObj.put("id", meu_id);
+
+            enviaMensagem(jsonObj);
+
             //espera 1 segundo
             Thread.sleep(1000);
 
-        }catch (InterruptedException e){System.out.println("Interrupt: " + e.getMessage());}
-
+        }catch (InterruptedException e){System.out.println("Interrupt: " + e.getMessage());} catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         //me adiciono
-        processos.add(meu_id);
+        processos.add(meu_id, pubKey_str);
 
         //le mensagem do grupo e salva cada um
         try{
@@ -176,7 +215,9 @@ public class MulticastPeer extends Thread {
                 //mensagens validas
                 if(jsonRecebido.getString("msg").equals("Seja bem vindo!")){
                     int processo_id = jsonRecebido.getInt("id");
-                    processos.add(processo_id);
+                    String processo_pubKey = jsonRecebido.getString("pubKey");
+
+                    processos.add(processo_id, processo_pubKey);
                 }
             }
         }catch(JSONException e) {System.out.println("Json:"+e.getMessage());}

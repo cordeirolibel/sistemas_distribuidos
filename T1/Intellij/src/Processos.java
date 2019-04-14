@@ -13,10 +13,11 @@ public class Processos {
     }
 
     //adiciona um novo id na lista
-    public void add (int id){
-        Processo processo = new Processo(id);
+    public void add (int id, String pkey){
+        Processo processo = new Processo(id, pkey);
         processos.add(processo);
     }
+
 
     //deletar um processo da lista
     public boolean delete (int id){
@@ -78,11 +79,14 @@ class Processo {
     int id;
     long time;
     long ajuste;
-    public Processo(int aid)
+    String pubKey;
+
+    public Processo(int aid, String pkey)
     {
         id = aid;
         ajuste = 0;
         time = 0;
+        pubKey = pkey;
     }
     public void setTempo(long atime){atime = time; }
 }
