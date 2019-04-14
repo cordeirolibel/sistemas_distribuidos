@@ -16,7 +16,7 @@ class KeepAlive extends Thread  {
     int tempo_ms;
     boolean ligado;
 
-    public KeepAlive (MulticastSocket amultiSocket, InetAddress group, int porta, int atempo_ms) {
+    public KeepAlive (MulticastSocket amultiSocket, InetAddress group, int porta, int meu_id, int atempo_ms) {
         multiSocket = amultiSocket;
         tempo_ms = atempo_ms;
         ligado = false;
@@ -26,6 +26,7 @@ class KeepAlive extends Thread  {
             //json -> string -> bytes -> datagramPacket
             JSONObject jsonObj = new JSONObject();
             jsonObj.put("msg", "Estou Vivo!");
+            jsonObj.put("id", meu_id);
             String msg = jsonObj.toString();
             byte[] m = msg.getBytes();
             messageOut = new DatagramPacket(m, m.length, group, porta);
