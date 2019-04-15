@@ -4,11 +4,11 @@ package multicastpackage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.*;
-import java.security.GeneralSecurityException;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.DSAPublicKey;
 import java.util.LinkedList;
@@ -28,6 +28,7 @@ public class MulticastPeer extends Thread {
     MulticastSocket s;
     InetAddress group;
     int porta;
+    int porta_processo;
     int meu_id;
     int master_id;
     String pubKey_str;
@@ -37,6 +38,7 @@ public class MulticastPeer extends Thread {
         meu_id = aid;
         master_id = 0;
         porta = aporta;
+        porta_processo = aporta + aid;
 
         //fila de mensagens
         messages  = new LinkedList<>();
@@ -81,7 +83,6 @@ public class MulticastPeer extends Thread {
         this.start();
     }
 
-
     public void run()  {
 
         JSONObject jsonRecebido;
@@ -115,7 +116,7 @@ public class MulticastPeer extends Thread {
                             enviaMensagem(jsonObj);
 
                             // Cria processo na lista
-                            processos.add(id, jsonRecebido.getString("pubKey"));
+                            processos.add(id, jsonRecebido.getString("pubKey"), porta_processo);
 
                             if (atualizaMestre()){
                                 keep_alive_time = 0;
@@ -202,7 +203,7 @@ public class MulticastPeer extends Thread {
         }
 
         //me adiciono
-        processos.add(meu_id, pubKey_str);
+        processos.add(meu_id, pubKey_str, porta_processo);
 
         //le mensagem do grupo e salva cada um
         try{
@@ -217,11 +218,10 @@ public class MulticastPeer extends Thread {
                     int processo_id = jsonRecebido.getInt("id");
                     String processo_pubKey = jsonRecebido.getString("pubKey");
 
-                    processos.add(processo_id, processo_pubKey);
+                    processos.add(processo_id, processo_pubKey, porta_processo);
                 }
             }
         }catch(JSONException e) {System.out.println("Json:"+e.getMessage());}
-
 
         atualizaMestre();
     }
@@ -250,6 +250,47 @@ public class MulticastPeer extends Thread {
             return true;
         }
         return false;
+    }
+
+    public static void unicastComm (String ip, int process_port, String ajuste, DSAPrivateKey privKey){
+        Socket socket = null;
+
+        try{
+            socket = new Socket(ip, process_port);
+
+            DataInputStream in = new DataInputStream( socket.getInputStream());
+            DataOutputStream out =new DataOutputStream( socket.getOutputStream());
+
+            // Envia mensagem
+            byte[] signature = DSA.sign(privKey, ajuste.getBytes());
+
+            // Cria json para enviar para o slave
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("signature", signature);
+            jsonObj.put("ajuste", ajuste);
+
+            //json -> string
+            String json_string = jsonObj.toString();
+
+            //Enviar json???
+            out.writeUTF(json_string);
+
+            // Le ack??
+            String data = in.readUTF();
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (SignatureException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
 

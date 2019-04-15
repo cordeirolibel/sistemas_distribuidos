@@ -13,8 +13,8 @@ public class Processos {
     }
 
     //adiciona um novo id na lista
-    public void add (int id, String pkey){
-        Processo processo = new Processo(id, pkey);
+    public void add (int id, String pkey, int porta_processo){
+        Processo processo = new Processo(id, pkey, porta_processo);
         processos.add(processo);
     }
 
@@ -80,13 +80,15 @@ class Processo {
     long time;
     long ajuste;
     String pubKey;
+    int porta_unicast;
 
-    public Processo(int aid, String pkey)
+    public Processo(int aid, String pkey, int porta_processo)
     {
         id = aid;
         ajuste = 0;
         time = 0;
         pubKey = pkey;
+        porta_unicast = porta_processo;
     }
     public void setTempo(long atime){atime = time; }
 }
