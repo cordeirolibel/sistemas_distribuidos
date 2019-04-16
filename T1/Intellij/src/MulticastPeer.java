@@ -20,6 +20,7 @@ import dsapack.DSA;
 public class MulticastPeer extends Thread {
 
     private static final int TIME_KEEP_ALIVE = 5000;//ms
+    private static final int TIME_AJUSTE = 10000;//ms
 
     Queue <JSONObject> messages;
     Connection threadOuvinte;
@@ -252,31 +253,30 @@ public class MulticastPeer extends Thread {
         return false;
     }
 
-    public static void unicastComm (String ip, int process_port, String ajuste, DSAPrivateKey privKey){
+    public void unicastClient (String ip, int process_port, String msg, long dado_tempo, DSAPrivateKey privKey){
         Socket socket = null;
 
         try{
             socket = new Socket(ip, process_port);
 
             DataInputStream in = new DataInputStream( socket.getInputStream());
-            DataOutputStream out =new DataOutputStream( socket.getOutputStream());
+            DataOutputStream out = new DataOutputStream( socket.getOutputStream());
 
             // Envia mensagem
             byte[] signature = DSA.sign(privKey, ajuste.getBytes());
 
             // Cria json para enviar para o slave
             JSONObject jsonObj = new JSONObject();
-            jsonObj.put("signature", signature);
-            jsonObj.put("ajuste", ajuste);
+            jsonObj.put("id", meu_id);
+            jsonObj.put("signature", new String(signature));
+            jsonObj.put("tempo", dado_tempo);
+            jsonObj.put("msg", msg);
 
             //json -> string
             String json_string = jsonObj.toString();
 
             //Enviar json???
             out.writeUTF(json_string);
-
-            // Le ack??
-            String data = in.readUTF();
 
         } catch (UnknownHostException e) {
             e.printStackTrace();

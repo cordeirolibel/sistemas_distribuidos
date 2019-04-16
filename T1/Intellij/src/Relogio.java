@@ -1,20 +1,26 @@
 package multicastpackage;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 
-public class Relogio {
+public class Relogio extends Thread{
 
     long ajusteTempo;
     SimpleDateFormat sdf;
     LinkedList<Processo> processos;
+    boolean ligado;
+    int tempo_ms;
 
-    public Relogio(LinkedList<Processo> aprocessos){
+    public Relogio(LinkedList<Processo> aprocessos, int atempo_ms){
         // args give message contents and destination multicast group (e.g. "228.5.6.7")
         sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
         ajusteTempo = 0;
         aprocessos = processos;
+        tempo_ms = atempo_ms;
+
+        this.start();
     }
 
     // adiciona um ajuste ao relogio
@@ -39,6 +45,20 @@ public class Relogio {
         long timeProcessoL = nowL + ajusteTempo;
         Date timeProcesso =  new Date(timeProcessoL);
         return timeProcessoL;
+    }
+
+    public void run()  {
+        //envia mensagem de estou vivo
+        try {
+            while(true) {
+                if(ligado) {
+
+                }
+                Thread.sleep(tempo_ms);
+            }
+        }catch (IOException e){System.out.println("IO: " + e.getMessage());
+        }catch (InterruptedException e){System.out.println("Interrupt: " + e.getMessage());}
+
     }
 
     public void Berkeley(){
