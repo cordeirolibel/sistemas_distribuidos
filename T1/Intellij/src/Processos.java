@@ -33,6 +33,20 @@ public class Processos {
         return false;
     }
 
+    public long get_tempo(int id){
+        Processo processo;
+        int size = listaProcessos.size();
+
+        for (int i=0;i<size;i++){
+            processo = listaProcessos.get(i);
+            if (processo.id == id){
+                return processo.time;
+            }
+        }
+
+        return 0;
+    }
+
     public int procuraMestre(){
         Processo processo;
         int size = listaProcessos.size();
@@ -99,6 +113,54 @@ public class Processos {
         }
     }
 
+    public int getPorta(int iterador) {
+        try {
+            return listaProcessos.get(iterador).porta_unicast;
+        }
+        catch (IndexOutOfBoundsException e){
+            return 0;
+        }
+    }
+
+    public int size(){
+        return listaProcessos.size();
+    }
+
+    public void Berkeley(int meu_id){
+        Processo processo;
+        int size = listaProcessos.size();
+        long rtt, estimado, media = 0;
+        int n_validos = 0;
+
+        //calcula RTTs e Estimados
+        long meu_relogio = get_tempo(meu_id);
+        for (int i=0;i<size;i++){
+            processo = listaProcessos.get(i);
+            //rtt
+            rtt = processo.time - meu_relogio;
+            processo.setRTT(rtt);
+            //estimado
+            estimado = processo.time + rtt/2;
+            processo.setEstimado(estimado);
+
+            //RTT maximo de 10 ms
+            if (rtt<=10){
+                media += estimado;
+                n_validos += 1;
+            }
+        }
+
+        media = media/n_validos;
+
+        long ajuste;
+        //ajuste
+        for (int i=0;i<size;i++) {
+            processo = listaProcessos.get(i);
+            ajuste = media - processo.time;
+            processo.setAjuste(ajuste);
+        }
+    }
+
 }
 
 //objeto para um processo
@@ -106,6 +168,8 @@ class Processo {
     int id;
     long time;
     long ajuste;
+    long rtt;
+    long estimado;
     String pubKey;
     int porta_unicast;
 
@@ -114,9 +178,13 @@ class Processo {
         id = aid;
         ajuste = 0;
         time = 0;
+        rtt = 0;
+        estimado = 0;
         pubKey = pkey;
         porta_unicast = porta_processo;
     }
     public void setTempo(long atime){time = atime;}
     public void setAjuste(long aajuste){ajuste = aajuste;}
+    public void setRTT(long artt){rtt = artt;}
+    public void setEstimado(long aestimado){estimado = aestimado;}
 }

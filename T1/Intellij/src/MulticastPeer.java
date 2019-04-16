@@ -33,6 +33,8 @@ public class MulticastPeer extends Thread {
     int meu_id;
     int master_id;
     String pubKey_str;
+    DSAPrivateKey p_privKey;
+    String ip;
 
     public MulticastPeer(String ip_grupo, int aporta, int aid) throws GeneralSecurityException {
 
@@ -40,6 +42,7 @@ public class MulticastPeer extends Thread {
         master_id = 0;
         porta = aporta;
         porta_processo = aporta + aid;
+        ip = ip_grupo;
 
         //fila de mensagens
         messages  = new LinkedList<>();
@@ -61,8 +64,9 @@ public class MulticastPeer extends Thread {
             group = InetAddress.getByName(ip_grupo);
             s.joinGroup(group);
 
-            System.out.printf("[^^ %d ] Fui criado no ip %s e porta %d\n",aid,ip_grupo,aporta);
-            System.out.println("[^^ %d ] Fui criado com pubKey " + pubKey_str);
+            System.out.printf("[^^ %d] Fui criado no ip %s e porta %d\n",aid,ip_grupo,aporta);
+            System.out.printf("[^^ %d] Fui criado com pubKey: ", aid);
+            System.out.println(pubKey_str);
 
             // Cria threads
             // thread le as mensagens e salva numa fila
@@ -90,6 +94,7 @@ public class MulticastPeer extends Thread {
         String msg;
         int id;
         int keep_alive_time = 0;
+        int ajusta_relogio_time = 0;
 
         try {
             while (true) {
@@ -128,6 +133,8 @@ public class MulticastPeer extends Thread {
                             break;
                         case "Seja bem vindo!":
                             break;
+                        case "Meu tempo":
+                            unicastClient (ip, porta,"Meu Tempo", jsonRecebido.getLong("tempo"), p_privKey);
                         case "Estou Vivo!":
                             keep_alive_time = 0;
                             break;
@@ -143,6 +150,32 @@ public class MulticastPeer extends Thread {
                     processos.delete(master_id);
                     atualizaMestre();
                     keep_alive_time = 0;
+                }
+
+                //se sou o mestre
+                if(meu_id == master_id){
+                    //se chegou a hora de atualizar os relogios
+                    if (ajusta_relogio_time >= TIME_AJUSTE){
+                        int slave_porta;
+                        //envia mensagem unicast para todos
+                        for(int i=0;i<processos.size();i++){
+                            slave_porta = processos.getPorta(i);
+                            if (slave_porta != 0){
+                                unicastClient (ip, slave_porta, "Quero tempo", 0, p_privKey);
+                            }
+                        }
+
+                        //...
+
+                        ajusta_relogio_time = 0;
+                    }
+                    else{
+                        ajusta_relogio_time += 1;
+                    }
+
+                }
+                else{
+                    ajusta_relogio_time = 0;
                 }
 
                 Thread.sleep(1);
@@ -259,24 +292,27 @@ public class MulticastPeer extends Thread {
         try{
             socket = new Socket(ip, process_port);
 
-            DataInputStream in = new DataInputStream( socket.getInputStream());
-            DataOutputStream out = new DataOutputStream( socket.getOutputStream());
-
-            // Envia mensagem
-            byte[] signature = DSA.sign(privKey, ajuste.getBytes());
+            DataInputStream in = new DataInputStream(socket.getInputStream());
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
             // Cria json para enviar para o slave
             JSONObject jsonObj = new JSONObject();
             jsonObj.put("id", meu_id);
-            jsonObj.put("signature", new String(signature));
             jsonObj.put("tempo", dado_tempo);
             jsonObj.put("msg", msg);
 
             //json -> string
             String json_string = jsonObj.toString();
 
-            //Enviar json???
-            out.writeUTF(json_string);
+            // Assina mensagem
+            byte[] signature = DSA.sign(privKey, json_string.getBytes());
+
+            JSONObject json_send = new JSONObject();
+            json_send.put("json_msg", json_string);
+            json_send.put("signature", new String (signature));
+
+            //Enviar json
+            out.writeUTF(json_send.toString());
 
         } catch (UnknownHostException e) {
             e.printStackTrace();

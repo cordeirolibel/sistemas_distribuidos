@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.interfaces.DSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Queue;
 
 import dsapack.DSA;
 
@@ -20,15 +21,17 @@ class unicastConnection extends Thread {
     int id_mestre;
     Processos processos;
     Relogio relogio;
+    Queue <JSONObject> messages;
 
-    public unicastConnection (Socket aClientSocket, Procesos aProcessos, Relogio arelogio){
+    public unicastConnection (Socket aClientSocket, Processos aProcessos, Relogio arelogio, Queue <JSONObject> amessages){
         processos = aProcessos;
         relogio = arelogio;
+        messages = amessages;
 
         try {
             clientSocket = aClientSocket;
             in = new DataInputStream( clientSocket.getInputStream());
-            out =new DataOutputStream( clientSocket.getOutputStream());
+            out = new DataOutputStream( clientSocket.getOutputStream());
             this.start();
         } catch(IOException e) {System.out.println("Connection:"+e.getMessage());}
     }
@@ -40,50 +43,71 @@ class unicastConnection extends Thread {
 
             if (meu_id == id_mestre){
                 //Recebe tempo dos escravos
-                JSONObject jsonObj = new JSONObject(data);
-                String msg = jsonObj.getString("msg");
+                JSONObject jsonObj_rec = new JSONObject(data);
+
+                // Abre mensagem
+                String json_msg = jsonObj_rec.getString("json_msg");
+                byte[] msg_signature = jsonObj_rec.getString("signature").getBytes();
+
+                JSONObject jsonObj = new JSONObject(json_msg);
                 int id_slave = jsonObj.getInt("id");
 
-                if (msg.equals("Meu tempo")){
-                    byte[] signature = jsonObj.getString("signature").getBytes();
+                // Pega chave publica do escravo
+                String pubkey_str = processos.get_pubKey(id_slave);
+                DSAPublicKey pubkey_slave = DSA.Str2publicKey(pubkey_str);
 
-                    String pubkey_str = processos.get_pubKey(id_slave);
-                    DSAPublicKey pubkey_slave = DSA.Str2publicKey(pubkey_str);
+                boolean verif = DSA.verify(pubkey_slave, json_msg.getBytes(), msg_signature);
 
-                    boolean verif = DSA.verify(pubkey_slave, msg.getBytes(), signature);
-
-                    if (verif){
+                if (verif){
+                    String msg = jsonObj.getString("msg");
+                    if (msg.equals("Meu tempo")){
                         processos.salvaTempo(jsonObj.getLong("tempo"), id_slave);
                     }
-                    else{
-                        System.out.printf("[!! %d] I'm fake bruh!\n",meu_id);
-                    }
+                }
+                else{
+                    System.out.printf("[!! %d] U fake bruh!\n", id_slave);
                 }
             }
             else{
-                // Slave recebe ajuste
-                JSONObject jsonObj = new JSONObject(data);
-                String msg = jsonObj.getString("msg");
+                // Slave recebe msg
+                JSONObject jsonObj_rec = new JSONObject(data);
+
+                // Abre mensagem
+                String json_msg = jsonObj_rec.getString("json_msg");
+                byte[] msg_signature = jsonObj_rec.getString("signature").getBytes();
+
+                JSONObject jsonObj = new JSONObject(json_msg);
                 int id = jsonObj.getInt("id");
 
-                if (id != id_mestre){
+                // Pega chave publica do suposto mestre
+                String pubkey_str = processos.get_pubKey(id);
+                DSAPublicKey pubkey_slave = DSA.Str2publicKey(pubkey_str);
+
+                boolean verif = DSA.verify(pubkey_slave, json_msg.getBytes(), msg_signature);
+
+                if (verif){
+                    String msg = jsonObj.getString("msg");
+
                     if (msg.equals("Ajuste")){
-                        byte[] signature = jsonObj.getString("signature").getBytes();
-
-                        String pubkey_str = processos.get_pubKey(id);
-                        DSAPublicKey pubkey_slave = DSA.Str2publicKey(pubkey_str);
-
-                        boolean verif = DSA.verify(pubkey_slave, msg.getBytes(), signature);
-
-                        if (verif){
-                            long t = jsonObj.getLong("tempo");
-                            relogio.ajustaTempo(t);
-                            processos.salvaAjuste(t, meu_id);
-                        }
-                        else{
-                            System.out.printf("[!! %d] I'm fake bruh!\n",meu_id);
-                        }
+                        long t = jsonObj.getLong("tempo");
+                        relogio.ajustaTempo(t);
+                        processos.salvaAjuste(t, meu_id);
                     }
+                    else if (msg.equals("Quero tempo")){
+                        // Prepara json resposta
+
+                        JSONObject jsonObj_send = new JSONObject();
+                        jsonObj_send.put("msg", "Meu tempo");
+                        jsonObj_send.put("id", meu_id);
+                        jsonObj_send.put("tempo", relogio.timePC());
+
+                        messages.add(jsonObj_send);
+
+                        //out.writeUTF(json_string);
+                    }
+                }
+                else{
+                    System.out.printf("[!! %d] U fake bruh!\n", id);
                 }
             }
 

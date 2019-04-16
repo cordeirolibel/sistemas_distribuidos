@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 
-public class Relogio extends Thread{
+public class Relogio {
 
     long ajusteTempo;
     SimpleDateFormat sdf;
@@ -20,7 +20,6 @@ public class Relogio extends Thread{
         aprocessos = processos;
         tempo_ms = atempo_ms;
 
-        this.start();
     }
 
     // adiciona um ajuste ao relogio
@@ -47,29 +46,4 @@ public class Relogio extends Thread{
         return timeProcessoL;
     }
 
-    public void run()  {
-        //envia mensagem de estou vivo
-        try {
-            while(true) {
-                if(ligado) {
-
-                }
-                Thread.sleep(tempo_ms);
-            }
-        }catch (IOException e){System.out.println("IO: " + e.getMessage());
-        }catch (InterruptedException e){System.out.println("Interrupt: " + e.getMessage());}
-
-    }
-
-    public void Berkeley(){
-        Processo processo;
-        int size = processos.size();
-        //for (int i=0;i<size;i++){
-        //    processo = processos.get(i);
-        //   if (processo.id == id){
-        //        processo.setTempo(tempo);
-        //    }
-        //}
-
-    }
 }
