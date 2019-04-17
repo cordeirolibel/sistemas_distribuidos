@@ -1,7 +1,11 @@
 package multicastpackage;
 
 // download: http://www.java2s.com/Code/Jar/o/Downloadorgjsonjar.htm
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+//           https://jar-download.com/maven-repository-class-search.php?search_box=com.sun.org.apache.xerces.internal.impl.dv.util.Base64
+//           https://search.maven.org/artifact/com.google.code.gson/gson/2.8.5/jar
+//import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import org.apache.commons.codec.binary.Base64;
+import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,7 +27,7 @@ import dsapack.DSA;
 public class MulticastPeer extends Thread {
 
     private static final int TIME_KEEP_ALIVE = 5000;//ms
-    private static final int TIME_AJUSTE = 10000;//ms
+    private static final int TIME_AJUSTE = 7000;//ms
 
     Queue<JSONObject> messages;
     Connection threadOuvinte;
@@ -38,7 +42,8 @@ public class MulticastPeer extends Thread {
     int master_id;
     String pubKey_str;
     DSAPrivateKey p_privKey;
-    String ip;
+    String ip_unicast;
+
 
     public MulticastPeer(String ip_grupo, int aporta, int aid) throws GeneralSecurityException {
 
@@ -46,10 +51,16 @@ public class MulticastPeer extends Thread {
         master_id = 0;
         porta = aporta;
         porta_processo = aporta + aid;
-        ip = ip_grupo;
 
         //fila de mensagens
         messages = new LinkedList<>();
+
+        //pegando o ip da maquina
+        try {
+            ip_unicast = InetAddress.getByName("localhost").getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
 
         // Gerador de par de chaves
         KeyPair kp = DSA.buildKeyPair();
@@ -86,7 +97,7 @@ public class MulticastPeer extends Thread {
 
             Relogio clk = new Relogio(processos, 1);
 
-            threadUnicast = new Unicast(porta_processo, processos, clk, messages, aid);
+            threadUnicast = new Unicast(porta_processo, processos, clk, messages, aid, master_id);
 
             //s.leaveGroup(group);
         } catch (SocketException e) {
@@ -120,7 +131,7 @@ public class MulticastPeer extends Thread {
                     switch (msg) {
                         case "Novo no Grupo":
                             //enviaMensagem("Seja bem vindo!", meu_id);
-                            System.out.println("[>> %d] Recebido pubKey: " + jsonRecebido.getString("pubKey") + " de id: " + id);
+                            System.out.printf("[>> %d] Recebido pubKey: %s de id: %d",meu_id,jsonRecebido.getString("pubKey"),id);
 
                             // Cria json para responder ao novo processo
                             JSONObject jsonObj = new JSONObject();
@@ -144,7 +155,6 @@ public class MulticastPeer extends Thread {
                         case "Seja bem vindo!":
                             break;
                         case "Meu tempo":
-                            String ip_unicast = InetAddress.getByName("localhost").getHostAddress();
 
                             unicastClient(ip_unicast, id, processos.getPorta(id), "Meu Tempo", jsonRecebido.getLong("tempo"), p_privKey);
                         case "Estou Vivo!":
@@ -165,27 +175,40 @@ public class MulticastPeer extends Thread {
                 }
 
                 //se sou o mestre
-                if (meu_id != master_id) {
+                if(meu_id == master_id){
                     //se chegou a hora de atualizar os relogios
-                    if (ajusta_relogio_time >= TIME_AJUSTE) {
+                    if (ajusta_relogio_time >= TIME_AJUSTE){
                         int slave_porta;
-
-                        //envia mensagem unicast para todos
-                        for (int i = 0; i < processos.size(); i++) {
+                        //envia mensagem unicast para todos [pedindo os tempos]
+                        for(int i=0;i<processos.size();i++){
                             slave_porta = processos.getPorta(i);
-                            if (slave_porta != 0) {
-                                String ip_unicast = InetAddress.getByName("localhost").getHostAddress();
-                                unicastClient(ip_unicast, meu_id, slave_porta, "Quero tempo", 0, p_privKey);
+                            if ((slave_porta != 0) && (porta != slave_porta)){
+                                unicastClient (ip_unicast, meu_id,slave_porta, "Quero tempo", 0, p_privKey);
                             }
                         }
 
-                        //...
+                        //espera 1 segundo
+                        Thread.sleep(1000);
+
+                        //roda o algoritmo Berkeley
+                        processos.Berkeley(meu_id);
+
+                        //envia mensagem unicast para todos [mandando os ajustes
+                        for(int i=0;i<processos.size();i++){
+                            slave_porta = processos.getPorta(i);
+                            if ((slave_porta != 0) && (porta != slave_porta)){
+                                unicastClient (ip_unicast,meu_id, slave_porta, "Ajuste", processos.get_ajuste_interador(i), p_privKey);
+                            }
+                        }
+
                         ajusta_relogio_time = 0;
-                    } else {
+                    }
+                    else{
                         ajusta_relogio_time += 1;
                     }
 
-                } else {
+                }
+                else{
                     ajusta_relogio_time = 0;
                 }
 
@@ -195,9 +218,10 @@ public class MulticastPeer extends Thread {
             System.out.println("Json:" + e.getMessage());
         } catch (InterruptedException ex) {
             Logger.getLogger(MulticastPeer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(MulticastPeer.class.getName()).log(Level.SEVERE, null, ex);
         }
+        //} catch (UnknownHostException ex) {
+        //    Logger.getLogger(MulticastPeer.class.getName()).log(Level.SEVERE, null, ex);
+        //}
 
     }
 
@@ -291,6 +315,11 @@ public class MulticastPeer extends Thread {
     private boolean atualizaMestre() {
 
         int novo_mestre = processos.procuraMestre();
+        try{
+            threadUnicast.mudaMestre(novo_mestre);
+        }
+        catch (Exception e){}
+
 
         if ((meu_id == novo_mestre) && (novo_mestre != master_id)) {
             threadKeepAlive.ativa();
@@ -311,6 +340,9 @@ public class MulticastPeer extends Thread {
     }
 
     public void unicastClient(String ip, int idThread, int process_port, String msg, long dado_tempo, DSAPrivateKey privKey) {
+
+        System.out.printf("[<- %d] Envia unicast para ip/porta: %s/%d, msg: %s, tempo: %d\n",idThread,ip,process_port,msg,dado_tempo);
+
         Socket socket = null;
 
         try {
@@ -323,14 +355,15 @@ public class MulticastPeer extends Thread {
             jsonObj.put("id", idThread);
             jsonObj.put("tempo", dado_tempo);
             jsonObj.put("msg", msg);
-
             //json -> string
             String json_string = jsonObj.toString();
 
             // Assina mensagem
             byte[] signature = DSA.sign(privKey, json_string.getBytes());
-            String s_signature = Base64.encode(signature);
+            String s_signature = new String(Base64.encodeBase64(signature));
+            jsonObj.put("sig",s_signature);
 
+            //jsonObj
             JSONObject json_send = new JSONObject();
             json_send.put("json_msg", json_string);
             json_send.put("signature", s_signature);

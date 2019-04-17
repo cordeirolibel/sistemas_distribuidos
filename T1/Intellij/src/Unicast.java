@@ -61,21 +61,26 @@ class Unicast extends Thread {
     int serverPort;
     ServerSocket listenSocket;
 
-    public Unicast (int aserverPort, Processos aProcessos, Relogio arelogio, Queue <JSONObject> amessages, int meu_aid) throws IOException {
+    public Unicast (int aserverPort, Processos aProcessos, Relogio arelogio, Queue <JSONObject> amessages, int meu_aid, int aid_mestre) throws IOException {
         processos = aProcessos;
         relogio = arelogio;
         messages = amessages;
         meu_id = meu_aid;
         serverPort = aserverPort;
 
-        System.out.println("MEU id FINAL> " + meu_aid);
+        //System.out.println("MEU id FINAL> " + meu_aid);
 
-        id_mestre = processos.procuraMestre();
+        //id_mestre = processos.procuraMestre();
+        id_mestre = aid_mestre;
 
         listenSocket = new ServerSocket(serverPort);
 
         this.start();
 
+    }
+
+    public void mudaMestre(int aid_mestre){
+        id_mestre = aid_mestre;
     }
 
     public void run(){
@@ -102,7 +107,7 @@ class Unicast extends Thread {
                     //Recebe tempo dos escravos
 
                     byte[] msg_signature = Base64.getDecoder().decode(jsonObj_rec.getString("signature"));
-
+                    //byte[] msg_signature = jsonObj_rec.getString("signature").getBytes();
 
                     int id_slave = jsonObj.getInt("id");
 
@@ -138,7 +143,8 @@ class Unicast extends Thread {
 
                     if (verif) {
                         String msg = jsonObj.getString("msg");
-                        System.out.println("msg else: " + msg);
+
+                        System.out.printf("[<> %d] mensagem verficada: %s, id: %d\n", meu_id,msg, id);
 
                         if (msg.equals("Ajuste")) {
                             long t = jsonObj.getLong("tempo");

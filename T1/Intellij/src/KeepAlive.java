@@ -13,18 +13,21 @@ import java.io.IOException;
 class KeepAlive extends Thread  {
     MulticastSocket multiSocket;
     DatagramPacket messageOut;
+    JSONObject jsonObj;
     int tempo_ms;
     boolean ligado;
+    int meu_id;
 
-    public KeepAlive (MulticastSocket amultiSocket, InetAddress group, int porta, int meu_id, int atempo_ms) {
+    public KeepAlive (MulticastSocket amultiSocket, InetAddress group, int porta, int ameu_id, int atempo_ms) {
         multiSocket = amultiSocket;
         tempo_ms = atempo_ms;
         ligado = false;
+        meu_id = ameu_id;
 
         try{
             //cria mensagem de envio
             //json -> string -> bytes -> datagramPacket
-            JSONObject jsonObj = new JSONObject();
+            jsonObj = new JSONObject();
             jsonObj.put("msg", "Estou Vivo!");
             jsonObj.put("id", meu_id);
             String msg = jsonObj.toString();
@@ -49,12 +52,16 @@ class KeepAlive extends Thread  {
         try {
             while(true) {
                 if(ligado) {
+                    System.out.printf("[<< %d] Enviando: %s\n",meu_id,jsonObj.getString("msg"));
                     multiSocket.send(messageOut);
                 }
                 Thread.sleep(tempo_ms);
             }
         }catch (IOException e){System.out.println("IO: " + e.getMessage());
-        }catch (InterruptedException e){System.out.println("Interrupt: " + e.getMessage());}
+        }catch (InterruptedException e){System.out.println("Interrupt: " + e.getMessage());
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
 }

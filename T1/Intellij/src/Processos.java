@@ -103,6 +103,12 @@ public class Processos {
         }
     }
 
+    public long get_ajuste_interador(int interador){
+        Processo processo;
+        processo = listaProcessos.get(interador);
+        return processo.ajuste;
+    }
+
     public void print(){
         Processo processo;
         int size = listaProcessos.size();

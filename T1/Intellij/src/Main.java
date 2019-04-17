@@ -13,8 +13,8 @@ public class Main {
         int porta = 8000;
 
         MulticastPeer processo1 = new MulticastPeer(multicast_ip,porta,1);
-        MulticastPeer processo2 = new MulticastPeer(multicast_ip,porta,2);
-        MulticastPeer processo3 = new MulticastPeer(multicast_ip,porta,3);
+        MulticastPeer processo2 = new MulticastPeer(multicast_ip,porta+1,2);
+        MulticastPeer processo3 = new MulticastPeer(multicast_ip,porta+2,3);
 
         System.out.println("[main] Processos criados!!");
 
