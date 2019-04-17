@@ -10,24 +10,28 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.interfaces.DSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Base64;
 import java.util.Queue;
 
 public class Unicast extends Thread{
     DataInputStream in;
     DataOutputStream out;
     Socket clientSocket;
-    int meu_id;
+    int meu_aid;
     int id_mestre;
     Processos processos;
     Relogio relogio;
     Queue<JSONObject> messages;
     int serverPort;
 
-    public Unicast (int aserverPort, Processos aProcessos, Relogio arelogio, Queue <JSONObject> amessages){
+    public Unicast (int aserverPort, Processos aProcessos, Relogio arelogio, Queue <JSONObject> amessages, int aid){
         processos = aProcessos;
         relogio = arelogio;
         messages = amessages;
         serverPort = aserverPort;
+        meu_aid = aid;
+
+        System.out.println("AID: " + meu_aid);
 
         this.start();
     }
@@ -37,7 +41,7 @@ public class Unicast extends Thread{
             ServerSocket listenSocket = new ServerSocket(serverPort);
             while(true) {
                 Socket clientSocket = listenSocket.accept();
-                unicastConnection c = new unicastConnection(clientSocket, processos, relogio, messages);
+                unicastConnection c = new unicastConnection(clientSocket, processos, relogio, messages, meu_aid);
             }
         } catch(IOException e) {System.out.println("Listen socket:"+e.getMessage());}
     }
@@ -54,10 +58,15 @@ class unicastConnection extends Thread {
     Relogio relogio;
     Queue<JSONObject> messages;
 
-    public unicastConnection (Socket aClientSocket, Processos aProcessos, Relogio arelogio, Queue <JSONObject> amessages){
+    public unicastConnection (Socket aClientSocket, Processos aProcessos, Relogio arelogio, Queue <JSONObject> amessages, int meu_aid){
         processos = aProcessos;
         relogio = arelogio;
         messages = amessages;
+        meu_id = meu_aid;
+
+        System.out.println("MEU id FINAL> " + meu_aid);
+
+        id_mestre = processos.procuraMestre();
 
         try {
             clientSocket = aClientSocket;
@@ -72,13 +81,14 @@ class unicastConnection extends Thread {
             // Recebe resposta
             String data = in.readUTF();
 
+            System.out.println("meuid: "+ meu_id + " id mestre: " + id_mestre);
             if (meu_id == id_mestre){
                 //Recebe tempo dos escravos
                 JSONObject jsonObj_rec = new JSONObject(data);
 
                 // Abre mensagem
                 String json_msg = jsonObj_rec.getString("json_msg");
-                byte[] msg_signature = jsonObj_rec.getString("signature").getBytes();
+                byte[] msg_signature = Base64.getDecoder().decode(jsonObj_rec.getString("signature"));
 
                 JSONObject jsonObj = new JSONObject(json_msg);
                 int id_slave = jsonObj.getInt("id");
@@ -91,7 +101,9 @@ class unicastConnection extends Thread {
 
                 if (verif){
                     String msg = jsonObj.getString("msg");
+                    System.out.println("msg if: " + msg);
                     if (msg.equals("Meu tempo")){
+                        System.out.println("meu tmepo: " + jsonObj.getLong("tempo"));
                         processos.salvaTempo(jsonObj.getLong("tempo"), id_slave);
                     }
                 }
@@ -105,7 +117,7 @@ class unicastConnection extends Thread {
 
                 // Abre mensagem
                 String json_msg = jsonObj_rec.getString("json_msg");
-                byte[] msg_signature = jsonObj_rec.getString("signature").getBytes();
+                byte[] msg_signature = Base64.getDecoder().decode(jsonObj_rec.getString("signature"));
 
                 JSONObject jsonObj = new JSONObject(json_msg);
                 int id = jsonObj.getInt("id");
@@ -118,6 +130,7 @@ class unicastConnection extends Thread {
 
                 if (verif){
                     String msg = jsonObj.getString("msg");
+                    System.out.println("msg else: " + msg);
 
                     if (msg.equals("Ajuste")){
                         long t = jsonObj.getLong("tempo");

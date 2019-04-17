@@ -1,6 +1,7 @@
 package multicastpackage;
 
 // download: http://www.java2s.com/Code/Jar/o/Downloadorgjsonjar.htm
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,7 +53,7 @@ public class MulticastPeer extends Thread {
         KeyPair kp = DSA.buildKeyPair();
 
         // Chave privada e publica
-        DSAPrivateKey my_privKey = (DSAPrivateKey) kp.getPrivate();
+        p_privKey = (DSAPrivateKey) kp.getPrivate();
         DSAPublicKey my_pubKey = (DSAPublicKey) kp.getPublic();
 
         // Converte chave publica para string
@@ -83,7 +84,7 @@ public class MulticastPeer extends Thread {
 
             Relogio clk = new Relogio(processos, 1);
 
-            threadUnicast = new Unicast(porta_processo, processos, clk, messages);
+            threadUnicast = new Unicast(porta_processo, processos, clk, messages, meu_id);
 
             //s.leaveGroup(group);
         } catch (SocketException e) {
@@ -319,10 +320,12 @@ public class MulticastPeer extends Thread {
 
             // Assina mensagem
             byte[] signature = DSA.sign(privKey, json_string.getBytes());
+            String s_signature = Base64.encode(signature);
 
             JSONObject json_send = new JSONObject();
             json_send.put("json_msg", json_string);
-            json_send.put("signature", new String (signature));
+            json_send.put("signature", s_signature);
+
 
             //Enviar json
             out.writeUTF(json_send.toString());
