@@ -13,42 +13,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.Queue;
 
-/*
-public class Unicast extends Thread{
-    DataInputStream in;
-    DataOutputStream out;
-    Socket clientSocket;
-    int meu_aid;
-    int id_mestre;
-    Processos processos;
-    Relogio relogio;
-    Queue<JSONObject> messages;
-    int serverPort;
-
-    public Unicast (int aserverPort, Processos aProcessos, Relogio arelogio, Queue <JSONObject> amessages, int aid){
-        processos = aProcessos;
-        relogio = arelogio;
-        messages = amessages;
-        serverPort = aserverPort;
-        this.meu_aid = aid;
-
-        System.out.println("AID: " + this.meu_aid);
-
-        this.start();
-    }
-
-    public void run(){
-        try{
-            ServerSocket listenSocket = new ServerSocket(serverPort);
-            while(true) {
-                Socket clientSocket = listenSocket.accept();
-                unicastConnection c = new unicastConnection(clientSocket, processos, relogio, messages, this.meu_aid);
-            }
-        } catch(IOException e) {System.out.println("Listen socket:"+e.getMessage());}
-    }
-
-}
-*/
 
 class Unicast extends Thread {
     DataInputStream in;
@@ -120,9 +84,9 @@ class Unicast extends Thread {
 
                     if (verif) {
                         String msg = jsonObj.getString("msg");
-                        System.out.println("       msg info: " + msg);
+
                         if (msg.equals("Meu tempo")) {
-                            System.out.println("meu tempo: " + jsonObj.getLong("tempo"));
+                            System.out.printf("       msg info: %s, tempo: %d\n",msg,jsonObj.getLong("tempo"));
                             processos.salvaTempo(jsonObj.getLong("tempo"), id_slave);
                         }
                     } else {
@@ -149,6 +113,7 @@ class Unicast extends Thread {
 
                         if (msg.equals("Ajuste")) {
                             long t = jsonObj.getLong("tempo");
+                            System.out.printf("       msg info: %s Ajuste de %d ms\n",msg,t);
                             relogio.ajustaTempo(t);
                             processos.salvaAjuste(t, meu_id);
                         } else if (msg.equals("Quero tempo")) {

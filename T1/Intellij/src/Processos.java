@@ -98,7 +98,7 @@ public class Processos {
         for (int i=0;i<size;i++){
             processo = listaProcessos.get(i);
             if (processo.id == id){
-                processo.setTempo(ajuste);
+                processo.setAjuste(ajuste);
             }
         }
     }
@@ -129,6 +129,20 @@ public class Processos {
         }
     }
 
+    public int getPortaId(int id) {
+        Processo processo;
+        int size = listaProcessos.size();
+
+        for (int i=0;i<size;i++){
+            processo = listaProcessos.get(i);
+            if (processo.id == id){
+                return processo.porta_unicast;
+            }
+        }
+
+        return 0;
+    }
+
     public int size(){
         return listaProcessos.size();
     }
@@ -151,7 +165,7 @@ public class Processos {
             processo.setEstimado(estimado);
 
             //RTT maximo de 10 ms
-            if (rtt<=10){
+            if ((rtt<=24)&&(rtt>=-24)){
                 media += estimado;
                 n_validos += 1;
             }

@@ -10,13 +10,15 @@ import java.util.Arrays;
 import java.util.Base64;
 
 public class DSA {
+    //cria par de chaves
     public static KeyPair buildKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance("DSA");
         keyGenerator.initialize(512);
 
         return keyGenerator.genKeyPair();
     }
-
+    //assina uma mensagem
+    //retorna a assinatura
     public static byte[] sign(DSAPrivateKey privateKey, byte[] message)
             throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         Signature signAlgorithm = Signature.getInstance("DSA");
@@ -27,6 +29,7 @@ public class DSA {
         return signAlgorithm.sign();
     }
 
+    //verifica uma mensagem
     public static boolean verify(DSAPublicKey publicKey, byte[] message, byte[] signature)
             throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         Signature verifyAlgorithm = Signature.getInstance("DSA");

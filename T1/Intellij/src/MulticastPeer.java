@@ -97,7 +97,7 @@ public class MulticastPeer extends Thread {
 
             threadOuvinte.salva_id(meu_id);
 
-            clk = new Relogio(processos, 1,ajuste_manual);
+            clk = new Relogio(processos,ajuste_manual);
 
             threadUnicast = new Unicast(porta_processo, processos, clk, messages, meu_id, master_id);
 
@@ -134,9 +134,6 @@ public class MulticastPeer extends Thread {
                     //novo processo no grupo
                     switch (msg) {
                         case "Novo no Grupo":
-                            //enviaMensagem("Seja bem vindo!", meu_id);
-                            //System.out.printf("[>> %d] Recebido pubKey: %s de id: %d",meu_id,jsonRecebido.getString("pubKey"),id);
-                            //System.out.printf("[>> %d] Recebido porta: %d de id: %d\n",meu_id,jsonRecebido.getInt("porta"),id);
 
                             // Cria json para responder ao novo processo
                             JSONObject jsonObj = new JSONObject();
@@ -161,7 +158,8 @@ public class MulticastPeer extends Thread {
                         case "Seja bem vindo!":
                             break;
                         case "Meu tempo":
-                            unicastClient(ip_unicast, id, processos.getPorta(id), "Meu tempo", jsonRecebido.getLong("tempo"), p_privKey);
+                            int porta_mestre = processos.getPortaId(master_id);
+                            unicastClient(ip_unicast, id, porta_mestre, "Meu tempo", jsonRecebido.getLong("tempo"), p_privKey);
                         case "Estou Vivo!":
                             keep_alive_time = 0;
                             break;
@@ -205,7 +203,7 @@ public class MulticastPeer extends Thread {
                         //print da tabela
                         processos.print();
 
-                        //envia mensagem unicast para todos [mandando os ajustes
+                        //envia mensagem unicast para todos mandando os ajustes
                         for(int i=0;i<processos.size();i++){
                             slave_porta = processos.getPorta(i);
                             if ((slave_porta != 0) && (porta_processo != slave_porta)){
@@ -239,6 +237,10 @@ public class MulticastPeer extends Thread {
 
     public void desativa() {
         threadKeepAlive.desativa();
+        threadKeepAlive.stop();
+        threadOuvinte.stop();
+        threadUnicast.stop();
+        this.stop();
     }
 
     //envia mensagem
@@ -384,7 +386,7 @@ public class MulticastPeer extends Thread {
             //Enviar json
             out.writeUTF(json_send.toString());
 
-            //socket.close();
+            socket.close();
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
