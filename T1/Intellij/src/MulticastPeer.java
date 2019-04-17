@@ -82,6 +82,8 @@ public class MulticastPeer extends Thread {
 
             threadOuvinte.salva_id(meu_id);
 
+
+            // TIMEMS ??????????
             Relogio clk = new Relogio(processos, 1);
 
             threadUnicast = new Unicast(porta_processo, processos, clk, messages, meu_id);
@@ -97,7 +99,7 @@ public class MulticastPeer extends Thread {
         this.start();
     }
 
-    public void run()  {
+    public void run() {
 
         JSONObject jsonRecebido;
         String msg;
