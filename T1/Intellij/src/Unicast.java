@@ -60,6 +60,7 @@ class Unicast extends Thread {
     Queue<JSONObject> messages;
     int serverPort;
     ServerSocket listenSocket;
+    Socket clientSocket;
 
     public Unicast (int aserverPort, Processos aProcessos, Relogio arelogio, Queue <JSONObject> amessages, int meu_aid, int aid_mestre) throws IOException {
         processos = aProcessos;
@@ -68,12 +69,11 @@ class Unicast extends Thread {
         meu_id = meu_aid;
         serverPort = aserverPort;
 
-        //System.out.println("MEU id FINAL> " + meu_aid);
-
         //id_mestre = processos.procuraMestre();
         id_mestre = aid_mestre;
 
         listenSocket = new ServerSocket(serverPort);
+
 
         this.start();
 
@@ -84,10 +84,10 @@ class Unicast extends Thread {
     }
 
     public void run(){
+        int id_receb;
         while (true) {
-            Socket clientSocket;
-            try {
 
+            try {
                 clientSocket = listenSocket.accept();
 
                 in = new DataInputStream(clientSocket.getInputStream());
@@ -100,10 +100,11 @@ class Unicast extends Thread {
                 String json_msg = jsonObj_rec.getString("json_msg");
                 JSONObject jsonObj = new JSONObject(json_msg);
 
-                meu_id = jsonObj.getInt("id");
+                id_receb = jsonObj.getInt("id");
 
-                System.out.println("meuid: " + meu_id + " id mestre: " + id_mestre);
-                if (meu_id != id_mestre) {
+                System.out.printf("(-> %d) Recebido de %d\n",meu_id,id_receb);
+
+                if (id_receb != id_mestre) {
                     //Recebe tempo dos escravos
 
                     byte[] msg_signature = Base64.getDecoder().decode(jsonObj_rec.getString("signature"));
@@ -119,18 +120,18 @@ class Unicast extends Thread {
 
                     if (verif) {
                         String msg = jsonObj.getString("msg");
-                        System.out.println("msg if: " + msg);
+                        System.out.println("       msg info: " + msg);
                         if (msg.equals("Meu tempo")) {
-                            System.out.println("meu tmepo: " + jsonObj.getLong("tempo"));
+                            System.out.println("meu tempo: " + jsonObj.getLong("tempo"));
                             processos.salvaTempo(jsonObj.getLong("tempo"), id_slave);
                         }
                     } else {
-                        System.out.printf("[!! %d] U fake bruh!\n", id_slave);
+                        System.out.printf("[!! %d] U fake bruh 1!\n", id_slave);
                     }
                 } else {
                     // Slave recebe msg
 
-                            // Abre mensagem
+                    // Abre mensagem
                     byte[] msg_signature = Base64.getDecoder().decode(jsonObj_rec.getString("signature"));
 
                     int id = jsonObj.getInt("id");
@@ -155,7 +156,7 @@ class Unicast extends Thread {
 
                             JSONObject jsonObj_send = new JSONObject();
                             jsonObj_send.put("msg", "Meu tempo");
-                            jsonObj_send.put("id", meu_id);
+                            jsonObj_send.put("id", id);
                             jsonObj_send.put("tempo", relogio.timePC());
 
                             messages.add(jsonObj_send);
@@ -163,7 +164,7 @@ class Unicast extends Thread {
                             //out.writeUTF(json_string);
                         }
                     } else {
-                        System.out.printf("[!! %d] U fake bruh!\n", id);
+                        System.out.printf("[!! %d] U fake bruh 2!\n", id);
                     }
                 }
 

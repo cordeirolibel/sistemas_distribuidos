@@ -112,10 +112,11 @@ public class Processos {
     public void print(){
         Processo processo;
         int size = listaProcessos.size();
+        System.out.println("========== Tabela de Berkeley ==========");
         //procura o processo
         for (int i=0;i<size;i++) {
             processo = listaProcessos.get(i);
-            System.out.printf("  %d\n",processo.id);
+            System.out.printf(" id: %d\tporta: %d\ttime: %d\trtt: %d\testimado: %d\tajuste: %d\n",processo.id,processo.porta_unicast,processo.time,processo.rtt,processo.estimado,processo.ajuste);
         }
     }
 
@@ -157,6 +158,7 @@ public class Processos {
         }
 
         media = media/n_validos;
+        System.out.printf("(## %d) media estimada: %d\n",meu_id,media);
 
         long ajuste;
         //ajuste

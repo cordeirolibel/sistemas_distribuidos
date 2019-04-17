@@ -10,11 +10,12 @@ public class Main {
 
         String multicast_ip = "224.0.0.42";
 
-        int porta = 8000;
+        int porta = 6788;
 
-        MulticastPeer processo1 = new MulticastPeer(multicast_ip,porta,1);
-        MulticastPeer processo2 = new MulticastPeer(multicast_ip,porta+1,2);
-        MulticastPeer processo3 = new MulticastPeer(multicast_ip,porta+2,3);
+        MulticastPeer processo1 = new MulticastPeer(multicast_ip,porta,1,0);
+        MulticastPeer processo2 = new MulticastPeer(multicast_ip,porta,2,0);
+        MulticastPeer processo3 = new MulticastPeer(multicast_ip,porta,3,0);
+        MulticastPeer processo4 = new MulticastPeer(multicast_ip,porta,3,0);
 
         System.out.println("[main] Processos criados!!");
 
