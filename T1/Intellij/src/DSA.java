@@ -12,7 +12,7 @@ import java.util.Base64;
 public class DSA {
     public static KeyPair buildKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance("DSA");
-        keyGenerator.initialize(1024);
+        keyGenerator.initialize(512);
 
         return keyGenerator.genKeyPair();
     }

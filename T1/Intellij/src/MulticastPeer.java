@@ -24,6 +24,7 @@ public class MulticastPeer extends Thread {
 
     Queue <JSONObject> messages;
     Connection threadOuvinte;
+    Unicast threadUnicast;
     KeepAlive threadKeepAlive;
     Processos processos;
     MulticastSocket s;
@@ -45,7 +46,7 @@ public class MulticastPeer extends Thread {
         ip = ip_grupo;
 
         //fila de mensagens
-        messages  = new LinkedList<>();
+        messages = new LinkedList<>();
 
         // Gerador de par de chaves
         KeyPair kp = DSA.buildKeyPair();
@@ -64,15 +65,15 @@ public class MulticastPeer extends Thread {
             group = InetAddress.getByName(ip_grupo);
             s.joinGroup(group);
 
-            System.out.printf("[^^ %d] Fui criado no ip %s e porta %d\n",aid,ip_grupo,aporta);
+            System.out.printf("[^^ %d] Fui criado no ip %s e porta %d\n", aid, ip_grupo, porta_processo);
             System.out.printf("[^^ %d] Fui criado com pubKey: ", aid);
             System.out.println(pubKey_str);
 
             // Cria threads
             // thread le as mensagens e salva numa fila
-            threadOuvinte = new Connection(s,messages);
+            threadOuvinte = new Connection(s, messages);
             // thread envia mensagens de tempos em tempos
-            threadKeepAlive = new KeepAlive(s,group,porta,meu_id,TIME_KEEP_ALIVE);
+            threadKeepAlive = new KeepAlive(s, group, porta, meu_id, TIME_KEEP_ALIVE);
 
             processos = new Processos();
             //salva o id do mestre e salva todos os processos
@@ -80,9 +81,16 @@ public class MulticastPeer extends Thread {
 
             threadOuvinte.salva_id(meu_id);
 
+            Relogio clk = new Relogio(processos, 1);
+
+            threadUnicast = new Unicast(porta_processo, processos, clk, messages);
+
             //s.leaveGroup(group);
-        }catch (SocketException e){System.out.println("Socket: " + e.getMessage());
-        }catch (IOException e){System.out.println("IO: " + e.getMessage());}
+        } catch (SocketException e) {
+            System.out.println("Socket: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO: " + e.getMessage());
+        }
 
         //Thread
         this.start();
@@ -134,7 +142,8 @@ public class MulticastPeer extends Thread {
                         case "Seja bem vindo!":
                             break;
                         case "Meu tempo":
-                            unicastClient (ip, porta,"Meu Tempo", jsonRecebido.getLong("tempo"), p_privKey);
+                            String ip_unicast = InetAddress.getByName("localhost").getHostAddress();
+                            unicastClient (ip_unicast, processos.getPorta(id),"Meu Tempo", jsonRecebido.getLong("tempo"), p_privKey);
                         case "Estou Vivo!":
                             keep_alive_time = 0;
                             break;
@@ -157,11 +166,13 @@ public class MulticastPeer extends Thread {
                     //se chegou a hora de atualizar os relogios
                     if (ajusta_relogio_time >= TIME_AJUSTE){
                         int slave_porta;
+
                         //envia mensagem unicast para todos
                         for(int i=0;i<processos.size();i++){
                             slave_porta = processos.getPorta(i);
                             if (slave_porta != 0){
-                                unicastClient (ip, slave_porta, "Quero tempo", 0, p_privKey);
+                                String ip_unicast = InetAddress.getByName("localhost").getHostAddress();
+                                unicastClient (ip_unicast, slave_porta, "Quero tempo", 0, p_privKey);
                             }
                         }
 
@@ -181,7 +192,9 @@ public class MulticastPeer extends Thread {
                 Thread.sleep(1);
             }
         }catch(JSONException e) {System.out.println("Json:"+e.getMessage());
-        }catch (InterruptedException e){System.out.println("Interrupt: " + e.getMessage());}
+        }catch (InterruptedException e){System.out.println("Interrupt: " + e.getMessage());} catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
 
     }
     public void desativa(){
@@ -313,6 +326,8 @@ public class MulticastPeer extends Thread {
 
             //Enviar json
             out.writeUTF(json_send.toString());
+
+            socket.close();
 
         } catch (UnknownHostException e) {
             e.printStackTrace();

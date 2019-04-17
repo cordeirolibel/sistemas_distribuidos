@@ -1,4 +1,5 @@
 package multicastpackage;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,9 +12,7 @@ import java.security.interfaces.DSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Queue;
 
-import dsapack.DSA;
-
-class unicastConnection_old extends Thread {
+public class Unicast extends Thread{
     DataInputStream in;
     DataOutputStream out;
     Socket clientSocket;
@@ -21,9 +20,41 @@ class unicastConnection_old extends Thread {
     int id_mestre;
     Processos processos;
     Relogio relogio;
-    Queue <JSONObject> messages;
+    Queue<JSONObject> messages;
+    int serverPort;
 
-    public unicastConnection_old (Socket aClientSocket, Processos aProcessos, Relogio arelogio, Queue <JSONObject> amessages){
+    public Unicast (int aserverPort, Processos aProcessos, Relogio arelogio, Queue <JSONObject> amessages){
+        processos = aProcessos;
+        relogio = arelogio;
+        messages = amessages;
+        serverPort = aserverPort;
+
+        this.start();
+    }
+
+    public void run(){
+        try{
+            ServerSocket listenSocket = new ServerSocket(serverPort);
+            while(true) {
+                Socket clientSocket = listenSocket.accept();
+                unicastConnection c = new unicastConnection(clientSocket, processos, relogio, messages);
+            }
+        } catch(IOException e) {System.out.println("Listen socket:"+e.getMessage());}
+    }
+
+}
+
+class unicastConnection extends Thread {
+    DataInputStream in;
+    DataOutputStream out;
+    Socket clientSocket;
+    int meu_id;
+    int id_mestre;
+    Processos processos;
+    Relogio relogio;
+    Queue<JSONObject> messages;
+
+    public unicastConnection (Socket aClientSocket, Processos aProcessos, Relogio arelogio, Queue <JSONObject> amessages){
         processos = aProcessos;
         relogio = arelogio;
         messages = amessages;
@@ -54,9 +85,9 @@ class unicastConnection_old extends Thread {
 
                 // Pega chave publica do escravo
                 String pubkey_str = processos.get_pubKey(id_slave);
-                DSAPublicKey pubkey_slave = DSA.Str2publicKey(pubkey_str);
+                DSAPublicKey pubkey_slave = dsapack.DSA.Str2publicKey(pubkey_str);
 
-                boolean verif = DSA.verify(pubkey_slave, json_msg.getBytes(), msg_signature);
+                boolean verif = dsapack.DSA.verify(pubkey_slave, json_msg.getBytes(), msg_signature);
 
                 if (verif){
                     String msg = jsonObj.getString("msg");
@@ -81,9 +112,9 @@ class unicastConnection_old extends Thread {
 
                 // Pega chave publica do suposto mestre
                 String pubkey_str = processos.get_pubKey(id);
-                DSAPublicKey pubkey_slave = DSA.Str2publicKey(pubkey_str);
+                DSAPublicKey pubkey_slave = dsapack.DSA.Str2publicKey(pubkey_str);
 
-                boolean verif = DSA.verify(pubkey_slave, json_msg.getBytes(), msg_signature);
+                boolean verif = dsapack.DSA.verify(pubkey_slave, json_msg.getBytes(), msg_signature);
 
                 if (verif){
                     String msg = jsonObj.getString("msg");
@@ -126,6 +157,4 @@ class unicastConnection_old extends Thread {
         } finally{ try {clientSocket.close();}catch (IOException e){/*close failed*/}}
 
     }
-
-
 }

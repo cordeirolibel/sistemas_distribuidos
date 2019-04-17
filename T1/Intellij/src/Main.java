@@ -1,13 +1,16 @@
 import multicastpackage.MulticastPeer;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 
 public class Main {
 
-    public static void main(String[] args) throws GeneralSecurityException {
+    public static void main(String[] args) throws GeneralSecurityException, UnknownHostException {
 
         String multicast_ip = "224.0.0.42";
-        int porta = 6789;
+
+        int porta = 8000;
 
         MulticastPeer processo1 = new MulticastPeer(multicast_ip,porta,1);
         MulticastPeer processo2 = new MulticastPeer(multicast_ip,porta,2);

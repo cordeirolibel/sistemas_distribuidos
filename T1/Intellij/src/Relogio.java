@@ -9,11 +9,11 @@ public class Relogio {
 
     long ajusteTempo;
     SimpleDateFormat sdf;
-    LinkedList<Processo> processos;
+    Processos processos;
     boolean ligado;
     int tempo_ms;
 
-    public Relogio(LinkedList<Processo> aprocessos, int atempo_ms){
+    public Relogio(Processos aprocessos, int atempo_ms){
         // args give message contents and destination multicast group (e.g. "228.5.6.7")
         sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
         ajusteTempo = 0;
