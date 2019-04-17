@@ -15,15 +15,17 @@ import java.security.interfaces.DSAPublicKey;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import dsapack.DSA;
+
 
 public class MulticastPeer extends Thread {
 
     private static final int TIME_KEEP_ALIVE = 5000;//ms
     private static final int TIME_AJUSTE = 10000;//ms
 
-    Queue <JSONObject> messages;
+    Queue<JSONObject> messages;
     Connection threadOuvinte;
     Unicast threadUnicast;
     KeepAlive threadKeepAlive;
@@ -82,11 +84,9 @@ public class MulticastPeer extends Thread {
 
             threadOuvinte.salva_id(meu_id);
 
-
-            // TIMEMS ??????????
             Relogio clk = new Relogio(processos, 1);
 
-            threadUnicast = new Unicast(porta_processo, processos, clk, messages, meu_id);
+            threadUnicast = new Unicast(porta_processo, processos, clk, messages, aid);
 
             //s.leaveGroup(group);
         } catch (SocketException e) {
@@ -109,16 +109,15 @@ public class MulticastPeer extends Thread {
 
         try {
             while (true) {
-
                 //Se tiver uma mensagem na fila de mensagens
                 if (messages.size() > 0) {
                     jsonRecebido = messages.remove();
                     msg = jsonRecebido.getString("msg");
                     id = jsonRecebido.getInt("id");
-                    System.out.printf("[>> %d] Recebido: %s de id: %d\n",meu_id,msg,id);
+                    System.out.printf("[>> %d] Recebido: %s de id: %d\n", meu_id, msg, id);
 
                     //novo processo no grupo
-                    switch(msg){
+                    switch (msg) {
                         case "Novo no Grupo":
                             //enviaMensagem("Seja bem vindo!", meu_id);
                             System.out.println("[>> %d] Recebido pubKey: " + jsonRecebido.getString("pubKey") + " de id: " + id);
@@ -135,72 +134,74 @@ public class MulticastPeer extends Thread {
                             // Cria processo na lista
                             processos.add(id, jsonRecebido.getString("pubKey"), porta_processo);
 
-                            if (atualizaMestre()){
+                            if (atualizaMestre()) {
                                 keep_alive_time = 0;
                             }
                             break;
                         case "Meu Relogio":
-                            processos.salvaTempo(jsonRecebido.getLong("time"),id);
+                            processos.salvaTempo(jsonRecebido.getLong("time"), id);
                             break;
                         case "Seja bem vindo!":
                             break;
                         case "Meu tempo":
                             String ip_unicast = InetAddress.getByName("localhost").getHostAddress();
-                            unicastClient (ip_unicast, processos.getPorta(id),"Meu Tempo", jsonRecebido.getLong("tempo"), p_privKey);
+
+                            unicastClient(ip_unicast, id, processos.getPorta(id), "Meu Tempo", jsonRecebido.getLong("tempo"), p_privKey);
                         case "Estou Vivo!":
                             keep_alive_time = 0;
                             break;
                         default:
-                            System.out.printf("Mensagem nao eh valida: %s %d\n",msg,id);
+                            System.out.printf("Mensagem nao eh valida: %s %d\n", msg, id);
                     }
 
                 }
 
                 keep_alive_time += 1;
                 //se não recebeu o keep alive do mestre
-                if ((keep_alive_time >=TIME_KEEP_ALIVE*1.1) && (master_id!=meu_id)){ //10% de tolerancia
+                if ((keep_alive_time >= TIME_KEEP_ALIVE * 1.1) && (master_id != meu_id)) { //10% de tolerancia
                     processos.delete(master_id);
                     atualizaMestre();
                     keep_alive_time = 0;
                 }
 
                 //se sou o mestre
-                if(meu_id == master_id){
+                if (meu_id != master_id) {
                     //se chegou a hora de atualizar os relogios
-                    if (ajusta_relogio_time >= TIME_AJUSTE){
+                    if (ajusta_relogio_time >= TIME_AJUSTE) {
                         int slave_porta;
 
                         //envia mensagem unicast para todos
-                        for(int i=0;i<processos.size();i++){
+                        for (int i = 0; i < processos.size(); i++) {
                             slave_porta = processos.getPorta(i);
-                            if (slave_porta != 0){
+                            if (slave_porta != 0) {
                                 String ip_unicast = InetAddress.getByName("localhost").getHostAddress();
-                                unicastClient (ip_unicast, slave_porta, "Quero tempo", 0, p_privKey);
+                                unicastClient(ip_unicast, meu_id, slave_porta, "Quero tempo", 0, p_privKey);
                             }
                         }
 
                         //...
-
                         ajusta_relogio_time = 0;
-                    }
-                    else{
+                    } else {
                         ajusta_relogio_time += 1;
                     }
 
-                }
-                else{
+                } else {
                     ajusta_relogio_time = 0;
                 }
 
                 Thread.sleep(1);
             }
-        }catch(JSONException e) {System.out.println("Json:"+e.getMessage());
-        }catch (InterruptedException e){System.out.println("Interrupt: " + e.getMessage());} catch (UnknownHostException e) {
-            e.printStackTrace();
+        } catch (JSONException e) {
+            System.out.println("Json:" + e.getMessage());
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MulticastPeer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(MulticastPeer.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
-    public void desativa(){
+
+    public void desativa() {
         threadKeepAlive.desativa();
     }
 
@@ -213,9 +214,12 @@ public class MulticastPeer extends Thread {
             DatagramPacket messageOut = new DatagramPacket(m, m.length, group, porta);
             s.send(messageOut);
 
-            System.out.printf("[<< %d] Enviando: %s \n",meu_id,msg.getString("msg"));
-        }catch(JSONException e) {System.out.println("Json:"+e.getMessage());
-        }catch (IOException e){System.out.println("IO: " + e.getMessage());}
+            System.out.printf("[<< %d] Enviando: %s \n", meu_id, msg.getString("msg"));
+        } catch (JSONException e) {
+            System.out.println("Json:" + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO: " + e.getMessage());
+        }
 
     }
 
@@ -228,14 +232,16 @@ public class MulticastPeer extends Thread {
             jsonObj.put("msg", msg);
             jsonObj.put("id", id);
             enviaMensagem(jsonObj);
-        }catch(JSONException e) {System.out.println("Json:"+e.getMessage());}
+        } catch (JSONException e) {
+            System.out.println("Json:" + e.getMessage());
+        }
     }
 
     //salva o id do mestre e salva todos os processos
     public void salvaProcessosDoGrupo() {
 
         //envia uma mensagem e espera a resposta do grupo
-        try{
+        try {
             //enviaMensagem("Novo no Grupo",meu_id);
 
             JSONObject jsonObj = new JSONObject();
@@ -248,7 +254,9 @@ public class MulticastPeer extends Thread {
             //espera 1 segundo
             Thread.sleep(1000);
 
-        }catch (InterruptedException e){System.out.println("Interrupt: " + e.getMessage());} catch (JSONException e) {
+        } catch (InterruptedException e) {
+            System.out.println("Interrupt: " + e.getMessage());
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
@@ -256,64 +264,63 @@ public class MulticastPeer extends Thread {
         processos.add(meu_id, pubKey_str, porta_processo);
 
         //le mensagem do grupo e salva cada um
-        try{
+        try {
             // Para todas as mensagens recebidas
             JSONObject jsonRecebido;
 
-            while (messages.size()>0){
+            while (messages.size() > 0) {
                 jsonRecebido = messages.remove();
 
                 //mensagens validas
-                if(jsonRecebido.getString("msg").equals("Seja bem vindo!")){
+                if (jsonRecebido.getString("msg").equals("Seja bem vindo!")) {
                     int processo_id = jsonRecebido.getInt("id");
                     String processo_pubKey = jsonRecebido.getString("pubKey");
 
                     processos.add(processo_id, processo_pubKey, porta_processo);
                 }
             }
-        }catch(JSONException e) {System.out.println("Json:"+e.getMessage());}
+        } catch (JSONException e) {
+            System.out.println("Json:" + e.getMessage());
+        }
 
         atualizaMestre();
     }
 
     //retorna o id atualizado do mestre
     //retorna true se mudou o mestre
-    private boolean atualizaMestre(){
+    private boolean atualizaMestre() {
 
         int novo_mestre = processos.procuraMestre();
 
-        if ((meu_id==novo_mestre)&&(novo_mestre != master_id)){
+        if ((meu_id == novo_mestre) && (novo_mestre != master_id)) {
             threadKeepAlive.ativa();
-            System.out.printf("[** %d] Eu sou o mestre!\n",meu_id);
-        }
-        else if((meu_id==master_id)&&(novo_mestre!=meu_id)){
+            System.out.printf("[** %d] Eu sou o mestre!\n", meu_id);
+        } else if ((meu_id == master_id) && (novo_mestre != meu_id)) {
             threadKeepAlive.desativa();
-            System.out.printf("[** %d] Não sou mais o mestre! é o %d\n",meu_id,novo_mestre);
-        }
-        else if(novo_mestre!=master_id) {
-            System.out.printf("[** %d] Novo Mestre! é o %d\n",meu_id,novo_mestre);
+            System.out.printf("[** %d] Não sou mais o mestre! é o %d\n", meu_id, novo_mestre);
+        } else if (novo_mestre != master_id) {
+            System.out.printf("[** %d] Novo Mestre! é o %d\n", meu_id, novo_mestre);
         }
 
         //atualiza o mestre
-        if (master_id != novo_mestre){
+        if (master_id != novo_mestre) {
             master_id = novo_mestre;
             return true;
         }
         return false;
     }
 
-    public void unicastClient (String ip, int process_port, String msg, long dado_tempo, DSAPrivateKey privKey){
+    public void unicastClient(String ip, int idThread, int process_port, String msg, long dado_tempo, DSAPrivateKey privKey) {
         Socket socket = null;
 
-        try{
+        try {
             socket = new Socket(ip, process_port);
-
             DataInputStream in = new DataInputStream(socket.getInputStream());
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
             // Cria json para enviar para o slave
             JSONObject jsonObj = new JSONObject();
-            jsonObj.put("id", meu_id);
+            jsonObj.put("id", idThread);
             jsonObj.put("tempo", dado_tempo);
             jsonObj.put("msg", msg);
 
@@ -327,7 +334,6 @@ public class MulticastPeer extends Thread {
             JSONObject json_send = new JSONObject();
             json_send.put("json_msg", json_string);
             json_send.put("signature", s_signature);
-
 
             //Enviar json
             out.writeUTF(json_send.toString());
@@ -349,4 +355,3 @@ public class MulticastPeer extends Thread {
         }
     }
 }
-

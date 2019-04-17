@@ -98,7 +98,7 @@ class Unicast extends Thread {
                 meu_id = jsonObj.getInt("id");
 
                 System.out.println("meuid: " + meu_id + " id mestre: " + id_mestre);
-                if (meu_id == id_mestre) {
+                if (meu_id != id_mestre) {
                     //Recebe tempo dos escravos
 
                     byte[] msg_signature = Base64.getDecoder().decode(jsonObj_rec.getString("signature"));
@@ -125,7 +125,7 @@ class Unicast extends Thread {
                 } else {
                     // Slave recebe msg
 
-                    // Abre mensagem
+                            // Abre mensagem
                     byte[] msg_signature = Base64.getDecoder().decode(jsonObj_rec.getString("signature"));
 
                     int id = jsonObj.getInt("id");
