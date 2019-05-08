@@ -14,6 +14,13 @@ public class CliImpl extends UnicastRemoteObject implements InterfaceCli{
         System.out.printf("Echo do Cliente: %s\n",msg);
     }
 
-    public void
+    public void cadastraInteresse (Interesse interesse, InterfaceServ refServidor) throws RemoteException{
+        // String itinerario, Long data, String tipoVeic, int nPass, int preco
+        refServidor.registraInteresse(interesse);
+    }
+
+    Oferta recebeOferta (interfaceServ iSev) throws RemoteException{
+        //
+    }
 
 }

@@ -14,6 +14,10 @@ public class Cliente {
             InterfaceServ refServidor = (InterfaceServ) refservicoNomes.lookup("servImpl");
             CliImpl cliImpl = new CliImpl(refServidor);
 
+            While (true){
+
+            }
+
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (NotBoundException e) {
