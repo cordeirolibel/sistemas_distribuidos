@@ -7,9 +7,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="java-json" level="project" />
     <orderEntry type="library" name="xercesImpl-2.6.2-jaxb-1.0.6" level="project" />
-    <orderEntry type="library" name="commons-codec-1.12" level="project" />
     <orderEntry type="library" name="gson-2.8.5" level="project" />
+    <orderEntry type="library" name="java-json" level="project" />
+    <orderEntry type="library" name="commons-codec-1.121" level="project" />
   </component>
 </module>

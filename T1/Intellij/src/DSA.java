@@ -40,6 +40,7 @@ public class DSA {
         return verifyAlgorithm.verify(signature);
     }
 
+    // Converte chave privada para string
     public static String privateKey2Str(DSAPrivateKey priv) throws GeneralSecurityException {
         KeyFactory fact = KeyFactory.getInstance("DSA");
         PKCS8EncodedKeySpec spec = fact.getKeySpec(priv, PKCS8EncodedKeySpec.class);
@@ -50,12 +51,14 @@ public class DSA {
         return key64;
     }
 
+    // Converte chave publica de DSAPulickKey para string
     public static String publicKey2Str(DSAPublicKey pub) throws GeneralSecurityException {
         KeyFactory fact = KeyFactory.getInstance("DSA");
         X509EncodedKeySpec spec = fact.getKeySpec(pub, X509EncodedKeySpec.class);
         return Base64.getEncoder().encodeToString(spec.getEncoded());
     }
 
+    // Converte chave publica de string para DSAPulickKey
     public static DSAPublicKey Str2publicKey (String pubKey_str) throws NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] publicBytes = Base64.getDecoder().decode(pubKey_str);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicBytes);

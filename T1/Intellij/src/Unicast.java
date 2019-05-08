@@ -88,6 +88,7 @@ class Unicast extends Thread {
                         if (msg.equals("Meu tempo")) {
                             System.out.printf("       msg info: %s, tempo: %d\n",msg,jsonObj.getLong("tempo"));
                             processos.salvaTempo(jsonObj.getLong("tempo"), id_slave);
+                            processos.salva_trec(relogio.timePC(), id_slave);
                         }
                     } else {
                         System.out.printf("[!! %d] U fake bruh 1!\n", id_slave);
@@ -102,9 +103,9 @@ class Unicast extends Thread {
 
                     // Pega chave publica do suposto mestre
                     String pubkey_str = processos.get_pubKey(id);
-                    DSAPublicKey pubkey_slave = dsapack.DSA.Str2publicKey(pubkey_str);
+                    DSAPublicKey pubkey_rec = dsapack.DSA.Str2publicKey(pubkey_str);
 
-                    boolean verif = dsapack.DSA.verify(pubkey_slave, json_msg.getBytes(), msg_signature);
+                    boolean verif = dsapack.DSA.verify(pubkey_rec, json_msg.getBytes(), msg_signature);
 
                     if (verif) {
                         String msg = jsonObj.getString("msg");

@@ -103,6 +103,43 @@ public class Processos {
         }
     }
 
+    //salva o tempo de um processo t0
+    public void salva_tzero(long t, int i) {
+
+        Processo processo;
+        int size = listaProcessos.size();
+        //procura o processo
+        processo = listaProcessos.get(i);
+        processo.set_tzero(t);
+    }
+
+    //salva o tempo de um processo t1
+    public void salva_trec(long t, int id) {
+
+        Processo processo;
+        int size = listaProcessos.size();
+        //procura o processo
+        for (int i=0;i<size;i++){
+            processo = listaProcessos.get(i);
+            if (processo.id == id){
+                processo.set_trec(t);
+            }
+        }
+    }
+
+    //salva o tempo de um processo t0
+    public void salva_tzero_id(long t, int id) {
+        Processo processo;
+        int size = listaProcessos.size();
+        //procura o processo
+        for (int i=0;i<size;i++){
+            processo = listaProcessos.get(i);
+            if (processo.id == id){
+                processo.set_tzero(t);
+            }
+        }
+    }
+
     public long get_ajuste_interador(int interador){
         Processo processo;
         processo = listaProcessos.get(interador);
@@ -158,14 +195,14 @@ public class Processos {
         for (int i=0;i<size;i++){
             processo = listaProcessos.get(i);
             //rtt
-            rtt = processo.time - meu_relogio;
+            rtt = processo.t_rec - processo.t_zero;
             processo.setRTT(rtt);
             //estimado
             estimado = processo.time + rtt/2;
             processo.setEstimado(estimado);
 
             //RTT maximo de 10 ms
-            if ((rtt<=24)&&(rtt>=-24)){
+            if (rtt<=35){
                 media += estimado;
                 n_validos += 1;
             }
@@ -194,6 +231,8 @@ class Processo {
     long estimado;
     String pubKey;
     int porta_unicast;
+    long t_zero;
+    long t_rec;
 
     public Processo(int aid, String pkey, int porta_processo)
     {
@@ -204,9 +243,14 @@ class Processo {
         estimado = 0;
         pubKey = pkey;
         porta_unicast = porta_processo;
+        t_zero = 0;
+        t_rec = 0;
     }
     public void setTempo(long atime){time = atime;}
     public void setAjuste(long aajuste){ajuste = aajuste;}
     public void setRTT(long artt){rtt = artt;}
     public void setEstimado(long aestimado){estimado = aestimado;}
+    public void set_tzero (long atzero) {t_zero = atzero;}
+    public void set_trec (long atrec) {t_rec = atrec;}
+
 }

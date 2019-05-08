@@ -183,13 +183,17 @@ public class MulticastPeer extends Thread {
                     if (ajusta_relogio_time >= TIME_AJUSTE){
 
                         //salvo meu tempo
-                        processos.salvaTempo(clk.timePC(), meu_id);
+                        long t_mestre = clk.timePC();
+                        processos.salvaTempo(t_mestre, meu_id);
+                        processos.salva_trec(clk.timePC(), meu_id);
+                        processos.salva_tzero_id(clk.timePC(), meu_id);
 
                         int slave_porta;
                         //envia mensagem unicast para todos [pedindo os tempos]
                         for(int i=0;i<processos.size();i++){
                             slave_porta = processos.getPorta(i);
                             if ((slave_porta != 0) && (porta_processo != slave_porta)){
+                                processos.salva_tzero(clk.timePC(), i);
                                 unicastClient (ip_unicast, meu_id,slave_porta, "Quero tempo", 0, p_privKey);
                             }
                         }
@@ -243,7 +247,7 @@ public class MulticastPeer extends Thread {
         this.stop();
     }
 
-    //envia mensagem
+    //envia mensagem com JSON
     public void enviaMensagem(JSONObject msg) {
         try {
             //json -> string -> bytes -> datagramPacket
@@ -261,7 +265,7 @@ public class MulticastPeer extends Thread {
 
     }
 
-    //envia mensagem
+    //envia mensagem Msg + id
     public void enviaMensagem(String msg, int id) {
 
         try {
