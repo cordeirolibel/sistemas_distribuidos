@@ -7,12 +7,9 @@ public class Oferta {
     String veiculo;
     int passageiros;
     float preco;
-    Date data;
     int id;
-    int ativa;
 
     public Oferta(){
-        ativa = 1;
     }
 
     public void print(){

@@ -8,9 +8,9 @@ public interface InterfaceServ extends Remote {
 
     void chamar(String msg, InterfaceCli iCli) throws RemoteException;
 
-    LinkedList<Oferta> cotacao(Oferta oferta) throws RemoteException;
+    LinkedList<Oferta> cotacao(Interesse interesse) throws RemoteException;
 
-    void reserva(Oferta oferta) throws RemoteException;
+    void reserva(Oferta oferta, Interesse interesse) throws RemoteException;
 
     void registraInteresseCli(Interesse interesse, InterfaceCli iCli) throws RemoteException;
 

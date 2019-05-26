@@ -4,11 +4,14 @@ package transfer;
 import java.util.Date;
 
 public class Interesse {
-    String cliente;
     String veiculo;
+    String itinerario;
     float preco;
+    int n_passageiros;
     int id;
-    Date data;
+    int dia;
+    int mes;
+    int hora;
 
     public Interesse(){
 
