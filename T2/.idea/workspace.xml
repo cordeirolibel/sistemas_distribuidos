@@ -2,28 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="65d57455-e18d-4f3a-81c3-40053d148ac8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/T2.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../T1/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../T1/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getTransfer_cli/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/getTransfer_cli/.idea/description.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/getTransfer_cli/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/getTransfer_cli/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/getTransfer_cli/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/getTransfer_cli/getTransfer_cli.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/getTransfer_cli/src/transfer/CliImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/getTransfer_cli/src/transfer/CliImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/getTransfer_cli/src/transfer/Cliente.java" beforeDir="false" afterPath="$PROJECT_DIR$/getTransfer_cli/src/transfer/Cliente.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getTransfer_mot/src/transfer/Motorista.java" beforeDir="false" afterPath="$PROJECT_DIR$/getTransfer_mot/src/transfer/Motorista.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getTransfer_sev/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/getTransfer_sev/.idea/description.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/getTransfer_sev/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/getTransfer_sev/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/getTransfer_sev/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/getTransfer_sev/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/getTransfer_sev/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/getTransfer_sev/src/transfer/Servidor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../exemplos/Hello World Java RMI/Cliente_HelloWorld/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../exemplos/Hello World Java RMI/Cliente_HelloWorld/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../exemplos/Hello World Java RMI/Cliente_HelloWorld/src/HelloWorld/Cliente.java" beforeDir="false" afterPath="$PROJECT_DIR$/../exemplos/Hello World Java RMI/Cliente_HelloWorld/src/HelloWorld/Cliente.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../exemplos/Hello World Java RMI/Servidor_HelloWorld/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../exemplos/Hello World Java RMI/Servidor_HelloWorld/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,15 +11,14 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="DefaultGradleProjectSettings">
-    <option name="testRunner" value="GRADLE" />
-    <option name="delegatedBuild" value="true" />
+    <option name="isMigrated" value="true" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/getTransfer_mot/src/transfer/Motorista.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="410">
+            <state relative-caret-position="1088">
               <caret line="64" column="47" selection-start-line="64" selection-start-column="47" selection-end-line="64" selection-end-column="47" />
             </state>
           </provider>
@@ -54,17 +32,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/getTransfer_sev/src/transfer/ServImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="33" column="8" lean-forward="true" selection-start-line="33" selection-start-column="8" selection-end-line="33" selection-end-column="8" />
+            <state relative-caret-position="493">
+              <caret line="32" column="32" lean-forward="true" selection-start-line="32" selection-start-column="32" selection-end-line="32" selection-end-column="32" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/getTransfer_cli/src/transfer/CliImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="18" column="46" selection-start-line="18" selection-start-column="46" selection-end-line="18" selection-end-column="46" />
+            <state relative-caret-position="255">
+              <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
             </state>
           </provider>
         </entry>
@@ -74,14 +52,23 @@
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/getTransfer_cli/src/transfer/Cliente.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="55" column="48" lean-forward="true" selection-start-line="55" selection-start-column="48" selection-end-line="55" selection-end-column="48" />
+            <state relative-caret-position="289">
+              <caret line="38" column="62" lean-forward="true" selection-start-line="38" selection-start-column="62" selection-end-line="38" selection-end-column="62" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/getTransfer_sev/src/transfer/Interesse.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="119">
+              <caret line="7" column="21" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -101,10 +88,10 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/getTransfer_cli/src/Main.java" />
-        <option value="$PROJECT_DIR$/getTransfer_cli/src/transfer/Cliente.java" />
         <option value="$PROJECT_DIR$/getTransfer_mot/src/transfer/Motorista.java" />
         <option value="$PROJECT_DIR$/getTransfer_sev/src/transfer/ServImpl.java" />
         <option value="$PROJECT_DIR$/getTransfer_cli/src/transfer/CliImpl.java" />
+        <option value="$PROJECT_DIR$/getTransfer_cli/src/transfer/Cliente.java" />
       </list>
     </option>
   </component>
@@ -129,6 +116,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -177,11 +165,11 @@
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
@@ -221,16 +209,13 @@
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Image Layers" />
-      <window_info id="Designer" />
-      <window_info id="UI Designer" />
-      <window_info id="Capture Tool" />
-      <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24962178" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25340393" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info id="Image Layers" order="2" />
+      <window_info id="Designer" order="3" />
+      <window_info id="UI Designer" order="4" />
+      <window_info id="Capture Tool" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -238,14 +223,17 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="Palette" />
-      <window_info anchor="right" id="Theme Preview" />
-      <window_info anchor="right" id="Maven" />
-      <window_info anchor="right" id="Capture Analysis" />
-      <window_info anchor="right" id="Palette&#9;" />
+      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Maven" order="4" />
+      <window_info anchor="right" id="Theme Preview" order="5" />
+      <window_info anchor="right" id="Capture Analysis" order="6" />
+      <window_info anchor="right" id="Palette&#9;" order="7" />
     </layout>
   </component>
   <component name="editorHistoryManager">
@@ -270,13 +258,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/getTransfer_sev/src/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/getTransfer_sev/src/transfer/InterfaceCli.java">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -285,7 +266,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/getTransfer_mot/src/transfer/Motorista.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="410">
+        <state relative-caret-position="1088">
           <caret line="64" column="47" selection-start-line="64" selection-start-column="47" selection-end-line="64" selection-end-column="47" />
         </state>
       </provider>
@@ -296,27 +277,41 @@
     <entry file="file://$PROJECT_DIR$/getTransfer_sev/src/transfer/Oferta.java">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/getTransfer_cli/src/transfer/Cliente.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="55" column="48" lean-forward="true" selection-start-line="55" selection-start-column="48" selection-end-line="55" selection-end-column="48" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/getTransfer_sev/src/transfer/ServImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="33" column="8" lean-forward="true" selection-start-line="33" selection-start-column="8" selection-end-line="33" selection-end-column="8" />
+        <state relative-caret-position="493">
+          <caret line="32" column="32" lean-forward="true" selection-start-line="32" selection-start-column="32" selection-end-line="32" selection-end-column="32" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/getTransfer_cli/src/transfer/CliImpl.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/getTransfer_sev/src/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="56" lean-forward="true" selection-start-line="8" selection-start-column="56" selection-end-line="8" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/getTransfer_sev/src/transfer/Interesse.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="21" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/getTransfer_cli/src/transfer/Cliente.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
-          <caret line="18" column="46" selection-start-line="18" selection-start-column="46" selection-end-line="18" selection-end-column="46" />
+          <caret line="38" column="62" lean-forward="true" selection-start-line="38" selection-start-column="62" selection-end-line="38" selection-end-column="62" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -22,8 +22,8 @@ public class Cliente {
 
         String[] getTransfer_args = new String[8];
 
-        Oferta ofertas;
-        Interesse interesseCli;
+        Oferta ofertas = new Oferta();
+        Interesse interesseCli = new Interesse();
 
         while (true){
             if (menuScreen == 0){
@@ -43,14 +43,16 @@ public class Cliente {
                 }
 
                 // Cria interesse
-                int dia = Integer.parseInt(getTransfer_args[2]);
-                int mes = Integer.parseInt(getTransfer_args[3]);
-                int hora = Integer.parseInt(getTransfer_args[4]);
-                int n_passageiros = Integer.parseInt(getTransfer_args[5]);
-                float preco = Float.parseFloat(getTransfer_args[6];
+                interesseCli.itinerario = getTransfer_args[0] + " - " + getTransfer_args[1];
+                interesseCli.dia = Integer.parseInt(getTransfer_args[2]);
+                interesseCli.mes = Integer.parseInt(getTransfer_args[3]);
+                interesseCli.hora = Integer.parseInt(getTransfer_args[4]);
+                interesseCli.veiculo = getTransfer_args[5];
+                interesseCli.n_passageiros = Integer.parseInt(getTransfer_args[6]);
+                interesseCli.preco = Float.parseFloat(getTransfer_args[7];
 
                 // Cria interesse
-                // interesseCli = new Interesse(args);
+                interesseCli.dia =
 
                 // Recebe ofertas de acordo com o interesse do cliente
                 ofertas = cotacao(interesseCli);
