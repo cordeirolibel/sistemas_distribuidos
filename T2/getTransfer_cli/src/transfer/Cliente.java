@@ -49,7 +49,7 @@ public class Cliente {
                 interesseCli.hora = Integer.parseInt(getTransfer_args[4]);
                 interesseCli.veiculo = getTransfer_args[5];
                 interesseCli.n_passageiros = Integer.parseInt(getTransfer_args[6]);
-                interesseCli.preco = Float.parseFloat(getTransfer_args[7];
+                interesseCli.preco = Float.parseFloat(getTransfer_args[7]);
 
                 // Cria interesse
                 interesseCli.dia =

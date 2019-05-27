@@ -34,7 +34,7 @@ public class Motorista {
 
                 // Cria oferta
                 int n_passageiros = Integer.parseInt(getTransfer_args[1]);
-                float preco = Float.parseFloat(getTransfer_args[2];
+                float preco = Float.parseFloat(getTransfer_args[2]);
 
                 //Cria oferta aqui
 
