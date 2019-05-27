@@ -5,7 +5,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class CliImpl extends UnicastRemoteObject implements InterfaceCli{
 
-    public CliImpl() throws RemoteException {
+    public CliImpl(InterfaceServ refServidor) throws RemoteException {
 
     }
 
@@ -16,7 +16,7 @@ public class CliImpl extends UnicastRemoteObject implements InterfaceCli{
     }
 
     @Override
-    public Oferta notificaOferta(Oferta oferta) throws RemoteException {
-        return null;
+    public void notificaOferta(Oferta oferta) throws RemoteException {
+        return;
     }
 }

@@ -7,13 +7,15 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Cliente {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, NotBoundException {
         Registry refservicoNomes = LocateRegistry.getRegistry(1099);
         InterfaceServ refServidor = (InterfaceServ) refservicoNomes.lookup("servImpl");
         CliImpl cliImpl = new CliImpl(refServidor);
+        int numero_oferta = -1;
 
         int menuScreen = 0;
         int i;
@@ -22,7 +24,7 @@ public class Cliente {
 
         String[] getTransfer_args = new String[8];
 
-        Oferta ofertas = new Oferta();
+        LinkedList<Oferta> ofertas = null;
         Interesse interesseCli = new Interesse();
 
         while (true){
@@ -51,25 +53,24 @@ public class Cliente {
                 interesseCli.n_passageiros = Integer.parseInt(getTransfer_args[6]);
                 interesseCli.preco = Float.parseFloat(getTransfer_args[7]);
 
-                // Cria interesse
-                interesseCli.dia =
 
                 // Recebe ofertas de acordo com o interesse do cliente
-                ofertas = cotacao(interesseCli);
+                ofertas = refServidor.cotacao(interesseCli);
 
                 // Print lista de ofertas
-                tamOfertas = ofertas.length;
+                int tamOfertas = ofertas.size();
 
                 // VERIFICAR O PRINT DAS OFERTAS
                 for (i=0; i<tamOfertas; i++){
-                    System.out.printf("Oferta [" + i + "] " + Arrays.toString(ofertas[i]));
+                    System.out.printf("Oferta [" + i + "] " );
+                    ofertas.get(i).print();
                 }
 
                 // Escolhe oferta pelo id dela
                 System.out.printf("Escolher numero oferta ou 0 para cancelar: ");
 
                 Scanner keyboard = new Scanner(System.in);
-                int numero_oferta = keyboard.nextInt();
+                numero_oferta = keyboard.nextInt();
 
                 // Print confirmação
                 System.out.printf("Interesse configurado: " + numero_oferta + " \n");
@@ -96,7 +97,9 @@ public class Cliente {
                 if (keyboard_input.equals("1")){
                     // Efetua reserva (E SE NÃO TIVER OFERTA DISPONIVEL ENVIA OFERTA NULL??)
                     System.out.println("Interesse cadastrado com sucesso!");
-                    reserva(oferta[numero_oferta], interesseCli);
+                    if (numero_oferta>=0) {
+                        refServidor.reserva(ofertas.get(numero_oferta), interesseCli);
+                    }
                 }
                 else if (keyboard_input.equals("2")){
                     System.out.println("Cadastro interesse cancelado");
