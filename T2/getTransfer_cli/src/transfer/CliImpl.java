@@ -16,7 +16,7 @@ public class CliImpl extends UnicastRemoteObject implements InterfaceCli{
     }
 
     @Override
-    public Oferta recebeOferta(InterfaceServ iServ) throws RemoteException {
+    public Oferta notificaOferta(Oferta oferta) throws RemoteException {
         return null;
     }
 }

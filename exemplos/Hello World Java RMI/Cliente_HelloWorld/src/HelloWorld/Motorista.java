@@ -12,7 +12,7 @@ public class Motorista {
         String input_msg = "Option: ";
         String[] setTransfer_msgs = {"Tipo Veículo: ", "Número máximo de passageiros: ", "Preço: "};
 
-        Oferta ofertaMot = new Oferta();
+        // Oferta ofertas;
 
         while (true){
             if (menuScreen == 0){
@@ -32,15 +32,18 @@ public class Motorista {
                     setTransfer_msgs[i] = keyboard_input;
                 }
 
-                // Cria oferta
-                int n_passageiros = Integer.parseInt(getTransfer_args[1]);
-                float preco = Float.parseFloat(getTransfer_args[2];
+                /*
+                 * // Cria oferta
+                 * int n_passageiros = Integer.parseInt(getTransfer_args[1]);
+                 * float preco = Float.parseFloat(getTransfer_args[2];
+                 *
+                 * */
 
-                //Cria oferta aqui
+                /*
 
-                System.out.println("Registrar interesse? ");
-                System.out.println("1. Sim \n 2. Não");
+                // Registra oferta no servidor
 
+                */
             }
             else if (menuScreen == 2){
                 System.out.println("Sem notificações");
@@ -59,16 +62,14 @@ public class Motorista {
             }
             else if (menuScreen == 1){
                 if (keyboard_input.equals("1")){
-                    // Registra oferta no servidor
-                    cadastraOferta(ofertaMot);
-
-                    System.out.println("Oferta cadastrada com sucesso!");
+                    // Envia para sv
+                    System.out.println("Interesse cadastrado com sucesso!");
                 }
                 else if (keyboard_input.equals("2")){
-                    System.out.println("Cadastro de oferta cancelado");
+                    System.out.println("Cadastro interesse cancelado");
                 }
                 else{
-                    System.out.println("Opção inválida, cadastro de oferta cancelado");
+                    System.out.println("Opção inválida, cadastro de interesse cancelado");
                 }
 
                 menuScreen = 0;

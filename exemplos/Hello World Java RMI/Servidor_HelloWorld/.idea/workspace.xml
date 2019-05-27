@@ -7,6 +7,7 @@
       <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_cli/src/Cliente.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../T2/getTransfer_cli/src/Cliente.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_cli/src/InterfaceCli.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../T2/getTransfer_cli/src/InterfaceCli.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_cli/src/InterfaceServ.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../T2/getTransfer_cli/src/InterfaceServ.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -209,7 +210,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14901665" />
@@ -221,7 +222,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.34042552" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.34042552" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />

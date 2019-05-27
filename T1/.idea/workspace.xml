@@ -2,9 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8b0026ba-6af5-4515-8f5a-b8e6ccf10d26" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Intellij/src/DSA.java" beforeDir="false" afterPath="$PROJECT_DIR$/Intellij/src/DSA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Intellij/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/Intellij/src/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../T2/.idea/T2.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_cli/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_cli/.idea/description.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_cli/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_cli/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_cli/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_cli/getTransfer_cli.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_cli/src/transfer/CliImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../T2/getTransfer_cli/src/transfer/CliImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_cli/src/transfer/Cliente.java" beforeDir="false" afterPath="$PROJECT_DIR$/../T2/getTransfer_cli/src/transfer/Cliente.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_mot/src/transfer/Motorista.java" beforeDir="false" afterPath="$PROJECT_DIR$/../T2/getTransfer_mot/src/transfer/Motorista.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_sev/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_sev/.idea/description.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_sev/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_sev/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_sev/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_sev/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_sev/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../T2/getTransfer_sev/src/transfer/Servidor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../exemplos/Hello World Java RMI/Cliente_HelloWorld/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../exemplos/Hello World Java RMI/Cliente_HelloWorld/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../exemplos/Hello World Java RMI/Cliente_HelloWorld/src/HelloWorld/Cliente.java" beforeDir="false" afterPath="$PROJECT_DIR$/../exemplos/Hello World Java RMI/Cliente_HelloWorld/src/HelloWorld/Cliente.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../exemplos/Hello World Java RMI/Servidor_HelloWorld/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../exemplos/Hello World Java RMI/Servidor_HelloWorld/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,12 +34,12 @@
     <option name="isMigrated" value="true" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Intellij/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="170">
-              <caret line="25" column="50" lean-forward="true" selection-start-line="25" selection-start-column="50" selection-end-line="25" selection-end-column="50" />
+              <caret line="14" column="76" lean-forward="true" selection-start-line="14" selection-start-column="76" selection-end-line="14" selection-end-column="76" />
             </state>
           </provider>
         </entry>
@@ -30,7 +48,7 @@
         <entry file="file://$PROJECT_DIR$/Intellij/src/DSA.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="153">
-              <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
+              <caret line="27" selection-start-line="27" selection-end-line="27" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -98,7 +116,8 @@
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Intellij" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -127,8 +146,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19591528" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19894099" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -176,19 +196,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/MulticastPeer.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-765">
-          <folding>
-            <element signature="e#0#2521#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/MulticastPeer.class" />
     <entry file="file://$PROJECT_DIR$/Intellij/src/DSA.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
-          <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
+          <caret line="27" selection-start-line="27" selection-end-line="27" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -198,7 +210,7 @@
     <entry file="file://$PROJECT_DIR$/Intellij/src/Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
-          <caret line="25" column="50" lean-forward="true" selection-start-line="25" selection-start-column="50" selection-end-line="25" selection-end-column="50" />
+          <caret line="14" column="76" lean-forward="true" selection-start-line="14" selection-start-column="76" selection-end-line="14" selection-end-column="76" />
         </state>
       </provider>
     </entry>

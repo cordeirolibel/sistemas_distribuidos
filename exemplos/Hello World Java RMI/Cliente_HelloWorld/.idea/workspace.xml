@@ -2,14 +2,28 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="609c890a-0f3e-4e1f-8610-211e3d4338fc" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../Servidor_HelloWorld/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../T2/.idea/T2.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T1/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../T1/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_cli/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_cli/.idea/description.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_cli/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_cli/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_cli/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_cli/getTransfer_cli.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_cli/src/transfer/CliImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../T2/getTransfer_cli/src/transfer/CliImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_cli/src/transfer/Cliente.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../T2/getTransfer_cli/src/transfer/Cliente.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_mot/src/transfer/Motorista.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../T2/getTransfer_mot/src/transfer/Motorista.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_sev/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_sev/.idea/description.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_sev/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_sev/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_sev/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_sev/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_sev/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../T2/getTransfer_sev/src/transfer/Servidor.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Cliente_HelloWorld/META-INF/Cliente_HelloWorld.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Servidor_HelloWorld/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Servidor_HelloWorld/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/HelloWorld/Cliente.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/HelloWorld/Cliente.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Servidor_HelloWorld/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Servidor_HelloWorld/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Servidor_HelloWorld/out/production/Servidor_HelloWorld/META-INF/Servidor_HelloWorld.kotlin_module" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -19,8 +33,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="DefaultGradleProjectSettings">
-    <option name="testRunner" value="GRADLE" />
-    <option name="delegatedBuild" value="true" />
+    <option name="isMigrated" value="true" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
@@ -28,7 +41,7 @@
         <entry file="file://$PROJECT_DIR$/src/HelloWorld/InterfaceCli.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="68">
-              <caret line="5" column="29" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="29" />
+              <caret line="4" selection-start-line="4" selection-end-line="4" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -39,8 +52,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/HelloWorld/InterfaceServ.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="5" column="30" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="30" />
+            <state relative-caret-position="51">
+              <caret line="3" column="32" selection-start-line="3" selection-start-column="32" selection-end-line="3" selection-end-column="32" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -48,11 +61,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/HelloWorld/CliImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="8" column="45" selection-start-line="8" selection-start-column="45" selection-end-line="8" selection-end-column="68" />
+            <state relative-caret-position="238">
+              <caret line="14" column="25" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="26" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -63,11 +76,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/HelloWorld/Cliente.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="14" column="53" selection-start-line="14" selection-start-column="42" selection-end-line="14" selection-end-column="53" />
+            <state relative-caret-position="202">
+              <caret line="13" column="40" selection-start-line="13" selection-start-column="40" selection-end-line="13" selection-end-column="40" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/HelloWorld/Motorista.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-782">
+              <caret line="2" column="25" lean-forward="true" selection-start-line="2" selection-start-column="25" selection-end-line="2" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -91,15 +113,17 @@
         <option value="$PROJECT_DIR$/src/HelloWorld/InterfaceCli.java" />
         <option value="$PROJECT_DIR$/src/HelloWorld/Main.java" />
         <option value="$PROJECT_DIR$/src/HelloWorld/InterfaceServ.java" />
-        <option value="$PROJECT_DIR$/src/HelloWorld/Cliente.java" />
         <option value="$PROJECT_DIR$/src/HelloWorld/CliImpl.java" />
+        <option value="$PROJECT_DIR$/src/HelloWorld/Motorista.java" />
+        <option value="$PROJECT_DIR$/src/HelloWorld/Cliente.java" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="676" />
-    <option name="width" value="697" />
-    <option name="height" value="735" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="10" />
+    <option name="y" value="47" />
+    <option name="width" value="1346" />
+    <option name="height" value="701" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -135,7 +159,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../T1" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -213,10 +237,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="676" y="0" width="697" height="735" extended-state="0" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.32496077" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19818456" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -225,15 +249,15 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.34745762" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.34697217" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39934534" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Messages" order="10" />
+      <window_info anchor="bottom" id="Messages" order="10" weight="0.3289689" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -250,7 +274,7 @@
     <entry file="file://$PROJECT_DIR$/src/HelloWorld/InterfaceCli.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
-          <caret line="5" column="29" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="29" />
+          <caret line="4" selection-start-line="4" selection-end-line="4" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -259,18 +283,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/HelloWorld/InterfaceServ.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="5" column="30" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="30" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/HelloWorld/Cliente.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="14" column="53" selection-start-line="14" selection-start-column="42" selection-end-line="14" selection-end-column="53" />
+        <state relative-caret-position="51">
+          <caret line="3" column="32" selection-start-line="3" selection-start-column="32" selection-end-line="3" selection-end-column="32" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -279,11 +293,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/HelloWorld/CliImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="45" selection-start-line="8" selection-start-column="45" selection-end-line="8" selection-end-column="68" />
+        <state relative-caret-position="238">
+          <caret line="14" column="25" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="26" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/HelloWorld/Cliente.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="202">
+          <caret line="13" column="40" selection-start-line="13" selection-start-column="40" selection-end-line="13" selection-end-column="40" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/HelloWorld/Motorista.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-782">
+          <caret line="2" column="25" lean-forward="true" selection-start-line="2" selection-start-column="25" selection-end-line="2" selection-end-column="25" />
         </state>
       </provider>
     </entry>
