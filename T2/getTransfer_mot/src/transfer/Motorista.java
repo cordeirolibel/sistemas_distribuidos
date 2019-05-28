@@ -30,7 +30,6 @@ public class Motorista {
         int n_notific = 0;
 
         Oferta ofertaMot = new Oferta();
-        LinkedList<Oferta> notificacoesInteresse = null;
 
         boolean pula = false;
 
@@ -81,7 +80,7 @@ public class Motorista {
                     setTransfer_args[i] = keyboard_input;
                 }
 
-                System.out.println(Arrays.toString(setTransfer_args));
+                //System.out.println(Arrays.toString(setTransfer_args));
 
                 // Cria oferta
                 ofertaMot.veiculo = setTransfer_args[0];
