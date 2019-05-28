@@ -20,6 +20,7 @@ public class Motorista {
         int i;
 
         int idMot = 8000;
+        motImpl.id = idMot;
 
         String input_msg = "Option: ";
         String[] setTransfer_msgs = {"Tipo Veículo: ", "Número máximo de passageiros: ", "Preço: "};
@@ -59,7 +60,7 @@ public class Motorista {
                 ofertaMot.veiculo = setTransfer_args[0];
                 ofertaMot.passageiros = Integer.parseInt(setTransfer_args[1]);
                 ofertaMot.preco = Float.parseFloat(setTransfer_args[2]);
-                ofertaMot.id = idMot;
+                //ofertaMot.id = idMot;
 
                 pula = false;
 
@@ -86,7 +87,7 @@ public class Motorista {
                 ofertaMot.veiculo = setTransfer_args[0];
                 ofertaMot.passageiros = Integer.parseInt(setTransfer_args[1]);
                 ofertaMot.preco = Float.parseFloat(setTransfer_args[2]);
-                ofertaMot.id = idMot;
+                //ofertaMot.id = idMot;
 
                 System.out.println("Confirmar alteração de oferta?");
                 System.out.println("1. Sim \n 2. Não");

@@ -5,6 +5,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
 
 public class MotImpl extends UnicastRemoteObject implements InterfaceMot{
+    public int id;
 
     protected MotImpl(InterfaceServ refServidor) throws RemoteException {
         System.out.println("MotImpl executado!");

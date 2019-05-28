@@ -4,9 +4,10 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class CliImpl extends UnicastRemoteObject implements InterfaceCli{
+    public int id;
 
     public CliImpl(InterfaceServ refServidor) throws RemoteException {
-
+        System.out.println("CliImpl executado!");
     }
 
 

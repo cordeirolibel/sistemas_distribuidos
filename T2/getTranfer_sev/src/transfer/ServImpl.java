@@ -13,8 +13,8 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
     LinkedList<Horarios> lista_horarios_mot;
 
     public ServImpl() throws RemoteException {
-        System.out.printf("Hello de ServImpl\n");
-        
+        System.out.println("ServImpl executado!");
+
         lista_interesses_clie  = new LinkedList<Interesse>();
         lista_interfaces_clie  = new LinkedList<InterfaceCli>();
 

@@ -15,6 +15,8 @@ public class Cliente {
         Registry refservicoNomes = LocateRegistry.getRegistry(1099);
         InterfaceServ refServidor = (InterfaceServ) refservicoNomes.lookup("servImpl");
         CliImpl cliImpl = new CliImpl(refServidor);
+        cliImpl.id = 42;
+
         int numero_oferta = -1;
         boolean pula = false;
         int menuScreen = 0;
