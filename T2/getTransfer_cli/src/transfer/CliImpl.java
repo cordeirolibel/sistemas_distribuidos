@@ -12,7 +12,7 @@ public class CliImpl extends UnicastRemoteObject implements InterfaceCli{
 
     @Override
     public void echo(String msg) throws RemoteException {
-
+        System.out.printf("Echo enviado para o servidor: %s\n",msg);
     }
 
     @Override

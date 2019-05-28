@@ -16,7 +16,7 @@ public class Cliente {
         InterfaceServ refServidor = (InterfaceServ) refservicoNomes.lookup("servImpl");
         CliImpl cliImpl = new CliImpl(refServidor);
         int numero_oferta = -1;
-
+        boolean pula = false;
         int menuScreen = 0;
         int i;
         String input_msg = "Option: ";
@@ -27,21 +27,26 @@ public class Cliente {
         LinkedList<Oferta> ofertas = null;
         Interesse interesseCli = new Interesse();
 
+        refServidor.chamar("Ola servidor",cliImpl);
+
         while (true){
             if (menuScreen == 0){
                 System.out.println("# ============== Menu client TopTransfer.Net ============== #");
                 System.out.println("1 - Ver cotações para transfer");
                 System.out.println("2 - Notificações");
             }
-            else if (menuScreen == 1){
+            if (menuScreen == 1){
                 System.out.println("# ============== Menu client TopTransfer.Net ============== #");
 
-                for (i=0;i<getTransfer_msgs.length; i++){
-                    // Recebe Interesse
-                    Scanner keyboard = new Scanner(System.in);
-                    System.out.printf(getTransfer_msgs[i]);
-                    String keyboard_input = keyboard.nextLine();
-                    getTransfer_args[i] = keyboard_input;
+                if (pula==false) {
+                    for (i = 0; i < getTransfer_msgs.length; i++) {
+                        // Recebe Interesse
+                        Scanner keyboard = new Scanner(System.in);
+                        System.out.printf(getTransfer_msgs[i]);
+                        String keyboard_input = keyboard.nextLine();
+                        getTransfer_args[i] = keyboard_input;
+                    }
+                    interesseCli.print();
                 }
 
                 // Cria interesse
@@ -53,6 +58,7 @@ public class Cliente {
                 interesseCli.n_passageiros = Integer.parseInt(getTransfer_args[6]);
                 interesseCli.preco = Float.parseFloat(getTransfer_args[7]);
 
+                pula = false;
 
                 // Recebe ofertas de acordo com o interesse do cliente
                 ofertas = refServidor.cotacao(interesseCli);
@@ -91,18 +97,34 @@ public class Cliente {
                 if (keyboard_input.equals("1")){
                     menuScreen = 1;
                 }
+                else if (keyboard_input.equals("3")){
+                    menuScreen = 1;
+                    getTransfer_args[0] = "Curitiba";
+                    getTransfer_args[1] = "Caioba";
+                    getTransfer_args[2] = "30";
+                    getTransfer_args[3] = "05";
+                    getTransfer_args[4] = "11";
+                    getTransfer_args[5] = "Caminhonete";
+                    getTransfer_args[6] = "3";
+                    getTransfer_args[7] = "12.5";
+                    pula = true;
+                }
             }
             else if (menuScreen == 1){
                 // TELA DE RESERVA DE OFERTA
                 if (keyboard_input.equals("1")){
                     // Efetua reserva (E SE NÃO TIVER OFERTA DISPONIVEL ENVIA OFERTA NULL??)
-                    System.out.println("Interesse cadastrado com sucesso!");
+
                     if (numero_oferta>=0) {
                         refServidor.reserva(ofertas.get(numero_oferta), interesseCli);
+                        //System.out.println("Interesse cadastrado com sucesso!");
+                        System.out.println("Reserva cadastrada com sucesso!");
                     }
                 }
                 else if (keyboard_input.equals("2")){
-                    System.out.println("Cadastro interesse cancelado");
+                    refServidor.registraInteresseCli(interesseCli,  cliImpl);
+                    System.out.println("Interesse cadastrado com sucesso!");
+                    //System.out.println("Cadastro interesse cancelado");
                 }
                 else{
                     System.out.println("Opção inválida, cadastro de interesse cancelado");
@@ -110,6 +132,7 @@ public class Cliente {
 
                 menuScreen = 0;
             }
+
 
             //System.out.println(menuScreen);
         }

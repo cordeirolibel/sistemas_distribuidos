@@ -80,11 +80,16 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
 
     @Override
     public void chamar(String msg, InterfaceCli iCli) throws RemoteException {
-
+        System.out.printf("Mensagem recebida do cliente: %s\n",msg);
+        iCli.echo(msg);
     }
 
     @Override //OK
     public LinkedList<Oferta> cotacao(Interesse interesse) throws RemoteException {
+
+        System.out.printf("Pedido de cotação\n");
+        interesse.print();
+
         Oferta oferta_i;
         Horarios horarios;
         int size = lista_oferta.size();
