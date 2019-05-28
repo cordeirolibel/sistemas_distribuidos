@@ -1,16 +1,29 @@
 package transfer;
 
+import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Motorista {
-    public static void main(String[] args) {
-        System.out.println("Hello Motorista!");
+    public static void main(String[] args) throws RemoteException, NotBoundException {
+        Registry refservicoNomes = LocateRegistry.getRegistry(1099);
+        InterfaceServ refServidor = (InterfaceServ) refservicoNomes.lookup("servImpl");
+        MotImpl motImpl = new MotImpl(refServidor);
 
         int menuScreen = 0;
         int i;
 
+        int idMot = 8000;
+
         String input_msg = "Option: ";
         String[] setTransfer_msgs = {"Tipo Veículo: ", "Número máximo de passageiros: ", "Preço: "};
+
+        String[] setTransfer_args = new String[3];
 
         Oferta ofertaMot = new Oferta();
 
@@ -29,14 +42,16 @@ public class Motorista {
                     System.out.printf(setTransfer_msgs[i]);
                     String keyboard_input = keyboard.nextLine();
 
-                    setTransfer_msgs[i] = keyboard_input;
+                    setTransfer_args[i] = keyboard_input;
                 }
 
-                // Cria oferta
-                int n_passageiros = Integer.parseInt(getTransfer_args[1]);
-                float preco = Float.parseFloat(getTransfer_args[2]);
+                System.out.println(Arrays.toString(setTransfer_args));
 
-                //Cria oferta aqui
+                // Cria oferta
+                ofertaMot.veiculo = setTransfer_args[0];
+                ofertaMot.passageiros = Integer.parseInt(setTransfer_args[1]);
+                ofertaMot.preco = Float.parseFloat(setTransfer_args[2]);
+                ofertaMot.id = idMot;
 
                 System.out.println("Registrar interesse? ");
                 System.out.println("1. Sim \n 2. Não");
@@ -60,7 +75,7 @@ public class Motorista {
             else if (menuScreen == 1){
                 if (keyboard_input.equals("1")){
                     // Registra oferta no servidor
-                    cadastraOferta(ofertaMot);
+                    refServidor.cadastraOferta(ofertaMot, motImpl);
 
                     System.out.println("Oferta cadastrada com sucesso!");
                 }

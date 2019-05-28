@@ -5,12 +5,14 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class MotImpl extends UnicastRemoteObject implements InterfaceMot{
 
-
-    protected MotImpl() throws RemoteException {
+    protected MotImpl(InterfaceServ refServidor) throws RemoteException {
     }
 
-    @Override
-    public Oferta recebeInteresse(InterfaceServ iSev) throws RemoteException {
-        return null;
+    public void notificaReserva(Interesse interesse) throws RemoteException {
+
+    }
+
+    public void notificaInteresse(Interesse interesse) throws RemoteException {
+
     }
 }
