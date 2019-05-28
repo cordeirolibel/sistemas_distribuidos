@@ -21,6 +21,8 @@ public class Cliente {
         boolean pula = false;
         int menuScreen = 0;
         int i;
+        int useKeyboard = 1;
+
         String input_msg = "Option: ";
         String keyboard_input = "";
         String[] getTransfer_msgs = {"Origem: ", "Destino: ", "Dia: ", "Mês: ", "Hora: ", "Tipo Veículo: ", "Número de passageiros: ", "Preço: "};
@@ -51,9 +53,7 @@ public class Cliente {
                         getTransfer_args[i] = keyboard_input;
                     }
                     keyboard_input = "";
-
                 }
-
 
                 // Cria interesse
                 interesseCli.itinerario = getTransfer_args[0] + " - " + getTransfer_args[1];
@@ -64,6 +64,7 @@ public class Cliente {
                 interesseCli.n_passageiros = Integer.parseInt(getTransfer_args[6]);
                 interesseCli.preco = Float.parseFloat(getTransfer_args[7]);
                 interesseCli.print();
+
                 pula = false;
 
                 // Recebe ofertas de acordo com o interesse do cliente
@@ -72,7 +73,6 @@ public class Cliente {
                 // Print lista de ofertas
                 int tamOfertas = ofertas.size();
 
-                // VERIFICAR O PRINT DAS OFERTAS
                 System.out.printf("============================================\n");
                 for (i=0; i<tamOfertas; i++){
                     System.out.printf("Oferta [" + i + "] " );
@@ -87,7 +87,7 @@ public class Cliente {
                     numero_oferta = keyboard.nextInt();
 
                     // Print confirmação
-                    if (keyboard_input.equals("c")) {
+                    if (numero_oferta  ==  99) {
                         System.out.println("Registrar interesse? ");
                         System.out.println("1. Sim \n2. Não");
                         numero_oferta = -1;
@@ -98,13 +98,15 @@ public class Cliente {
                 }
                 else{
                     System.out.println(" ");
+                    useKeyboard = 0;
+                    keyboard_input = "3";
                 }
             }
             else if (menuScreen == 2){
-                keyboard_input = "3";
+                System.out.println("juntos e shallow now...");
             }
 
-            if (! keyboard_input.equals("3")) {
+            if (useKeyboard == 1) {
                 Scanner keyboard = new Scanner(System.in);
                 System.out.printf(input_msg);
                 keyboard_input = keyboard.nextLine();
@@ -132,7 +134,7 @@ public class Cliente {
             else if (menuScreen == 1){
                 // TELA DE RESERVA DE OFERTA
                 if (keyboard_input.equals("1")){
-                    // Efetua reserva (E SE NÃO TIVER OFERTA DISPONIVEL ENVIA OFERTA NULL??)
+                    // Efetua reserva
 
                     if (numero_oferta>=0 ) {
                         if (refServidor.reserva(ofertas.get(numero_oferta), interesseCli)) {
@@ -157,8 +159,8 @@ public class Cliente {
                 }
 
                 menuScreen = 0;
+                useKeyboard = 1;
             }
-
 
             //System.out.println(menuScreen);
         }
