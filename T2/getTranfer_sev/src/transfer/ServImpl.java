@@ -13,6 +13,8 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
     LinkedList<Horarios> lista_horarios_mot;
 
     public ServImpl() throws RemoteException {
+        System.out.printf("Hello de ServImpl\n");
+        
         lista_interesses_clie  = new LinkedList<Interesse>();
         lista_interfaces_clie  = new LinkedList<InterfaceCli>();
 
@@ -33,14 +35,17 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
     //para um cliente especifico
     //OK
     private void notificaCliente(Oferta oferta, int id_cli,Horarios horarios) throws RemoteException {
+        System.out.printf("=======Notifica Cliente========\n");
+        System.out.printf("==> Oferta de motorista %d para cliente %d\n",oferta.id,id_cli);
+        oferta.print();
 
         InterfaceCli iClie_i = lista_interfaces_clie.get(id_cli);
         Interesse interesse_i = lista_interesses_clie.get(id_cli);
 
         if (comparaInteresseComOferta(interesse_i,oferta,horarios)){
             iClie_i.notificaOferta(oferta);
+            System.out.printf("    Interesse cadastrado\n");
         }
-
     }
 
     //verfica todos os clientes
@@ -58,6 +63,9 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
     //verfica todos os motoristas
     //OK
     private void notificaMotoristas(Interesse interesse)throws RemoteException{
+        System.out.printf("=======Notifica Motoristas========\n");
+        System.out.printf("==> Interrese de cliente %d\n",interesse.id);
+        interesse.print();
 
         InterfaceMot iMot_i;
         Oferta oferta_i;
@@ -70,6 +78,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
             if (comparaInteresseComOferta(interesse,oferta_i,horarios)){
                 iMot_i = lista_interfaces_mot.get(i);
                 iMot_i.notificaInteresse(interesse);
+                System.out.printf("    Notifica motorista %d\n",oferta_i.id);
             }
         }
     }
@@ -86,8 +95,8 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
 
     @Override //OK
     public LinkedList<Oferta> cotacao(Interesse interesse) throws RemoteException {
-
-        System.out.printf("Pedido de cotação\n");
+        System.out.printf("=======Cotacao========\n");
+        System.out.printf("==> Interesse de %d:\n",interesse.id);
         interesse.print();
 
         Oferta oferta_i;
@@ -108,7 +117,11 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
     }
 
     @Override //falta notificacao e controle de concorrencia
-    public void reserva(Oferta oferta, Interesse interesse) throws RemoteException {
+    public boolean reserva(Oferta oferta, Interesse interesse) throws RemoteException {
+        System.out.printf("=======Reserva========\n");
+        System.out.printf("==> Oferta de motorista %d e cliente %d\n",oferta.id,interesse.id);
+        oferta.print();
+
         Oferta oferta_i;
         InterfaceMot iMot_i;
         Horarios horarios;
@@ -118,19 +131,33 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
             oferta_i = lista_oferta.get(i);
             iMot_i = lista_interfaces_mot.get(i);
             if (oferta_i.id == oferta.id) {
-                //#################TODO:  e controle de concorrencia
                 horarios = lista_horarios_mot.get(i);
-                horarios.set(interesse.dia,interesse.mes,interesse.hora);
-
+                //controle de concorrencia
+                synchronized (this) {
+                    if(horarios.disponivel(interesse.dia, interesse.mes, interesse.hora)) {
+                        horarios.set(interesse.dia, interesse.mes, interesse.hora);
+                    }
+                    else{
+                        System.out.printf("\tMotorista ocupado\n");
+                        return false;
+                    }
+                }
                 //notifica o motorista que a reserva foi feita
+                System.out.printf("\tReserva efetuada\n");
                 iMot_i.notificaReserva(interesse);
-                break;
+                return true;
             }
         }
+        System.out.printf("\tMotorista nao encontrado\n");
+        return false;
     }
 
     @Override //OK
     public void registraInteresseCli(Interesse interesse, InterfaceCli iCli) throws RemoteException {
+        System.out.printf("=======Registra Interesse de Cliente ========\n");
+        System.out.printf("===> Interesse de cliente %d\n",interesse.id);
+        interesse.print();
+
         int size = lista_interesses_clie.size();
         interesse.id = size;
         lista_interesses_clie.add(interesse);
@@ -142,6 +169,10 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
     @Override //OK
     // Efetua o cadastro de uma oferta feita pelo motorista
     public void cadastraOferta(Oferta oferta, InterfaceMot iMot) throws RemoteException {
+        System.out.printf("=======Cadastra Oferta========\n");
+        System.out.printf("===> Ofera de motorista %d\n",oferta.id);
+        oferta.print();
+
         int size = lista_oferta.size();
         Horarios horarios = new Horarios();
         oferta.id = size;
@@ -154,12 +185,17 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
     //quando o motorista manda uma proposta para um cliente especifico
     @Override //OK
     public void novaProposta(Oferta oferta, Interesse interesse) throws RemoteException {
+        System.out.printf("=======Nova Proposta========\n");
+        System.out.printf("==> Oferta de motorista %d para cliente %d\n",oferta.id,interesse.id);
+        oferta.print();
+
         Oferta oferta_i;
         int id_cli = interesse.id;
         int id_mot = -1;
 
         int size = lista_oferta.size();
         //procura o oferta desse motorista
+        /*
         for (int i=0;i<size;i++) {
             oferta_i = lista_oferta.get(i);
             if (oferta_i.id == oferta.id) {
@@ -167,6 +203,8 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
             }
         }
         if (id_mot == -1){ return; }
+        */
+        id_mot = oferta.id;
 
         //notifica o cliente dessa nova proposta
         Horarios horarios = lista_horarios_mot.get(id_mot);
@@ -175,6 +213,10 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
 
     @Override //OK
     public void alteraOferta(Oferta oferta, InterfaceMot iMot) throws RemoteException {
+        System.out.printf("=======Altera Oferta========\n");
+        System.out.printf("===> Ofera de motorista %d\n",oferta.id);
+        oferta.print();
+
         InterfaceMot iMot_i;
         Horarios horarios = null;
         int size = lista_oferta.size();

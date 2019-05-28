@@ -10,7 +10,7 @@ public interface InterfaceServ extends Remote {
 
     LinkedList<Oferta> cotacao(Interesse interesse) throws RemoteException;
 
-    void reserva(Oferta oferta, Interesse interesse) throws RemoteException;
+    boolean reserva(Oferta oferta, Interesse interesse) throws RemoteException;
 
     void registraInteresseCli(Interesse interesse, InterfaceCli iCli) throws RemoteException;
 
