@@ -81,7 +81,7 @@ public class Cliente {
 
                 if (tamOfertas>0) {
                     // Escolhe oferta pelo id dela
-                    System.out.printf("Escolher numero oferta ou \'c\' para cancelar: ");
+                    System.out.printf("Escolher numero oferta ou \'c\' para cancelar/registrar interesse: ");
 
                     Scanner keyboard = new Scanner(System.in);
                     numero_oferta = keyboard.nextInt();
@@ -94,6 +94,8 @@ public class Cliente {
                     }
                     else {
                         System.out.printf("Interesse configurado: " + numero_oferta + " \n");
+                        useKeyboard = 0;
+                        keyboard_input = "1";
                     }
                 }
                 else{
@@ -145,11 +147,13 @@ public class Cliente {
                             System.out.println("Motorista ocupado nessa data e horario");
                         }
                     }
+                    else{
+                        refServidor.registraInteresseCli(interesseCli,  cliImpl);
+                        System.out.println("Interesse cadastrado com sucesso!");
+                    }
                 }
                 else if (keyboard_input.equals("2")){
-                    refServidor.registraInteresseCli(interesseCli,  cliImpl);
-                    System.out.println("Interesse cadastrado com sucesso!");
-                    //System.out.println("Cadastro interesse cancelado");
+                    System.out.println("Cadastro interesse cancelado");
                 }
                 else if (keyboard_input.equals("3")){
                     System.out.println("Não obteve nenhuma cotação!");
