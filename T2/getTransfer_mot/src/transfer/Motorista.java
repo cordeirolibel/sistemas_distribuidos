@@ -29,17 +29,47 @@ public class Motorista {
         int n_notific = 0;
 
         Oferta ofertaMot = new Oferta();
-        LinkedList<Oferta> notificacoesOfertas = null;
         LinkedList<Oferta> notificacoesInteresse = null;
+
+        boolean pula = false;
 
         while (true){
             if (menuScreen == 0){
                 System.out.println("# ============== Menu Motorista TopTransfer.Net ============== #");
-                System.out.println("1 - Cadastro transfer");
-                System.out.println("2 - Notificações");
+                System.out.println("1 - Cadastro oferta de transfer");
+                System.out.println("2 - Alterar oferta de transfer");
             }
             else if (menuScreen == 1){
                 System.out.println("# ============== Menu Motorista TopTransfer.Net ============== #");
+
+                if (pula == false){
+                    for (i=0;i<setTransfer_msgs.length; i++){
+                        // Cria oferta
+                        Scanner keyboard = new Scanner(System.in);
+                        System.out.printf(setTransfer_msgs[i]);
+                        String keyboard_input = keyboard.nextLine();
+
+                        setTransfer_args[i] = keyboard_input;
+                    }
+                }
+
+                System.out.println(Arrays.toString(setTransfer_args));
+
+                // Cria oferta
+                ofertaMot.veiculo = setTransfer_args[0];
+                ofertaMot.passageiros = Integer.parseInt(setTransfer_args[1]);
+                ofertaMot.preco = Float.parseFloat(setTransfer_args[2]);
+                ofertaMot.id = idMot;
+
+                pula = false;
+
+                System.out.println("Registrar oferta? ");
+                System.out.println("1. Sim \n 2. Não");
+
+            }
+            else if (menuScreen == 2){
+                System.out.println("# ============== Menu Motorista TopTransfer.Net ============== #");
+                System.out.println(" -- Alterar Oferta -- ");
 
                 for (i=0;i<setTransfer_msgs.length; i++){
                     // Cria oferta
@@ -58,13 +88,8 @@ public class Motorista {
                 ofertaMot.preco = Float.parseFloat(setTransfer_args[2]);
                 ofertaMot.id = idMot;
 
-                System.out.println("Registrar interesse? ");
+                System.out.println("Confirmar alteração de oferta?");
                 System.out.println("1. Sim \n 2. Não");
-
-            }
-            else if (menuScreen == 2){
-
-                System.out.println("Sem notificações");
             }
 
             Scanner keyboard = new Scanner(System.in);
@@ -76,6 +101,16 @@ public class Motorista {
             if (menuScreen == 0){
                 if (keyboard_input.equals("1")){
                     menuScreen = 1;
+                }
+                else if(keyboard_input.equals("2")){
+                    menuScreen = 2;
+                }
+                else if (keyboard_input.equals("3")){
+                    menuScreen = 1;
+                    setTransfer_args[0] = "Caminhonete";
+                    setTransfer_args[1] = "3";
+                    setTransfer_args[2] = "12.5";
+                    pula = true;
                 }
             }
             else if (menuScreen == 1){
@@ -90,6 +125,22 @@ public class Motorista {
                 }
                 else{
                     System.out.println("Opção inválida, cadastro de oferta cancelado");
+                }
+
+                menuScreen = 0;
+            }
+            else if (menuScreen == 2){
+                if (keyboard_input.equals("1")){
+                    // Altera oferta no servidor
+                    refServidor.alteraOferta(ofertaMot, motImpl);
+
+                    System.out.println("Oferta alterada com sucesso!");
+                }
+                else if (keyboard_input.equals("2")){
+                    System.out.println("Alteração de oferta cancelada");
+                }
+                else{
+                    System.out.println("Opção inválida, alteração de oferta cancelada");
                 }
 
                 menuScreen = 0;
