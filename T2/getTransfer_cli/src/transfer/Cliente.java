@@ -99,9 +99,10 @@ public class Cliente {
                     }
                 }
                 else{
-                    System.out.println(" ");
-                    useKeyboard = 0;
-                    keyboard_input = "3";
+                    System.out.println("Registrar interesse? ");
+                    System.out.println("1. Sim \n2. Não");
+                    numero_oferta = -1;
+                    useKeyboard = 1;
                 }
             }
             else if (menuScreen == 2){
