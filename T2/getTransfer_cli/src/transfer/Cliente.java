@@ -22,6 +22,7 @@ public class Cliente {
         int menuScreen = 0;
         int i;
         String input_msg = "Option: ";
+        String keyboard_input = "";
         String[] getTransfer_msgs = {"Origem: ", "Destino: ", "Dia: ", "Mês: ", "Hora: ", "Tipo Veículo: ", "Número de passageiros: ", "Preço: "};
 
         String[] getTransfer_args = new String[8];
@@ -32,6 +33,7 @@ public class Cliente {
         refServidor.chamar("Ola servidor",cliImpl);
 
         while (true){
+            keyboard_input = "";
             if (menuScreen == 0){
                 System.out.println("# ============== Menu client TopTransfer.Net ============== #");
                 System.out.println("1 - Ver cotações para transfer");
@@ -45,9 +47,10 @@ public class Cliente {
                         // Recebe Interesse
                         Scanner keyboard = new Scanner(System.in);
                         System.out.printf(getTransfer_msgs[i]);
-                        String keyboard_input = keyboard.nextLine();
+                        keyboard_input = keyboard.nextLine();
                         getTransfer_args[i] = keyboard_input;
                     }
+                    keyboard_input = "";
 
                 }
 
@@ -70,31 +73,44 @@ public class Cliente {
                 int tamOfertas = ofertas.size();
 
                 // VERIFICAR O PRINT DAS OFERTAS
+                System.out.printf("============================================\n");
                 for (i=0; i<tamOfertas; i++){
                     System.out.printf("Oferta [" + i + "] " );
                     ofertas.get(i).print();
                 }
 
-                // Escolhe oferta pelo id dela
-                System.out.printf("Escolher numero oferta ou 0 para cancelar: ");
+                if (tamOfertas>0) {
+                    // Escolhe oferta pelo id dela
+                    System.out.printf("Escolher numero oferta ou \'c\' para cancelar: ");
 
-                Scanner keyboard = new Scanner(System.in);
-                numero_oferta = keyboard.nextInt();
+                    Scanner keyboard = new Scanner(System.in);
+                    numero_oferta = keyboard.nextInt();
 
-                // Print confirmação
-                System.out.printf("Interesse configurado: " + numero_oferta + " \n");
-                System.out.println("Registrar interesse? ");
-                System.out.println("1. Sim \n2. Não");
+                    // Print confirmação
+                    if (keyboard_input.equals("c")) {
+                        System.out.println("Registrar interesse? ");
+                        System.out.println("1. Sim \n2. Não");
+                        numero_oferta = -1;
+                    }
+                    else {
+                        System.out.printf("Interesse configurado: " + numero_oferta + " \n");
+                    }
+                }
+                else{
+                    System.out.println(" ");
+                }
             }
             else if (menuScreen == 2){
-                System.out.println("Sem notificações");
+                keyboard_input = "3";
             }
 
-            Scanner keyboard = new Scanner(System.in);
-            System.out.printf(input_msg);
-            String keyboard_input = keyboard.nextLine();
+            if (! keyboard_input.equals("3")) {
+                Scanner keyboard = new Scanner(System.in);
+                System.out.printf(input_msg);
+                keyboard_input = keyboard.nextLine();
 
-            System.out.println(keyboard_input);
+                System.out.println(keyboard_input);
+            }
 
             if (menuScreen == 0){
                 if (keyboard_input.equals("1")){
@@ -118,7 +134,7 @@ public class Cliente {
                 if (keyboard_input.equals("1")){
                     // Efetua reserva (E SE NÃO TIVER OFERTA DISPONIVEL ENVIA OFERTA NULL??)
 
-                    if (numero_oferta>=0) {
+                    if (numero_oferta>=0 ) {
                         if (refServidor.reserva(ofertas.get(numero_oferta), interesseCli)) {
                             //System.out.println("Interesse cadastrado com sucesso!");
                             System.out.println("Reserva cadastrada com sucesso!");
@@ -132,6 +148,9 @@ public class Cliente {
                     refServidor.registraInteresseCli(interesseCli,  cliImpl);
                     System.out.println("Interesse cadastrado com sucesso!");
                     //System.out.println("Cadastro interesse cancelado");
+                }
+                else if (keyboard_input.equals("3")){
+                    System.out.println("Não obteve nenhuma cotação!");
                 }
                 else{
                     System.out.println("Opção inválida, cadastro de interesse cancelado");
