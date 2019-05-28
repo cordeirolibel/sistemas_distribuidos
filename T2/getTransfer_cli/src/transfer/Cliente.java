@@ -48,8 +48,9 @@ public class Cliente {
                         String keyboard_input = keyboard.nextLine();
                         getTransfer_args[i] = keyboard_input;
                     }
-                    interesseCli.print();
+
                 }
+
 
                 // Cria interesse
                 interesseCli.itinerario = getTransfer_args[0] + " - " + getTransfer_args[1];
@@ -59,7 +60,7 @@ public class Cliente {
                 interesseCli.veiculo = getTransfer_args[5];
                 interesseCli.n_passageiros = Integer.parseInt(getTransfer_args[6]);
                 interesseCli.preco = Float.parseFloat(getTransfer_args[7]);
-
+                interesseCli.print();
                 pula = false;
 
                 // Recebe ofertas de acordo com o interesse do cliente
