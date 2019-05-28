@@ -9,10 +9,10 @@ public class MotImpl extends UnicastRemoteObject implements InterfaceMot{
     }
 
     public void notificaReserva(Interesse interesse) throws RemoteException {
-
+        System.out.println(interesse);
     }
 
     public void notificaInteresse(Interesse interesse) throws RemoteException {
-
+        System.out.println(interesse);
     }
 }

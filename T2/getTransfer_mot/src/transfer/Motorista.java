@@ -7,6 +7,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Motorista {
@@ -25,7 +26,11 @@ public class Motorista {
 
         String[] setTransfer_args = new String[3];
 
+        int n_notific = 0;
+
         Oferta ofertaMot = new Oferta();
+        LinkedList<Oferta> notificacoesOfertas = null;
+        LinkedList<Oferta> notificacoesInteresse = null;
 
         while (true){
             if (menuScreen == 0){
@@ -58,6 +63,7 @@ public class Motorista {
 
             }
             else if (menuScreen == 2){
+
                 System.out.println("Sem notificações");
             }
 

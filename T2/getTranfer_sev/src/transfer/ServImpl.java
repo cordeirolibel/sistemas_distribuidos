@@ -140,6 +140,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
 
 
     @Override //OK
+    // Efetua o cadastro de uma oferta feita pelo motorista
     public void cadastraOferta(Oferta oferta, InterfaceMot iMot) throws RemoteException {
         int size = lista_oferta.size();
         Horarios horarios = new Horarios();

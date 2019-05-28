@@ -17,6 +17,6 @@ public class CliImpl extends UnicastRemoteObject implements InterfaceCli{
 
     @Override
     public void notificaOferta(Oferta oferta) throws RemoteException {
-        return;
+        System.out.println(oferta);
     }
 }
