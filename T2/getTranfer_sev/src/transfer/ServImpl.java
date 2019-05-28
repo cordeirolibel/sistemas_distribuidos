@@ -40,10 +40,10 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
         oferta.print();
 
         InterfaceCli iClie_i = lista_interfaces_clie.get(id_cli);
-        Interesse interesse_i = lista_interesses_clie.get(id_cli);
+        Interesse interesse = lista_interesses_clie.get(id_cli);
 
-        if (comparaInteresseComOferta(interesse_i,oferta,horarios)){
-            iClie_i.notificaOferta(oferta);
+        if (comparaInteresseComOferta(interesse,oferta,horarios)){
+            iClie_i.notificaOferta(oferta,interesse);
             System.out.printf("    Interesse cadastrado\n");
         }
     }

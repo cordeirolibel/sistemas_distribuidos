@@ -84,7 +84,7 @@ public class Cliente {
                 // Print confirmação
                 System.out.printf("Interesse configurado: " + numero_oferta + " \n");
                 System.out.println("Registrar interesse? ");
-                System.out.println("1. Sim \n 2. Não");
+                System.out.println("1. Sim \n2. Não");
             }
             else if (menuScreen == 2){
                 System.out.println("Sem notificações");
@@ -119,9 +119,13 @@ public class Cliente {
                     // Efetua reserva (E SE NÃO TIVER OFERTA DISPONIVEL ENVIA OFERTA NULL??)
 
                     if (numero_oferta>=0) {
-                        refServidor.reserva(ofertas.get(numero_oferta), interesseCli);
-                        //System.out.println("Interesse cadastrado com sucesso!");
-                        System.out.println("Reserva cadastrada com sucesso!");
+                        if (refServidor.reserva(ofertas.get(numero_oferta), interesseCli)) {
+                            //System.out.println("Interesse cadastrado com sucesso!");
+                            System.out.println("Reserva cadastrada com sucesso!");
+                        }
+                        else{
+                            System.out.println("Motorista ocupado nessa data e horario");
+                        }
                     }
                 }
                 else if (keyboard_input.equals("2")){

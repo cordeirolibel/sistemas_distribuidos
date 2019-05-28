@@ -7,7 +7,7 @@ public interface InterfaceCli extends Remote {
     int id = 0;
 
     void echo(String msg) throws RemoteException;
-    void notificaOferta(Oferta oferta) throws  RemoteException;
+    void notificaOferta(Oferta oferta,Interesse interesse) throws  RemoteException;
 
 }
 
