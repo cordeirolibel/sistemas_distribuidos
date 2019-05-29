@@ -38,6 +38,7 @@ public class Cliente {
             if (menuScreen == 0){
                 System.out.println("# ============== Menu client TopTransfer.Net ============== #");
                 System.out.println("1 - Ver cotações para transfer");
+                System.out.println("2 - Notificações");
             }
             if (menuScreen == 1){
                 System.out.println("# ============== Menu client TopTransfer.Net ============== #");
@@ -105,6 +106,21 @@ public class Cliente {
                     useKeyboard = 1;
                 }
             }
+            else if (menuScreen==2){
+                if (cliImpl.fila_notificacao.isEmpty()){
+                    System.out.println("Nenhuma notificação");
+                }
+                else{
+                    int tam_filaNotificacoes = cliImpl.fila_notificacao.size();
+
+                    System.out.printf("Você tem (" + tam_filaNotificacoes + ") notificações \n");
+
+                    for (i=0;i<tam_filaNotificacoes; i++){
+                        System.out.printf("Notificação [" + i + "] \n");
+                        //cliImpl.fila_notificacao.poll();
+                    }
+                }
+            }
 
             if (useKeyboard == 1) {
                 Scanner keyboard = new Scanner(System.in);
@@ -163,6 +179,9 @@ public class Cliente {
 
                 menuScreen = 0;
                 useKeyboard = 1;
+            }
+            else if( menuScreen == 2){
+                System.out.println("Notf");
             }
 
             //System.out.println(menuScreen);
