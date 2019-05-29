@@ -42,7 +42,7 @@ public class Cliente {
             if (menuScreen == 0){
                 System.out.println("# ============== Menu client TopTransfer.Net ============== #");
                 System.out.println("1 - Ver cotações para transfer");
-                System.out.println("2 - Notificações");
+                System.out.printf("2 - Notificações [%d]\n",cliImpl.fila_notificacao.size());
             }
             if (menuScreen == 1){
                 System.out.println("# ============== Menu client TopTransfer.Net ============== #");
@@ -178,6 +178,9 @@ public class Cliente {
                     getTransfer_args[6] = "3";
                     getTransfer_args[7] = "12.5";
                     pula = true;
+                }
+                else if(keyboard_input.equals("2")){
+                    menuScreen = 2;
                 }
                 else{
                     menuScreen = 0;
