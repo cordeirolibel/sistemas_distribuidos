@@ -1,7 +1,6 @@
 package transfer;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class Oferta  implements Serializable {
     //String itinerario;
@@ -10,6 +9,12 @@ public class Oferta  implements Serializable {
     float preco;
     int id;
 
+    public Oferta(Oferta o){
+        veiculo = o.veiculo;
+        passageiros = o.passageiros;
+        preco = o.preco;
+        id = o.id;
+    }
     public Oferta(){
     }
 
@@ -18,5 +23,7 @@ public class Oferta  implements Serializable {
         System.out.printf("Preco       %.2f\n",preco);
         System.out.printf("Passageiros %d\n",passageiros);
     }
+
+
 
 }

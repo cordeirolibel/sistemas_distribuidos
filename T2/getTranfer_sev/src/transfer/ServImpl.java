@@ -11,6 +11,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
     LinkedList<Oferta> lista_oferta;
     LinkedList<InterfaceMot> lista_interfaces_mot;
     LinkedList<Horarios> lista_horarios_mot;
+    LinkedList<Notificacao> lista_notificacao;
 
     public ServImpl() throws RemoteException {
         System.out.println("ServImpl executado!");
@@ -22,11 +23,30 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
         lista_interfaces_mot   = new LinkedList<InterfaceMot>();
 
         lista_horarios_mot     = new LinkedList<Horarios>();
+
+        lista_notificacao      = new LinkedList<Notificacao>();
     }
 
     // --------------------------------------------------------------
-    // =====> Notificacao
+    // =====> transfer.Oferta.Notificacao
     // --------------------------------------------------------------
+
+    //envia todas as notificaçoes pendentes
+    public void enviaNotificacoes() throws RemoteException{
+        int size = lista_notificacao.size();
+        Notificacao notificacao;
+
+        for (int i=0;i<size;i++) {
+            notificacao = lista_notificacao.get(i);
+            if (notificacao.tipo.equals("mot")) {
+                notificaCliente(notificacao.oferta, notificacao.id_cli, notificacao.horarios);
+            }
+            else if(notificacao.tipo.equals("cli")){
+                notificaMotoristas(notificacao.interesse);
+            }
+
+        }
+    }
 
     //cliente recebe notificações do servidor quando
     //um veículo de seu interesse tiver seu preço reduzido para os dados
@@ -37,14 +57,13 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
     private void notificaCliente(Oferta oferta, int id_cli,Horarios horarios) throws RemoteException {
         System.out.printf("=======Notifica Cliente========\n");
         System.out.printf("==> Oferta de motorista %d para cliente %d\n",oferta.id,id_cli);
-        oferta.print();
 
         InterfaceCli iClie_i = lista_interfaces_clie.get(id_cli);
         Interesse interesse = lista_interesses_clie.get(id_cli);
 
         if (comparaInteresseComOferta(interesse,oferta,horarios)){
             iClie_i.notificaOferta(oferta,interesse);
-            System.out.printf("    Interesse cadastrado\n");
+            System.out.printf("    transfer.Oferta.Notificacao cadastrado\n");
         }
     }
 
@@ -55,7 +74,8 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
         int size = lista_interesses_clie.size();
 
         for (int i=0;i<size;i++) {
-            notificaCliente(oferta, i,horarios);
+            lista_notificacao.add(new Notificacao(oferta,i,horarios));
+            //notificaCliente(oferta, i,horarios);
         }
 
     }
@@ -75,7 +95,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
         for (int i=0;i<size;i++) {
             oferta_i = lista_oferta.get(i);
             horarios = lista_horarios_mot.get(i);
-            if (comparaInteresseComOferta(interesse,oferta_i,horarios)){
+            if (comparaInteresseComOfertaSemPreco(interesse,oferta_i,horarios)){
                 iMot_i = lista_interfaces_mot.get(i);
                 iMot_i.notificaInteresse(interesse);
                 System.out.printf("    Notifica motorista %d\n",oferta_i.id);
@@ -145,6 +165,10 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
                 //notifica o motorista que a reserva foi feita
                 System.out.printf("\tReserva efetuada\n");
                 iMot_i.notificaReserva(interesse);
+
+                //cliente nao recebe mais notificaçoes
+                //lista_interesses_clie.remove(i);
+                //lista_interfaces_clie.remove(i);
                 return true;
             }
         }
@@ -162,7 +186,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
         interesse.id = size;
         lista_interesses_clie.add(interesse);
         lista_interfaces_clie.add(iCli);
-        notificaMotoristas(interesse);
+        lista_notificacao.add(new Notificacao(interesse));
     }
 
 
@@ -208,7 +232,8 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
 
         //notifica o cliente dessa nova proposta
         Horarios horarios = lista_horarios_mot.get(id_mot);
-        notificaCliente(oferta, id_cli,horarios);
+        lista_notificacao.add(new Notificacao(oferta,id_cli,horarios));
+        //notificaCliente(oferta, id_cli,horarios);
     }
 
     @Override //OK
@@ -227,19 +252,20 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
 
             if (iMot_i.id == iMot.id){ //mesmo motorista
                 //remove oferta
-                lista_oferta.remove(i);
-                lista_interfaces_mot.remove(i);
-                lista_horarios_mot.remove(i);
+                lista_oferta.set(i,oferta);
+                //lista_oferta.remove(i);
+                //lista_interfaces_mot.remove(i);
+                //lista_horarios_mot.remove(i);
                 break;
             }
         }
 
         //add oferta
         size = lista_oferta.size();
-        oferta.id = size;
-        lista_oferta.add(oferta);
-        lista_interfaces_mot.add(iMot);
-        lista_horarios_mot.add(horarios);
+        //oferta.id = size;
+        //lista_oferta.add(oferta);
+        //lista_interfaces_mot.add(iMot);
+        //lista_horarios_mot.add(horarios);
         notificaClientes(oferta,horarios);
     }
 
@@ -265,11 +291,20 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
     private boolean comparaInteresseComOferta(Interesse i,Oferta o,Horarios h){
         if ((o.veiculo.equals(i.veiculo)) &
             (h.disponivel(i.dia,i.mes,i.hora)) &
+            (o.passageiros>=i.n_passageiros) &
             (o.preco <= i.preco)){
             return true;
         }
         return false;
     }
 
+    private boolean comparaInteresseComOfertaSemPreco(Interesse i,Oferta o,Horarios h){
+        if ((o.veiculo.equals(i.veiculo)) &
+            (o.passageiros>=i.n_passageiros) &
+            (h.disponivel(i.dia,i.mes,i.hora))){
+            return true;
+        }
+        return false;
+    }
 
 }

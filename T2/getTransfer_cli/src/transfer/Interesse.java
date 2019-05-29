@@ -14,8 +14,18 @@ public class Interesse  implements Serializable {
     int mes;
     int hora;
 
-    public Interesse() {
+    public Interesse(){
 
+    }
+    public Interesse(Interesse i){
+        veiculo = i.veiculo;
+        itinerario = i.itinerario;
+        preco = i.preco;
+        n_passageiros = i.n_passageiros;
+        id = i.id;
+        dia = i.dia;
+        mes = i.mes;
+        hora = i.hora;
     }
     public void print(){
         System.out.printf("Veiculo     %s\n",veiculo);

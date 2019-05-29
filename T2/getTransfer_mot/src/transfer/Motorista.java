@@ -33,11 +33,14 @@ public class Motorista {
 
         boolean pula = false;
 
+        boolean cadastro_ou_altera = false;//false para cadastro
         while (true){
             if (menuScreen == 0){
                 System.out.println("# ============== Menu Motorista TopTransfer.Net ============== #");
-                System.out.println("1 - Cadastro oferta de transfer");
-                System.out.println("2 - Alterar oferta de transfer");
+                if (cadastro_ou_altera==false)
+                    System.out.println("1 - Cadastro oferta de transfer");
+                else
+                    System.out.println("1 - Alterar oferta de transfer");
             }
             else if (menuScreen == 1){
                 System.out.println("# ============== Menu Motorista TopTransfer.Net ============== #");
@@ -96,14 +99,14 @@ public class Motorista {
             System.out.printf(input_msg);
             String keyboard_input = keyboard.nextLine();
 
-            System.out.println(keyboard_input);
+            System.out.printf("-key %s\n",keyboard_input);
 
             if (menuScreen == 0){
                 if (keyboard_input.equals("1")){
-                    menuScreen = 1;
-                }
-                else if(keyboard_input.equals("2")){
-                    menuScreen = 2;
+                    if (cadastro_ou_altera==false)//cadastro
+                        menuScreen = 1;
+                    else
+                        menuScreen = 2;
                 }
                 else if (keyboard_input.equals("3")){
                     menuScreen = 1;
@@ -112,12 +115,16 @@ public class Motorista {
                     setTransfer_args[2] = "12.5";
                     pula = true;
                 }
+                else{
+                    menuScreen = 0;
+                }
             }
             else if (menuScreen == 1){
                 if (keyboard_input.equals("1")){
                     // Registra oferta no servidor
                     refServidor.cadastraOferta(ofertaMot, motImpl);
 
+                    cadastro_ou_altera = true;
                     System.out.println("Oferta cadastrada com sucesso!");
                 }
                 else if (keyboard_input.equals("2")){

@@ -17,12 +17,16 @@ public class MotImpl extends UnicastRemoteObject implements InterfaceMot{
     }
 
     public void notificaReserva(Interesse interesse) throws RemoteException {
+        System.out.println();
+        System.out.println(" =======Notificacao==========");
         System.out.println("Reserva efetuada com sucesso!");
         interesse.print();
     }
 
     public void notificaInteresse(Interesse interesse) throws RemoteException {
-        System.out.println("Novo interesse!");
+        System.out.println();
+        System.out.println(" =======Notificacao==========");
+        System.out.println(" ====== Novo interesse! ========");
         System.out.printf("Interesse: ");
         interesse.print();
 
@@ -35,7 +39,10 @@ public class MotImpl extends UnicastRemoteObject implements InterfaceMot{
         if (keyboard_input.equals("1")){
             Oferta ofertaMot = new Oferta();
 
-            for (i=0;i<setTransfer_msgs.length; i++){
+            ofertaMot.passageiros = interesse.n_passageiros;
+            ofertaMot.veiculo = interesse.veiculo;
+
+            /**for (i=0;i<setTransfer_msgs.length; i++){
                 // Cria oferta
                 System.out.printf(setTransfer_msgs[i]);
                 keyboard_input = keyboard.nextLine();
@@ -46,11 +53,17 @@ public class MotImpl extends UnicastRemoteObject implements InterfaceMot{
             // Cria oferta
             ofertaMot.veiculo = setTransfer_args[0];
             ofertaMot.passageiros = Integer.parseInt(setTransfer_args[1]);
-            ofertaMot.preco = Float.parseFloat(setTransfer_args[2]);
+            ofertaMot.preco = Float.parseFloat(setTransfer_args[2]);**/
+
+            System.out.println("Novo preco: ");
+            keyboard = new Scanner(System.in);
+            keyboard_input = keyboard.nextLine();
+            ofertaMot.preco = Float.parseFloat(keyboard_input);
 
             System.out.println("Registrar oferta? ");
             System.out.println("1. Sim \n 2. Não");
-
+            //Scanner key = new Scanner(System.in);
+            System.out.println("Option: ");
             keyboard_input = keyboard.nextLine();
 
             if (keyboard_input.equals("1")){
