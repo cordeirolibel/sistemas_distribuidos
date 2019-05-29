@@ -35,11 +35,9 @@ public class Cliente {
         refServidor.chamar("Ola servidor",cliImpl);
 
         while (true){
-            keyboard_input = "";
             if (menuScreen == 0){
                 System.out.println("# ============== Menu client TopTransfer.Net ============== #");
                 System.out.println("1 - Ver cotações para transfer");
-                System.out.println("2 - Notificações");
             }
             if (menuScreen == 1){
                 System.out.println("# ============== Menu client TopTransfer.Net ============== #");
@@ -50,6 +48,7 @@ public class Cliente {
                         Scanner keyboard = new Scanner(System.in);
                         System.out.printf(getTransfer_msgs[i]);
                         keyboard_input = keyboard.nextLine();
+
                         getTransfer_args[i] = keyboard_input;
                     }
                     keyboard_input = "";
@@ -84,15 +83,16 @@ public class Cliente {
                     System.out.printf("Escolher numero oferta ou \'c\' para cancelar/registrar interesse: ");
 
                     Scanner keyboard = new Scanner(System.in);
-                    numero_oferta = keyboard.nextInt();
+                    String keyboard_option = keyboard.nextLine();
 
                     // Print confirmação
-                    if (numero_oferta  ==  99) {
+                    if (keyboard_option.equals("c")) {
                         System.out.println("Registrar interesse? ");
                         System.out.println("1. Sim \n2. Não");
                         numero_oferta = -1;
                     }
                     else {
+                        numero_oferta = Integer.parseInt(keyboard_option);
                         System.out.printf("Interesse configurado: " + numero_oferta + " \n");
                         useKeyboard = 0;
                         keyboard_input = "1";
@@ -105,16 +105,11 @@ public class Cliente {
                     useKeyboard = 1;
                 }
             }
-            else if (menuScreen == 2){
-                System.out.println("juntos e shallow now...");
-            }
 
             if (useKeyboard == 1) {
                 Scanner keyboard = new Scanner(System.in);
                 System.out.printf(input_msg);
                 keyboard_input = keyboard.nextLine();
-
-                System.out.println(keyboard_input);
             }
 
             if (menuScreen == 0){
@@ -132,6 +127,9 @@ public class Cliente {
                     getTransfer_args[6] = "3";
                     getTransfer_args[7] = "12.5";
                     pula = true;
+                }
+                else{
+                    menuScreen = 0;
                 }
             }
             else if (menuScreen == 1){
