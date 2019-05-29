@@ -8,13 +8,16 @@ import java.rmi.registry.Registry;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
 
 public class Motorista {
     public static void main(String[] args) throws RemoteException, NotBoundException {
         Registry refservicoNomes = LocateRegistry.getRegistry(1099);
         InterfaceServ refServidor = (InterfaceServ) refservicoNomes.lookup("servImpl");
-        MotImpl motImpl = new MotImpl(refServidor);
+        Queue<Notificacao> fila_notificacao  = new LinkedList<Notificacao>();
+        MotImpl motImpl = new MotImpl(refServidor,fila_notificacao);
+
 
         int menuScreen = 0;
         int i;
@@ -41,6 +44,8 @@ public class Motorista {
                     System.out.println("1 - Cadastro oferta de transfer");
                 else
                     System.out.println("1 - Alterar oferta de transfer");
+
+                System.out.printf("2 - Ver notificações [%d]\n",fila_notificacao.size());
             }
             else if (menuScreen == 1){
                 System.out.println("# ============== Menu Motorista TopTransfer.Net ============== #");
@@ -107,6 +112,9 @@ public class Motorista {
                         menuScreen = 1;
                     else
                         menuScreen = 2;
+                }
+                else if (keyboard_input.equals("2")){
+                    menuScreen = 3;
                 }
                 else if (keyboard_input.equals("3")){
                     menuScreen = 1;

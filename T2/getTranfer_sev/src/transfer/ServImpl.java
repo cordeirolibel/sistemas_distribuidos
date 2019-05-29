@@ -39,7 +39,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
 
         while (! fila_notificacao.isEmpty()) {
             notificacao = fila_notificacao.poll();
-            if (notificacao.tipo.equals("cli")) {
+            if (notificacao.tipo.equals("cli_ser")) {
                 notificaCliente(notificacao.oferta, notificacao.id_cli, notificacao.horarios);
             }
             else if(notificacao.tipo.equals("mot")){

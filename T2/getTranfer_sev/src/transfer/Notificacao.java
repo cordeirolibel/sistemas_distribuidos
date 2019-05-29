@@ -13,15 +13,16 @@ public class Notificacao  implements Serializable {
         interesse = new Interesse(interesse_);
         tipo = "mot";
     }
+    public Notificacao(Oferta oferta_, Interesse interesse_){
+        interesse = new Interesse(interesse_);
+        oferta = new Oferta(oferta_);
+        tipo = "cli";
+    }
     public Notificacao(Oferta oferta_, int id_cli_,Horarios horarios_){
         oferta = new Oferta(oferta_);
-
         id_cli = id_cli_;
         horarios = horarios_;
-        tipo = "cli";
-        System.out.printf("-------------------------------");
-        oferta.print();
-        System.out.printf("-------------------------------");
+        tipo = "cli_ser";
     }
 
 }
