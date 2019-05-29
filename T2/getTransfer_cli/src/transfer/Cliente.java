@@ -34,6 +34,10 @@ public class Cliente {
 
         refServidor.chamar("Ola servidor",cliImpl);
 
+        Notificacao newNotificacao = null;
+        Oferta notif_oferta = new Oferta();
+        Interesse notif_interesse = new Interesse();
+
         while (true){
             if (menuScreen == 0){
                 System.out.println("# ============== Menu client TopTransfer.Net ============== #");
@@ -107,6 +111,7 @@ public class Cliente {
                 }
             }
             else if (menuScreen==2){
+                System.out.println("# ============== Menu client TopTransfer.Net ============== #");
                 if (cliImpl.fila_notificacao.isEmpty()){
                     System.out.println("Nenhuma notificação");
                 }
@@ -117,7 +122,37 @@ public class Cliente {
 
                     for (i=0;i<tam_filaNotificacoes; i++){
                         System.out.printf("Notificação [" + i + "] \n");
-                        //cliImpl.fila_notificacao.poll();
+                        newNotificacao = cliImpl.fila_notificacao.poll();
+
+                        notif_oferta = newNotificacao.oferta;
+                        notif_interesse = newNotificacao.interesse;
+
+                        //Print oferta recebida
+                        notif_oferta.print();
+
+                        System.out.println("\n1. Aceitar \n2. Não aceitar");
+
+                        System.out.printf(">> Opção: ");
+
+                        Scanner keyboard_impl = new Scanner(System.in);
+                        String input = keyboard_impl.nextLine();
+
+                        if(input.equals("1")){
+                            System.out.println("Resposta servidor: ");
+                            if (cliImpl.iSev.reserva(notif_oferta, notif_interesse)){
+                                System.out.printf("Reserva Efetuada\n");
+                            }
+                            else{
+                                System.out.printf("Motorista nao disponivel\n");
+                            }
+
+                            useKeyboard = 0;
+                            break;
+                        }
+                        else{
+                            System.out.println("Procedimento cancelado");
+                        }
+
                     }
                 }
             }
@@ -178,12 +213,12 @@ public class Cliente {
                 }
 
                 menuScreen = 0;
-                useKeyboard = 1;
             }
             else if( menuScreen == 2){
-                System.out.println("Notf");
+                menuScreen = 0;
             }
 
+            useKeyboard = 1;
             //System.out.println(menuScreen);
         }
 
