@@ -17,6 +17,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
     public ServImpl() throws RemoteException {
         System.out.println("ServImpl executado!");
 
+        //cria todas as listas e filas
         lista_interesses_clie  = new LinkedList<Interesse>();
         lista_interfaces_clie  = new LinkedList<InterfaceCli>();
 
@@ -37,11 +38,14 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
         int size = fila_notificacao.size();
         Notificacao notificacao;
 
+        //enviar todas as notificacoes da lista de notificacoes
         while (! fila_notificacao.isEmpty()) {
             notificacao = fila_notificacao.poll();
+            //tipo do cliente
             if (notificacao.tipo.equals("cli_ser")) {
                 notificaCliente(notificacao.oferta, notificacao.id_cli, notificacao.horarios);
             }
+            //tipo do motorista
             else if(notificacao.tipo.equals("mot")){
                 notificaMotoristas(notificacao.interesse);
             }
@@ -59,10 +63,13 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
         System.out.printf("=======Notifica Cliente========\n");
         System.out.printf("==> Oferta de motorista %d para cliente %d\n",oferta.id,id_cli);
 
+        //carrega informacoes do cliente
         InterfaceCli iClie_i = lista_interfaces_clie.get(id_cli);
         Interesse interesse = lista_interesses_clie.get(id_cli);
 
+        //se oferta atende o interesse
         if (comparaInteresseComOferta(interesse,oferta,horarios)){
+            //Notifica o cliente
             iClie_i.notificaOferta(oferta,interesse);
             System.out.printf("    transfer.Oferta.Notificacao cadastrado\n");
         }
@@ -74,9 +81,9 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
 
         int size = lista_interesses_clie.size();
 
+        //adiciona todos os clientes na lista de notificacoes
         for (int i=0;i<size;i++) {
             fila_notificacao.add(new Notificacao(oferta,i,horarios));
-            //notificaCliente(oferta, i,horarios);
         }
 
     }
@@ -93,10 +100,14 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
         Horarios horarios;
         int size = lista_oferta.size();
 
+        //verifica todos os motoristas
         for (int i=0;i<size;i++) {
             oferta_i = lista_oferta.get(i);
             horarios = lista_horarios_mot.get(i);
+            //se oferta atende o interesse, mas não avalia o preco
             if (comparaInteresseComOfertaSemPreco(interesse,oferta_i,horarios)){
+
+                //Notifica Interesse para o motorista
                 iMot_i = lista_interfaces_mot.get(i);
                 iMot_i.notificaInteresse(interesse);
                 System.out.printf("    Notifica motorista %d\n",oferta_i.id);
@@ -123,13 +134,17 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
         Oferta oferta_i;
         Horarios horarios;
         int size = lista_oferta.size();
+
+        //lista de retorno de ofertas
         LinkedList<Oferta> lista_oferta_retorno = new LinkedList<Oferta>();
 
         //procura o oferta desse motorista
         for (int i=0;i<size;i++){
             oferta_i = lista_oferta.get(i);
             horarios = lista_horarios_mot.get(i);
+            //se oferta atende o interesse
             if (comparaInteresseComOferta(interesse,oferta_i,horarios)){
+                //adiciona na lista de retorno
                 lista_oferta_retorno.add(oferta_i);
             }
         }
@@ -149,13 +164,21 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
         int size = lista_oferta.size();
         //procura o oferta desse motorista
         for (int i=0;i<size;i++){
+
+            //pega informacoes do motorista
             oferta_i = lista_oferta.get(i);
             iMot_i = lista_interfaces_mot.get(i);
+
+            //quando encontrar a oferta
             if (oferta_i.id == oferta.id) {
                 horarios = lista_horarios_mot.get(i);
-                //controle de concorrencia
+
+                //controle de concorrencia, só um entra no bloco
                 synchronized (this) {
+
+                    //verifica se tem horario disponivel
                     if(horarios.disponivel(interesse.dia, interesse.mes, interesse.hora)) {
+                        //marcar horario
                         horarios.set(interesse.dia, interesse.mes, interesse.hora);
                     }
                     else{
@@ -168,8 +191,6 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
                 iMot_i.notificaReserva(interesse);
 
                 //cliente nao recebe mais notificaçoes
-                //lista_interesses_clie.remove(i);
-                //lista_interfaces_clie.remove(i);
                 return true;
             }
         }
@@ -183,10 +204,13 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
         System.out.printf("===> Interesse de cliente %d\n",interesse.id);
         interesse.print();
 
+        //adiciona o interesse e cliente nas suas listas
         int size = lista_interesses_clie.size();
         interesse.id = size;
         lista_interesses_clie.add(interesse);
         lista_interfaces_clie.add(iCli);
+
+        //adiciona na fila de notificação
         fila_notificacao.add(new Notificacao(interesse));
     }
 
@@ -198,43 +222,16 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
         System.out.printf("===> Ofera de motorista %d\n",oferta.id);
         oferta.print();
 
+        //adiciona a oferta e motorista nas suas listas
         int size = lista_oferta.size();
         Horarios horarios = new Horarios();
         oferta.id = size;
         lista_oferta.add(oferta);
         lista_interfaces_mot.add(iMot);
         lista_horarios_mot.add(horarios);
+
+        //adiciona na fila de notificação
         notificaClientes(oferta,horarios);
-    }
-
-    //quando o motorista manda uma proposta para um cliente especifico
-    @Override //OK
-    public void novaProposta(Oferta oferta, Interesse interesse) throws RemoteException {
-        System.out.printf("=======Nova Proposta========\n");
-        System.out.printf("==> Oferta de motorista %d para cliente %d\n",oferta.id,interesse.id);
-        oferta.print();
-
-        Oferta oferta_i;
-        int id_cli = interesse.id;
-        int id_mot = -1;
-
-        int size = lista_oferta.size();
-        //procura o oferta desse motorista
-        /*
-        for (int i=0;i<size;i++) {
-            oferta_i = lista_oferta.get(i);
-            if (oferta_i.id == oferta.id) {
-                id_mot = i;
-            }
-        }
-        if (id_mot == -1){ return; }
-        */
-        id_mot = oferta.id;
-
-        //notifica o cliente dessa nova proposta
-        Horarios horarios = lista_horarios_mot.get(id_mot);
-        fila_notificacao.add(new Notificacao(oferta,id_cli,horarios));
-        //notificaCliente(oferta, id_cli,horarios);
     }
 
     @Override //OK
@@ -246,6 +243,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
         InterfaceMot iMot_i;
         Horarios horarios = null;
         int size = lista_oferta.size();
+
         //procura o oferta desse motorista
         for (int i=0;i<size;i++){
             iMot_i = lista_interfaces_mot.get(i);
@@ -254,55 +252,59 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
             if (iMot_i.id == iMot.id){ //mesmo motorista
                 //remove oferta
                 lista_oferta.set(i,oferta);
-                //lista_oferta.remove(i);
-                //lista_interfaces_mot.remove(i);
-                //lista_horarios_mot.remove(i);
                 break;
             }
         }
 
-        //add oferta
-        size = lista_oferta.size();
-        //oferta.id = size;
-        //lista_oferta.add(oferta);
-        //lista_interfaces_mot.add(iMot);
-        //lista_horarios_mot.add(horarios);
+        //adiciona na fila de notificação
         notificaClientes(oferta,horarios);
     }
+
+
+    //quando o motorista manda uma proposta para um cliente especifico
+    @Override //OK
+    public void novaProposta(Oferta oferta, Interesse interesse) throws RemoteException {
+        System.out.printf("=======Nova Proposta========\n");
+        System.out.printf("==> Oferta de motorista %d para cliente %d\n",oferta.id,interesse.id);
+        oferta.print();
+
+        int id_cli = interesse.id;
+        int id_mot = -1;
+
+        //procura o oferta desse motorista
+        id_mot = oferta.id;
+
+        //notifica o cliente dessa nova proposta
+        Horarios horarios = lista_horarios_mot.get(id_mot);
+
+        //adiciona na fila de notificação
+        fila_notificacao.add(new Notificacao(oferta,id_cli,horarios));
+
+    }
+
+
 
 
     // --------------------------------------------------------------
     // =====> Internas
     // --------------------------------------------------------------
-    
-    //retorna true se oferta o1 atende oferta o2
-    /*private boolean comparaOfertas(Oferta o1,Oferta o2){
-        if ((o1.itinerario.equals(o2.itinerario)) &
-                (o1.veiculo.equals(o2.veiculo)) &
-                (o1.passageiros == o2.passageiros) &
-                (o1.data.compareTo(o2.data)==0) &    // ====== ver melhor comparacao de datas
-                (o1.preco <= o2.preco)&
-                (o1.ativa==1)){
-            return true;
-        }
-        return false;
-    }*/
+
 
     //retorna true se oferta atende Interesse
     private boolean comparaInteresseComOferta(Interesse i,Oferta o,Horarios h){
         if ((o.veiculo.equals(i.veiculo)) &
-            (h.disponivel(i.dia,i.mes,i.hora)) &
+            (h.disponivel(i.dia,i.mes,i.hora)) & //verifica no calendario
             (o.passageiros>=i.n_passageiros) &
             (o.preco <= i.preco)){
             return true;
         }
         return false;
     }
-
+    //retorna true se oferta atende Interesse, mas nao avalia o preco
     private boolean comparaInteresseComOfertaSemPreco(Interesse i,Oferta o,Horarios h){
         if ((o.veiculo.equals(i.veiculo)) &
             (o.passageiros>=i.n_passageiros) &
-            (h.disponivel(i.dia,i.mes,i.hora))){
+            (h.disponivel(i.dia,i.mes,i.hora))){//verifica no calendario
             return true;
         }
         return false;

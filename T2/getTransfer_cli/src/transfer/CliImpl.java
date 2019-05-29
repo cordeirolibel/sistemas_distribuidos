@@ -23,6 +23,7 @@ public class CliImpl extends UnicastRemoteObject implements InterfaceCli{
         System.out.printf("Echo enviado para o servidor: %s\n",msg);
     }
 
+    //adiciona na fila de notificacoes
     @Override
     public void notificaOferta(Oferta oferta,Interesse interesse) throws RemoteException {
         System.out.printf("\n=======> Nova Notificação \n >> ");

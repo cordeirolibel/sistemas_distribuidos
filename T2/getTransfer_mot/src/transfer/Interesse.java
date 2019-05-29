@@ -17,6 +17,8 @@ public class Interesse  implements Serializable {
     public Interesse(){
 
     }
+
+    //cria uma copia
     public Interesse(Interesse i){
         veiculo = i.veiculo;
         itinerario = i.itinerario;
@@ -27,6 +29,7 @@ public class Interesse  implements Serializable {
         mes = i.mes;
         hora = i.hora;
     }
+
     public void print(){
         System.out.printf("Veiculo     %s\n",veiculo);
         System.out.printf("Itinerario  %s\n",itinerario);

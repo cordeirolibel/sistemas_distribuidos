@@ -12,11 +12,14 @@ import java.util.Scanner;
 
 public class Cliente {
     public static void main(String[] args) throws IOException, NotBoundException {
+
+        // Cria referencia com servidor
         Registry refservicoNomes = LocateRegistry.getRegistry(1099);
         InterfaceServ refServidor = (InterfaceServ) refservicoNomes.lookup("servImpl");
         CliImpl cliImpl = new CliImpl(refServidor);
         cliImpl.id = 42;
 
+        //variaveis
         int numero_oferta = -1;
         boolean pula = false;
         int menuScreen = 0;
@@ -39,14 +42,19 @@ public class Cliente {
         Interesse notif_interesse = new Interesse();
 
         while (true){
+
+            //=======> MENU
             if (menuScreen == 0){
+                //tela principal
                 System.out.println("# ============== Menu client TopTransfer.Net ============== #");
                 System.out.println("1 - Ver cotações para transfer");
                 System.out.printf("2 - Notificações [%d]\n",cliImpl.fila_notificacao.size());
             }
             if (menuScreen == 1){
+                //tela consulta transfer
                 System.out.println("# ============== Menu client TopTransfer.Net ============== #");
 
+                //pega teclado
                 if (pula==false) {
                     for (i = 0; i < getTransfer_msgs.length; i++) {
                         // Recebe Interesse
@@ -76,7 +84,6 @@ public class Cliente {
 
                 // Print lista de ofertas
                 int tamOfertas = ofertas.size();
-
                 System.out.printf("============================================\n");
                 for (i=0; i<tamOfertas; i++){
                     System.out.printf("Oferta [" + i + "] " );
@@ -137,6 +144,7 @@ public class Cliente {
                         Scanner keyboard_impl = new Scanner(System.in);
                         String input = keyboard_impl.nextLine();
 
+                        // Aceitar Oferta
                         if(input.equals("1")){
                             System.out.println("Resposta servidor: ");
                             if (cliImpl.iSev.reserva(notif_oferta, notif_interesse)){
@@ -156,7 +164,8 @@ public class Cliente {
                     }
                 }
             }
-
+            //===================================================================
+            //          Leitura teclado
             if (useKeyboard == 1) {
                 Scanner keyboard = new Scanner(System.in);
                 System.out.printf(input_msg);
@@ -167,6 +176,7 @@ public class Cliente {
                 if (keyboard_input.equals("1")){
                     menuScreen = 1;
                 }
+                // Interesse padrao
                 else if (keyboard_input.equals("3")){
                     menuScreen = 1;
                     getTransfer_args[0] = "Curitiba";

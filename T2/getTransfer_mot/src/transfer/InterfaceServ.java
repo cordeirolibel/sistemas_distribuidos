@@ -6,17 +6,12 @@ import java.util.LinkedList;
 
 public interface InterfaceServ extends Remote {
 
-    void chamar(String msg, InterfaceCli iCli) throws RemoteException;
-
-    LinkedList<Oferta> cotacao(Interesse interesse) throws RemoteException;
-
-    boolean reserva(Oferta oferta, Interesse interesse) throws RemoteException;
-
-    void registraInteresseCli(Interesse interesse, InterfaceCli iCli) throws RemoteException;
-
+    //cadastraOferta: envia Oferta (veículo, passageiros e preço) e this
     void cadastraOferta (Oferta oferta, InterfaceMot iMot) throws  RemoteException;
 
+    //novaProposta: envia Interesse e Oferta
     void novaProposta(Oferta oferta,Interesse interesse) throws RemoteException;
 
+    //alteraOferta: envia Oferta (veículo, passageiros e preço) e this
     void alteraOferta (Oferta oferta, InterfaceMot iMot) throws RemoteException;
 }

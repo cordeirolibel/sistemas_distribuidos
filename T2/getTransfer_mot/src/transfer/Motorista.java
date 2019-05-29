@@ -13,12 +13,14 @@ import java.util.Scanner;
 
 public class Motorista {
     public static void main(String[] args) throws RemoteException, NotBoundException {
+
+        // Cria referencia com servidor
         Registry refservicoNomes = LocateRegistry.getRegistry(1099);
         InterfaceServ refServidor = (InterfaceServ) refservicoNomes.lookup("servImpl");
         Queue<Notificacao> fila_notificacao  = new LinkedList<Notificacao>();
         MotImpl motImpl = new MotImpl(refServidor,fila_notificacao);
 
-
+        //variaveis
         int menuScreen = 0;
         int i;
 
@@ -41,6 +43,7 @@ public class Motorista {
         boolean cadastro_ou_altera = false;//false para cadastro
         while (true){
             if (menuScreen == 0){
+                //tela principal
                 System.out.println("# ============== Menu Motorista TopTransfer.Net ============== #");
                 if (cadastro_ou_altera==false)
                     System.out.println("1 - Cadastro oferta de transfer");
@@ -50,6 +53,7 @@ public class Motorista {
                 System.out.printf("2 - Ver notificações [%d]\n",fila_notificacao.size());
             }
             else if (menuScreen == 1){
+                //cadastra ou altera oferta
                 System.out.println("# ============== Menu Motorista TopTransfer.Net ============== #");
 
                 if (pula == false){
@@ -90,7 +94,7 @@ public class Motorista {
                     setTransfer_args[i] = keyboard_input;
                 }
 
-                //System.out.println(Arrays.toString(setTransfer_args));
+
 
                 // Cria oferta
                 ofertaMot.veiculo = setTransfer_args[0];

@@ -11,18 +11,21 @@ public class Servidor {
         System.out.println("Hello World Servidor!");
         InterfaceServ servImpl = null;
         try {
+            //Cria servidor
             Registry referenciaServicoNomes = LocateRegistry.createRegistry(1099);
             servImpl = new ServImpl();
-
             referenciaServicoNomes.bind("servImpl",servImpl);
 
         } catch (RemoteException | AlreadyBoundException e) {
             e.printStackTrace();
         }
+
+
+        //envia notificacoes a cada um segundo
         while(true){
             try {
-                //envia notificacoes
                 TimeUnit.SECONDS.sleep(1);
+                //envia notificacoes
                 servImpl.enviaNotificacoes();
             } catch (InterruptedException e) {
                 e.printStackTrace();

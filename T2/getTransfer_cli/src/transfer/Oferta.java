@@ -9,13 +9,16 @@ public class Oferta  implements Serializable {
     float preco;
     int id;
 
+
+    public Oferta(){
+    }
+
+    //cria uma copia
     public Oferta(Oferta o){
         veiculo = o.veiculo;
         passageiros = o.passageiros;
         preco = o.preco;
         id = o.id;
-    }
-    public Oferta(){
     }
 
     public void print(){
