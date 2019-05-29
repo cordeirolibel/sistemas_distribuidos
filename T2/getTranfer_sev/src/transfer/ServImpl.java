@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.Queue;
 
 public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
     LinkedList<Interesse> lista_interesses_clie;
@@ -11,7 +12,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
     LinkedList<Oferta> lista_oferta;
     LinkedList<InterfaceMot> lista_interfaces_mot;
     LinkedList<Horarios> lista_horarios_mot;
-    LinkedList<Notificacao> lista_notificacao;
+    Queue<Notificacao> fila_notificacao;
 
     public ServImpl() throws RemoteException {
         System.out.println("ServImpl executado!");
@@ -24,7 +25,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
 
         lista_horarios_mot     = new LinkedList<Horarios>();
 
-        lista_notificacao      = new LinkedList<Notificacao>();
+        fila_notificacao      = new LinkedList<Notificacao>();
     }
 
     // --------------------------------------------------------------
@@ -33,15 +34,15 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
 
     //envia todas as notificaçoes pendentes
     public void enviaNotificacoes() throws RemoteException{
-        int size = lista_notificacao.size();
+        int size = fila_notificacao.size();
         Notificacao notificacao;
 
-        for (int i=0;i<size;i++) {
-            notificacao = lista_notificacao.get(i);
-            if (notificacao.tipo.equals("mot")) {
+        while (! fila_notificacao.isEmpty()) {
+            notificacao = fila_notificacao.poll();
+            if (notificacao.tipo.equals("cli")) {
                 notificaCliente(notificacao.oferta, notificacao.id_cli, notificacao.horarios);
             }
-            else if(notificacao.tipo.equals("cli")){
+            else if(notificacao.tipo.equals("mot")){
                 notificaMotoristas(notificacao.interesse);
             }
 
@@ -74,7 +75,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
         int size = lista_interesses_clie.size();
 
         for (int i=0;i<size;i++) {
-            lista_notificacao.add(new Notificacao(oferta,i,horarios));
+            fila_notificacao.add(new Notificacao(oferta,i,horarios));
             //notificaCliente(oferta, i,horarios);
         }
 
@@ -186,7 +187,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
         interesse.id = size;
         lista_interesses_clie.add(interesse);
         lista_interfaces_clie.add(iCli);
-        lista_notificacao.add(new Notificacao(interesse));
+        fila_notificacao.add(new Notificacao(interesse));
     }
 
 
@@ -232,7 +233,7 @@ public class ServImpl extends UnicastRemoteObject implements InterfaceServ{
 
         //notifica o cliente dessa nova proposta
         Horarios horarios = lista_horarios_mot.get(id_mot);
-        lista_notificacao.add(new Notificacao(oferta,id_cli,horarios));
+        fila_notificacao.add(new Notificacao(oferta,id_cli,horarios));
         //notificaCliente(oferta, id_cli,horarios);
     }
 
