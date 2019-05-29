@@ -30,6 +30,8 @@ public class Motorista {
 
         String[] setTransfer_args = new String[3];
 
+        Notificacao notificacao = null;
+
         int n_notific = 0;
 
         Oferta ofertaMot = new Oferta();
@@ -99,6 +101,26 @@ public class Motorista {
                 System.out.println("Confirmar alteração de oferta?");
                 System.out.println("1. Sim \n 2. Não");
             }
+            else if (menuScreen == 3) {
+                System.out.println(" =======Notificacao==========");
+                if (fila_notificacao.isEmpty()) {
+                    System.out.println("Sem notificacoes");
+                    System.out.println("Aperte enter para continuar");
+                    notificacao = null;
+                }
+                else {
+                    notificacao = fila_notificacao.poll();
+
+
+                    System.out.println("  Novo interesse! ");
+                    System.out.printf("Interesse: ");
+
+                    notificacao.interesse.print();
+
+                    System.out.println("Deseja fazer uma nova proposta?");
+                    System.out.println("1 - Sim // 2 - Não");
+                }
+            }
 
             Scanner keyboard = new Scanner(System.in);
             System.out.printf(input_msg);
@@ -159,6 +181,40 @@ public class Motorista {
                 }
 
                 menuScreen = 0;
+            }
+            else if (menuScreen == 3){
+                if (notificacao == null){
+                    menuScreen = 0;
+                }
+                else {
+                    if (keyboard_input.equals("1")) {
+                        ofertaMot = new Oferta();
+
+                        ofertaMot.passageiros = notificacao.interesse.n_passageiros;
+                        ofertaMot.veiculo = notificacao.interesse.veiculo;
+
+                        System.out.println("Novo preco: ");
+                        keyboard_input = keyboard.nextLine();
+                        ofertaMot.preco = Float.parseFloat(keyboard_input);
+
+                        System.out.println("Registrar oferta? ");
+                        System.out.println("1. Sim \n 2. Não");
+                        //Scanner key = new Scanner(System.in);
+                        System.out.println("Option: ");
+                        keyboard_input = keyboard.nextLine();
+
+                        if (keyboard_input.equals("1")) {
+                            // Registra oferta no servidor
+                            refServidor.novaProposta(ofertaMot, notificacao.interesse);
+
+                            System.out.println("Nova proposta cadastrada com sucesso!");
+                        } else {
+                            System.out.println("Cadastro de nova proposta cancelado");
+                        }
+                    } else {
+                        System.out.println("Cadastro de nova proposta cancelado");
+                    }
+                }
             }
 
             //System.out.println(menuScreen);
