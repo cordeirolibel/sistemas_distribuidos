@@ -28,7 +28,7 @@ public class MotImpl extends UnicastRemoteObject implements InterfaceMot{
 
     public void notificaInteresse(Interesse interesse) throws RemoteException {
 
-        System.out.printf("\n=======> Nova Notificação \n >>");
+        System.out.printf("\n=======> Nova Notificação \n Option: ");
         fila_notificacao.add(new Notificacao(interesse));
     }
 

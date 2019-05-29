@@ -193,14 +193,14 @@ public class Motorista {
                         ofertaMot.passageiros = notificacao.interesse.n_passageiros;
                         ofertaMot.veiculo = notificacao.interesse.veiculo;
 
-                        System.out.println("Novo preco: ");
+                        System.out.printf("Novo preco: ");
                         keyboard_input = keyboard.nextLine();
                         ofertaMot.preco = Float.parseFloat(keyboard_input);
 
                         System.out.println("Registrar oferta? ");
                         System.out.println("1. Sim \n 2. Não");
                         //Scanner key = new Scanner(System.in);
-                        System.out.println("Option: ");
+                        System.out.printf("Option: ");
                         keyboard_input = keyboard.nextLine();
 
                         if (keyboard_input.equals("1")) {
@@ -214,6 +214,7 @@ public class Motorista {
                     } else {
                         System.out.println("Cadastro de nova proposta cancelado");
                     }
+                    menuScreen = 0;
                 }
             }
 
