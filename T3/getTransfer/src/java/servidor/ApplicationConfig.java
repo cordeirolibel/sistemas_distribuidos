@@ -31,6 +31,7 @@ public class ApplicationConfig extends Application {
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(servidor.Cotacao.class);
         resources.add(servidor.Reserva.class);
+        resources.add(servidor.Servidor.class);
     }
     
 }
