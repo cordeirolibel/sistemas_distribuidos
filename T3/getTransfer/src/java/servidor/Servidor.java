@@ -202,23 +202,13 @@ public class Servidor {
     //retorna true se oferta atende Interesse
     private boolean comparaInteresseComOferta(Interesse i,Oferta o,Horarios h){
         System.out.println("=========================");
-        System.out.println("Compara Oferta");
-        o.print();
-        System.out.println("Compara Interesse");
-        i.print();
-        System.out.println(o.veiculo.equals(i.veiculo));
-        System.out.println(h.disponivel(i.dia,i.mes,i.hora));
-        System.out.println(o.passageiros>=i.n_passageiros);
-        System.out.println(o.preco <= i.preco);
         
         if ((o.veiculo.equals(i.veiculo)) &
             (h.disponivel(i.dia,i.mes,i.hora)) & //verifica no calendario
             (o.passageiros>=i.n_passageiros) &
             (o.preco <= i.preco)){
-            System.out.println("True");
             return true;
         }
-        System.out.println("False");
         return false;
     }
     
