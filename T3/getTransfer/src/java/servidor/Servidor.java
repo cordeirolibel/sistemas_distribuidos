@@ -54,7 +54,7 @@ public class Servidor {
     @GET
     @Path("cotacao")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getJson(@QueryParam("interrese") String json) {
+    public String getJson(@QueryParam("interesse") String json) {
         
         
         System.out.printf("=======Cotacao========\n");

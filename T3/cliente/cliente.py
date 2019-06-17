@@ -6,8 +6,8 @@ import os
 import json
 
 # api-endpoint
-URL_COTACAO = "http://localhost:8080/getTransfer/server/app/cotacao"
-URL_RESERVA = "http://localhost:8080/getTransfer/server/app/reserva"
+URL_COTACAO = "http://localhost:8080/getTransfer/server/app/cotacao?interesse="
+URL_RESERVA = "http://localhost:8080/getTransfer/server/app/reserva?oferta="
 
 # defining a params dict for the parameters to be sent to the API
 #PARAMS = {'address':brasil}
@@ -46,7 +46,7 @@ def runClient():
 
 			interesseJson = json.dumps(interesseCli)
 
-			url = URL_COTACAO + "/" + interesseJson
+			url = URL_COTACAO + interesseJson
 
 			r = requests.get(url)
 
@@ -90,24 +90,25 @@ def runClient():
 				ofertaCli = cotacoes[int(op)]
 				ofertaJson = json.dumps(ofertaCli)
 				
-				url = URL_RESERVA + '/' + ofertaJson + '/' + interesseJson
+				url = URL_RESERVA + ofertaJson + '&interesse=' + interesseJson
 
 				r = requests.get(url)
 
-				print r.text()
+				print r.text
+				break
 			else:
 				print 'aye'
 		elif (screen == 2):
 			if (op == '2'):
 				screen = 0			
 
-		os.system('CLS')
+		os.system('clear')
 
 	return "Bye!"
 
 
 if __name__ == "__main__":
-	os.system('CLS')
+	os.system('clear')
 	runClient()
 
 	#r = requests.get(URL_COTACAO)
