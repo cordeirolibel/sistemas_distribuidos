@@ -78,7 +78,7 @@ def runClient():
 				hardcode = 1
 				interesseCli['itinerario'] = "Tokyo" + " - " + "Kyoto"
 				interesseCli['dia'] = 23
-				interesseCli['mes'] = 06
+				interesseCli['mes'] = 6
 				interesseCli['hora'] = 12
 				interesseCli['veiculo'] = "bmw"
 				interesseCli['n_passageiros'] = 2
