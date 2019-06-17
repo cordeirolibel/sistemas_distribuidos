@@ -45,29 +45,6 @@ public class Servidor {
         initOfertas();
     }
 
-    /**
-     * Retrieves representation of an instance of servidor.Cotacao
-     * @return an instance of java.lang.String
-     */
-    @GET
-    @Path("cotacao")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getJson() {
-        Gson gson = new Gson();
-        Oferta oferta_i;
-        int size = lista_oferta.size();
-
-        //lista de retorno de ofertas
-        LinkedList<Oferta> lista_oferta_retorno = new LinkedList<Oferta>();
-
-        //procura o oferta desse motorista
-        for (int i=0;i<size;i++){
-            oferta_i = lista_oferta.get(i);
-            lista_oferta_retorno.add(oferta_i);
-            
-        }
-        return gson.toJson(lista_oferta_retorno);  
-    }
 
     /**
      * PUT method for updating or creating an instance of Cotacao
@@ -91,6 +68,7 @@ public class Servidor {
             return("invalid JSON!");
         }
         
+        //printa interesse
         System.out.printf("==> Interesse de %d:\n",interesse.id);
         interesse.print();
         
@@ -130,7 +108,8 @@ public class Servidor {
         Oferta oferta = new Oferta();
         
         Gson gson = new Gson();
-        // converts string json to Interesse and oferta class object
+        
+        // converte string json para Interesse e oferta class object
         try {
             if (oferta_json != null) {
                 oferta = gson.fromJson(oferta_json, Oferta.class);      
@@ -186,22 +165,10 @@ public class Servidor {
     // --------------------------------------------------------------
     // =====> Internas
     // --------------------------------------------------------------
-    
-    //retorna true se oferta atende Interesse, mas nao avalia o preco
-    private boolean comparaInteresseComOfertaSemPreco(Interesse i,Oferta o,Horarios h){
-        
-        
-        if ((o.veiculo.equals(i.veiculo)) &
-            (o.passageiros>=i.n_passageiros) &
-            (h.disponivel(i.dia,i.mes,i.hora))){//verifica no calendario
-            return true;
-        }
-        return false;
-    }
+   
     
     //retorna true se oferta atende Interesse
     private boolean comparaInteresseComOferta(Interesse i,Oferta o,Horarios h){
-        System.out.println("=========================");
         
         if ((o.veiculo.equals(i.veiculo)) &
             (h.disponivel(i.dia,i.mes,i.hora)) & //verifica no calendario
