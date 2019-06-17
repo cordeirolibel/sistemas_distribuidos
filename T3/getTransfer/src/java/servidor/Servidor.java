@@ -15,6 +15,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -51,13 +52,14 @@ public class Servidor {
      * @param content representation for the resource
      */
     @GET
-    @Path("cotacao/{json}")
+    @Path("cotacao")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getJson(@PathParam("json") String json) {
+    public String getJson(@QueryParam("interrese") String json) {
+        
+        
         System.out.printf("=======Cotacao========\n");
         Interesse interesse = new Interesse();
         Gson gson = new Gson();
-        
         // converts string json to Interesse class object
         try {
             if (json != null) {
@@ -99,9 +101,9 @@ public class Servidor {
      * @param content representation for the resource
      */
     @GET
-    @Path("reserva/{oferta}/{interesse}")
+    @Path("reserva")
     @Produces(MediaType.APPLICATION_JSON)
-    public String reserva(@PathParam("oferta") String oferta_json,@PathParam("interesse") String interesse_json) {
+    public String reserva(@QueryParam("oferta") String oferta_json,@QueryParam("interesse") String interesse_json) {
         System.out.printf("=======Reserva========\n");
         
         Interesse interesse = new Interesse();
