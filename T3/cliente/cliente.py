@@ -6,8 +6,8 @@ import os
 import json
 
 # api-endpoint
-URL_COTACAO = "http://192.168.106.151:8080/getTransfer/server/app/cotacao"
-URL_RESERVA = "http://192.168.106.151:8080/getTransfer/server/reserva"
+URL_COTACAO = "http://localhost:8080/getTransfer/server/app/cotacao"
+URL_RESERVA = "http://localhost:8080/getTransfer/server/app/reserva"
 
 # defining a params dict for the parameters to be sent to the API
 #PARAMS = {'address':brasil}
@@ -15,6 +15,7 @@ PARAMS = ''
 
 def runClient():
 	screen = 0
+	hardcode = 0
 	getTransfer_msgs = ["Origin: ", "Destination: ", "Day: ", "Month: ", "Hour: ", "Vehicle type: ", "Number of passengers: ", "Price: "]
 	getTransfer_args = []
 	interesseCli = {}
@@ -57,8 +58,8 @@ def runClient():
 				print ("[{id}] Passengers: {pas}  | Price: {price}  | Vehicle: {veic}").format(id=cotacao['id'], pas=cotacao['passageiros'], price=cotacao['preco'], veic=cotacao['veiculo'])
 
 			# Print options
-			print (" 1 - Book topTransfer")
-			print (" 2 - Return")
+			print ('\n')
+			print ("Choose an offer by number or 'c' to cancel")
 
 		elif (screen == 2):
 			print ("# ======================== Your bookings ========================= #")
@@ -85,10 +86,17 @@ def runClient():
 				interesseCli['preco'] = 25
 
 		elif (screen == 1):
-			if (op == '1'):
-				print ("Lets reserva")
-			elif (op == '2'):
-				screen = 0
+			if (op != 'c'):
+				ofertaCli = cotacoes[int(op)]
+				ofertaJson = json.dumps(ofertaCli)
+				
+				url = URL_RESERVA + '/' + ofertaJson + '/' + interesseJson
+
+				r = requests.get(url)
+
+				print r.text()
+			else:
+				print 'aye'
 		elif (screen == 2):
 			if (op == '2'):
 				screen = 0			
