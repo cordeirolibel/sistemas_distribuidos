@@ -4,6 +4,7 @@
 import requests
 import os
 import json
+import time
 
 # api-endpoint
 URL_COTACAO = "http://localhost:8080/getTransfer/server/app/cotacao?interesse="
@@ -25,7 +26,6 @@ def runClient():
 			print ("# =========================== topTransfer.net =========================== #")
 			# Menu
 			print (" 1 - Check quotations")
-			print (" 2 - Check bookings")
 			print (" 0 - Exit")
 		elif (screen == 1):
 			print ("# =========================== Cotations topTransfer.net =========================== #")
@@ -51,19 +51,22 @@ def runClient():
 			r = requests.get(url)
 
 			cotacoes = r.json()
+			lenCotacoes = len(cotacoes)
 			#print (cotacoes)
 
+			i = 0
 			print (" \n # ======================================================================== # \n")
 			for cotacao in cotacoes:
-				print ("[{id}] Passengers: {pas}  | Price: {price}  | Vehicle: {veic}").format(id=cotacao['id'], pas=cotacao['passageiros'], price=cotacao['preco'], veic=cotacao['veiculo'])
+				print ("[{id}] Passengers: {pas}  | Price: {price}  | Vehicle: {veic}").format(id=i, pas=cotacao['passageiros'], price=cotacao['preco'], veic=cotacao['veiculo'])
+				i = i + 1
 
 			# Print options
 			print ('\n')
 			print ("Choose an offer by number or 'c' to cancel")
 
 		elif (screen == 2):
-			print ("# ======================== Your bookings ========================= #")
-			print ("2 - Return")
+			print (r.text)
+			print ("Press any key to return")
 
 		# Get keyboard input
 		op = raw_input("Option: ")
@@ -73,8 +76,6 @@ def runClient():
 				break
 			elif (op == '1'):
 				screen = 1
-			elif (op == '2'):
-				screen = 2
 			elif (op == '3'):
 				hardcode = 1
 				interesseCli['itinerario'] = "Tokyo" + " - " + "Kyoto"
@@ -87,28 +88,34 @@ def runClient():
 
 		elif (screen == 1):
 			if (op != 'c'):
-				ofertaCli = cotacoes[int(op)]
-				ofertaJson = json.dumps(ofertaCli)
+				if (0 <= int(op) < lenCotacoes):
+					ofertaCli = cotacoes[int(op)]
+					ofertaJson = json.dumps(ofertaCli)
 				
-				url = URL_RESERVA + ofertaJson + '&interesse=' + interesseJson
+					url = URL_RESERVA + ofertaJson + '&interesse=' + interesseJson
 
-				r = requests.get(url)
+					r = requests.get(url)
 
-				print r.text
-				break
+					screen = 2
+				else:
+					print "Not valid!"
+					time.sleep(3)
+					screen = 0
 			else:
-				print 'aye'
+				screen = 0
+
+			hardcode = 0
+			interesseCli = {}
 		elif (screen == 2):
-			if (op == '2'):
 				screen = 0			
 
-		os.system('clear')
+		os.system('CLS')
 
 	return "Bye!"
 
 
 if __name__ == "__main__":
-	os.system('clear')
+	os.system('CLS')
 	runClient()
 
 	#r = requests.get(URL_COTACAO)
