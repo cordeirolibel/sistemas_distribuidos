@@ -17,6 +17,13 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 /**
  * REST Web Service
@@ -44,6 +51,13 @@ public class Servidor {
         lista_horarios_mot     = new LinkedList<Horarios>();
         
         initOfertas();
+        
+        try{
+            loadfile();
+        }
+        catch (Exception ex){
+            System.out.println("Catch init");
+        }
     }
 
 
@@ -103,7 +117,7 @@ public class Servidor {
     @GET
     @Path("reserva")
     @Produces(MediaType.APPLICATION_JSON)
-    public String reserva(@QueryParam("oferta") String oferta_json,@QueryParam("interesse") String interesse_json) {
+    public String reserva(@QueryParam("oferta") String oferta_json,@QueryParam("interesse") String interesse_json) throws IOException {
         System.out.printf("=======Reserva========\n");
         
         Interesse interesse = new Interesse();
@@ -140,14 +154,14 @@ public class Servidor {
             //quando encontrar a oferta
             if (oferta_i.id == oferta.id) {
                 horarios = lista_horarios_mot.get(i);
-
                 //controle de concorrencia, só um entra no bloco
                 synchronized (this) {
-
                     //verifica se tem horario disponivel
                     if(horarios.disponivel(interesse.dia, interesse.mes, interesse.hora)) {
+                        System.out.printf("%d %d %d \n", i, oferta_i.id, oferta.id);
                         //marcar horario
                         horarios.set(interesse.dia, interesse.mes, interesse.hora);
+                        System.out.println(horarios.disponivel(interesse.dia, interesse.mes, interesse.hora));
                     }
                     else{
                         System.out.printf("\tMotorista ocupado\n");
@@ -156,8 +170,8 @@ public class Servidor {
                 }
                 //notifica o motorista que a reserva foi feita
                 System.out.printf("\tReserva efetuada\n");
+                savefile();
                 return ("Reserva efetuada");
-
             }
         }
         System.out.printf("\tMotorista nao encontrado\n");
@@ -181,9 +195,33 @@ public class Servidor {
         return false;
     }
     
+    private void savefile() throws FileNotFoundException, IOException{
+        FileOutputStream f = new FileOutputStream(new File("myObjects.txt"));
+        ObjectOutputStream o = new ObjectOutputStream(f);
+        
+        // Write objects to file
+        o.writeObject(lista_oferta);
+        o.writeObject(lista_horarios_mot);
+        
+        o.close();
+        f.close();
+    }
+    
+    private void loadfile() throws FileNotFoundException, IOException, ClassNotFoundException{
+        FileInputStream fi = new FileInputStream(new File("myObjects.txt"));
+        ObjectInputStream oi = new ObjectInputStream(fi);
+        
+        // Read objects
+        lista_oferta = (LinkedList<Oferta>) oi.readObject();
+        lista_horarios_mot = (LinkedList<Horarios>) oi.readObject();
+        
+        oi.close();
+        fi.close();
+    }
+    
     private void initOfertas(){
         Oferta oferta;
-        
+        System.out.println("INIT OFERTAS");
         // Oferta 1
         oferta = new Oferta();
         
@@ -201,7 +239,7 @@ public class Servidor {
         oferta.id = 1;
         oferta.passageiros = 4;
         oferta.preco = (float) 15.0;
-        oferta.veiculo = "duster";   
+        oferta.veiculo = "duster";
         
         lista_oferta.add(oferta);
         lista_horarios_mot.add(new Horarios());

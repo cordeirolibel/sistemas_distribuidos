@@ -5,6 +5,7 @@
  */
 package servidor;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -12,7 +13,7 @@ import java.time.temporal.ChronoUnit;
  *
  * @author cordeiro
  */
-public class Horarios {
+public class Horarios implements Serializable{
     boolean calendario [][];
     int n_dias;
 
@@ -55,7 +56,6 @@ public class Horarios {
         LocalDate endDate =  LocalDate.of(2019, mes, dia);
         int i_dias = (int)ChronoUnit.DAYS.between(startDate, endDate);
         int i_horas = hora-hora1;
-        System.out.printf("%d %d \n",i_dias,i_horas);
         return calendario[i_dias][i_horas];
 
     }
@@ -68,8 +68,11 @@ public class Horarios {
         LocalDate endDate =  LocalDate.of(2019, mes, dia);
         int i_dias = (int)ChronoUnit.DAYS.between(startDate, endDate);
         int i_horas = hora-hora1;
-
+        System.out.printf("---------------------- \n");
+        System.out.printf("%d %d %d %d %d \n", i_dias, i_horas, dia, mes, hora);
+        System.out.printf("%b \n",calendario[i_dias][i_horas]);
         calendario[i_dias][i_horas] = false;
+        System.out.printf("%b \n",calendario[i_dias][i_horas]);
     }
 
     public int get_n_dias(){

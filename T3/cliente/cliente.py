@@ -7,8 +7,8 @@ import json
 import time
 
 # api-endpoint
-URL_COTACAO = "http://localhost:8080/getTransfer/server/app/cotacao?interesse="
-URL_RESERVA = "http://localhost:8080/getTransfer/server/app/reserva?oferta="
+URL_COTACAO = "http://localhost:8080/getTransfer2/webresources/app/cotacao?interesse="
+URL_RESERVA = "http://localhost:8080/getTransfer2/webresources/app/reserva?oferta="
 
 # defining a params dict for the parameters to be sent to the API
 #PARAMS = {'address':brasil}
@@ -44,6 +44,8 @@ def runClient():
 			else:
 				print (interesseCli)
 
+			print (interesseCli)
+			getTransfer_args = []
 			interesseJson = json.dumps(interesseCli)
 
 			url = URL_COTACAO + interesseJson
