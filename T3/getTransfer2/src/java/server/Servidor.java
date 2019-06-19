@@ -35,7 +35,6 @@ public class Servidor {
 
     @Context
     private UriInfo context;
-    LinkedList<Interesse> lista_interesses_clie;
     LinkedList<Oferta> lista_oferta;
     LinkedList<Horarios> lista_horarios_mot;
     
@@ -46,12 +45,13 @@ public class Servidor {
         System.out.println("ServImpl executado!");
         
         //cria todas as listas e filas
-        lista_interesses_clie  = new LinkedList<Interesse>();
         lista_oferta           = new LinkedList<Oferta>();
         lista_horarios_mot     = new LinkedList<Horarios>();
         
+        //carrega 3 ofertas hardcode 
         initOfertas();
         
+        //tenta carregar o antigos dados, se existir
         try{
             loadfile();
         }
@@ -62,8 +62,8 @@ public class Servidor {
 
 
     /**
-     * PUT method for updating or creating an instance of Cotacao
-     * @param content representation for the resource
+     * GET method for updating or creating an instance of Cotacao
+     * @QueryParam interesse 
      */
     @GET
     @Path("cotacao")
@@ -106,19 +106,15 @@ public class Servidor {
                 lista_oferta_retorno.add(oferta_i);
             }
         }
+        
+        //retorna a lista de ofertas
         return gson.toJson(lista_oferta_retorno);  
 
     }
-    
-    @GET
-    @Path("hello")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String hello() {
-        return "hello";
-    }
+        
     /**
-     * PUT method for updating or creating an instance of Cotacao
-     * @param content representation for the resource
+     * GET method for updating or creating an instance of Cotacao
+     * @interesse oferta, interesse
      */
     @GET
     @Path("reserva")
@@ -176,6 +172,7 @@ public class Servidor {
                 }
                 //notifica o motorista que a reserva foi feita
                 System.out.printf("\tReserva efetuada\n");
+                //salva as listas em um arquivo local
                 savefile();
                 return ("Reserva efetuada");
             }
@@ -201,6 +198,7 @@ public class Servidor {
         return false;
     }
     
+    //salva listas em um arquivo local
     private void savefile() throws FileNotFoundException, IOException{
         FileOutputStream f = new FileOutputStream(new File("myObjects.txt"));
         ObjectOutputStream o = new ObjectOutputStream(f);
@@ -209,10 +207,12 @@ public class Servidor {
         o.writeObject(lista_oferta);
         o.writeObject(lista_horarios_mot);
         
+        //close
         o.close();
         f.close();
     }
     
+    //carrega listas de um arquivo local
     private void loadfile() throws FileNotFoundException, IOException, ClassNotFoundException{
         FileInputStream fi = new FileInputStream(new File("myObjects.txt"));
         ObjectInputStream oi = new ObjectInputStream(fi);
@@ -221,13 +221,16 @@ public class Servidor {
         lista_oferta = (LinkedList<Oferta>) oi.readObject();
         lista_horarios_mot = (LinkedList<Horarios>) oi.readObject();
         
+        //close
         oi.close();
         fi.close();
     }
     
+    //carrega 3 ofertas hardcode
     private void initOfertas(){
         Oferta oferta;
         System.out.println("INIT OFERTAS");
+        
         // Oferta 1
         oferta = new Oferta();
         
