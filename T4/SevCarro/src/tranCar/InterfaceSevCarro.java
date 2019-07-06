@@ -9,4 +9,6 @@ public interface InterfaceSevCarro extends Remote {
     boolean liberaCarro(int id_carro, int id_clie) throws RemoteException;
 
     LinkedList<Carro> carrosLivres() throws RemoteException;
+
+    void chamar(String msg, InterfaceCli iCli) throws RemoteException;
 }

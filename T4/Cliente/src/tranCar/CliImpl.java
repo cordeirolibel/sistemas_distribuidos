@@ -1,4 +1,4 @@
-package transfer;
+package tranCar;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -6,11 +6,11 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-public class CliImpl extends UnicastRemoteObject implements InterfaceCli{
+public class CliImpl extends UnicastRemoteObject implements tranCar.InterfaceCli {
     public int id;
-    InterfaceServ iSev;
+    tranCar.InterfaceSevCarro iSev;
 
-    public CliImpl(InterfaceServ refServidor) throws RemoteException {
+    public CliImpl(tranCar.InterfaceSevCarro refServidor) throws RemoteException {
         System.out.println("CliImpl executado!");
         iSev = refServidor;
     }

@@ -93,4 +93,10 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
 
     }
 
+    @Override
+    public void chamar(String msg, InterfaceCli iCli) throws RemoteException {
+        System.out.printf("Mensagem recebida do cliente: %s\n",msg);
+        iCli.echo(msg);
+    }
+
 }

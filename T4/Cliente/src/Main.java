@@ -1,4 +1,4 @@
-package transfer;
+package tranCar;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -10,26 +10,29 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-public class Cliente {
+class Cliente {
     public static void main(String[] args) throws IOException, NotBoundException {
 
         // Cria referencia com servidor
         Registry refservicoNomes = LocateRegistry.getRegistry(1099);
-        InterfaceServ refServidor = (InterfaceServ) refservicoNomes.lookup("servImpl");
+        InterfaceSevCarro refServidor = (InterfaceSevCarro) refservicoNomes.lookup("servImpl");
         CliImpl cliImpl = new CliImpl(refServidor);
         cliImpl.id = 42;
 
         //variaveis
-        int idCarro = -1;
+        int idCarro_lib = -1;
         boolean pula = false;
         int menuScreen = 0;
         int i;
         int useKeyboard = 1;
 
+        // Cria lista de carros
+        LinkedList<Carro> lista_carros = new LinkedList<Carro>();
+
         String input_msg = "Option: ";
         String keyboard_input = "";
 
-        refServidor.chamar("Ola servidor",cliImpl);
+        refServidor.chamar("Ola servidor", cliImpl);
 
         while (true){
             //=======> MENU
@@ -37,25 +40,25 @@ public class Cliente {
                 // Tela principal
                 System.out.println("# ============== Car Sharing UTFPR ============== #");
                 System.out.println("1 - Ver carros disponiveis");
-                System.out.printf("2 - Exit");
+                System.out.println("2 - Exit");
             }
             if (menuScreen == 1){
                 // Tela consulta de veiculos disponiveis
                 System.out.println("# ============== Car Sharing UTFPR ============== #");
 
                 // Recebe resultado da consulta ao servidor de carros (SC)
-                carros = refServidor.carrosLivres();
+                lista_carros = refServidor.carrosLivres();
 
-                int carrosLen = carros.size();
+                int carrosLen = lista_carros.size();
 
                 // Print informações recebidas
                 for (i = 0; i < carrosLen; i++) {
-                    System.out.println("Carros");
+                    lista_carros.get(i).carInfo();
                 }
 
                 if (carrosLen > 0) {
                     // Escolhe oferta pelo id dela
-                    System.out.printf("Escolher numero do carro ou \'c\' para cancelar");
+                    System.out.println("Escolher numero do carro ou \'c\' para cancelar");
 
                     Scanner keyboard = new Scanner(System.in);
                     String keyboard_option = keyboard.nextLine();
@@ -65,10 +68,18 @@ public class Cliente {
                         System.out.println("Operacao cancelada");
                     }
                     else {
-                        idCarro = Integer.parseInt(carros[i].idCarro);
-                        System.out.printf("Liberando veiculo " + carros.id + " ... \n");
+                        idCarro_lib = Integer.parseInt(keyboard_option);
+                        System.out.printf("Liberando veiculo " + lista_carros.get(idCarro_lib).id_carro + " ... \n");
                         useKeyboard = 0;
                         keyboard_input = "1";
+
+                        // Libera veiculo
+                        if (refServidor.liberaCarro(idCarro_lib, cliImpl.id)) {
+                            System.out.println("Carro liberado com sucesso!");
+                        }
+                        else{
+                            System.out.println("Erro ao processar a operação");
+                        }
                     }
                 }
                 else{
@@ -91,29 +102,14 @@ public class Cliente {
                 if (keyboard_input.equals("1")) {
                     menuScreen = 1;
                 }
+                else if (keyboard_input.equals("2")){
+                    break;
+                }
                 else{
                     menuScreen = 0;
                 }
             }
             else if (menuScreen == 1){
-                // Tela de liberação de veiculo
-                if (keyboard_input.equals("1")){
-                    // Efetua reserva
-
-                    if (idCarro>=0){
-                        // Efetua liberação do veiculo
-                        if (refServidor.liberaCarro(idCarro)) {
-                            System.out.println("Carro liberado com sucesso!");
-                        }
-                        else{
-                            System.out.println("Erro ao processar a operação");
-                        }
-                    }
-                }
-                else{
-                    System.out.println("Opção inválida, cadastro de interesse cancelado");
-                }
-
                 menuScreen = 0;
             }
             else if( menuScreen == 2){

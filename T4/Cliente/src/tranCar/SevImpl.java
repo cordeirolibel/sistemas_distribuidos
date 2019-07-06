@@ -73,7 +73,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         int size = lista_carros.size();
         Carro carro;
 
-        //procura os carro na lista
+        //procura os carro na listas
         for (int i=0;i<size;i++) {
             carro = lista_carros.get(i);
             if (carro.id_carro == id_carro){
@@ -91,6 +91,12 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         lista_carros.add(new Carro(2,"Fusca"));
         lista_carros.add(new Carro(3,"Duster"));
 
+    }
+
+    @Override
+    public void chamar(String msg, InterfaceCli iCli) throws RemoteException {
+        System.out.printf("Mensagem recebida do cliente: %s\n",msg);
+        iCli.echo(msg);
     }
 
 }
