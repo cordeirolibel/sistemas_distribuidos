@@ -11,6 +11,7 @@ public class Servidor {
         System.out.println("Hello World Servidor!");
         InterfaceSevCarro servImpl = null;
 
+        //todo: lincar a interface do banco
         try {
             //Cria servidor
             Registry referenciaServicoNomes = LocateRegistry.createRegistry(1099);
@@ -21,7 +22,25 @@ public class Servidor {
             e.printStackTrace();
         }
 
-        //envia notificacoes a cada um segundo
-        while(true){}
+        //Verifica se tem transacaos pendentes
+        int k = 0;
+        while(true){
+            try {
+                //Verifica se tem transacaos pendentes
+                servImpl.atualizaTransacoes();
+                //sleep
+                TimeUnit.MILLISECONDS.sleep(100);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            //print
+            if ((k%50) == 0){
+                System.out.printf("[%3d s]\n",k/10);
+            }
+            k+=1;
+        }
     }
 }

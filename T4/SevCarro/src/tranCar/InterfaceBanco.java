@@ -3,10 +3,9 @@ package tranCar;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface InterfaceCli extends Remote {
-    int id = 0;
+public interface InterfaceBanco extends Remote {
 
-    void echo(String msg) throws RemoteException;
+    boolean debitarValor(int id_clie, float valor, int id_trans) throws RemoteException;
 
     void efetiva(int id_tran) throws RemoteException;
 

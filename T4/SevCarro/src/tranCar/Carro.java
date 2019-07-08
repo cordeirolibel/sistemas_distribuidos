@@ -17,6 +17,10 @@ public class Carro implements Serializable {
         rlock = new ReentrantLock();
     }
 
+    public int getId_carro() {
+        return id_carro;
+    }
+
     public boolean isLivre() {
         return livre;
     }
@@ -32,7 +36,7 @@ public class Carro implements Serializable {
     //Bloqueia o uso do carro
     //timeout de 0.1s
     //retorna true se foi possivel realizar a operacao
-    public boolean lock() {
+    public boolean bloqueiaRecurso() {
         try {
             rlock.tryLock(100L, TimeUnit.MILLISECONDS);
             return true;
@@ -43,9 +47,10 @@ public class Carro implements Serializable {
     }
 
     //Libera o recurso (carro)
-    public void unlock() {
+    public void liberaRecurso() {
         rlock.unlock();
     }
+
 
     public void carInfo(){
         System.out.printf("ID[%s] - Veiculo: %s\n", id_carro, modelo);

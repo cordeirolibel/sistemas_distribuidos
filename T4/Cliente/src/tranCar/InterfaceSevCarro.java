@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 public interface InterfaceSevCarro extends Remote {
 
-    boolean liberaCarro(int id_carro, int id_clie) throws RemoteException;
+    int liberaCarro(int id_carro, int id_clie,InterfaceCli clieImpl) throws RemoteException;
 
     LinkedList<Carro> carrosLivres() throws RemoteException;
 

@@ -8,5 +8,9 @@ public interface InterfaceCli extends Remote {
 
     void echo(String msg) throws RemoteException;
 
+    void efetiva(int id_tran) throws RemoteException;
+
+    void aborta(int id_tran) throws RemoteException;
+
 }
 
