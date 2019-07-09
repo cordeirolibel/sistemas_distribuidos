@@ -1,5 +1,6 @@
 package tranCar;
 
+import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
@@ -21,6 +22,12 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         lista_transacao = new LinkedList<Transacao>();
 
         initCarros();
+
+        //DELETEME
+        // Transacao t = new Transacao();
+        //t.save();
+        //Transacao t2 = new Transacao();
+        //t2.save();
     }
 
     @Override
@@ -59,6 +66,13 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         return lista_carros_retorno;
     }
 
+    //retorna o estado da transacao
+    //efetivada, cancelada ou provisoria.
+    public String obtemStatus(int id_tran) throws RemoteException{
+        Transacao transacao = new Transacao();
+        return transacao.getStatus();
+    }
+
 // --------------------------------------------------------------
 // --------------------------------------------------------------
 //                    Internas
@@ -77,6 +91,17 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
             if (transacao.getStatus().equals("provisoria")){
                 //efetiva transacao
                 obterDecisao(transacao.getId_tran());
+            }
+        }
+    }
+
+    public void load_transacoes(){
+        File folder = new File("logs/");
+        File[] listOfFiles = folder.listFiles();
+
+        for (File file : listOfFiles) {
+            if (file.isFile()) {
+                System.out.println(file.getName());
             }
         }
     }
@@ -151,9 +176,13 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
 
     }
 
+
+
     // ----------------------
     //  Transacoes
     // ----------------------
+
+
 
     //cria uma transacao e adiciona a lista de transacoes
     //retorna o id da transacao

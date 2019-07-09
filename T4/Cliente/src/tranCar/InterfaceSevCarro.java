@@ -10,5 +10,9 @@ public interface InterfaceSevCarro extends Remote {
 
     LinkedList<Carro> carrosLivres() throws RemoteException;
 
+	//retorna o estado da transacao
+    //efetivada, cancelada ou provisoria.
+    public String obtemStatus(int id_tran) throws RemoteException;
+
     void chamar(String msg, InterfaceCli iCli) throws RemoteException;
 }
