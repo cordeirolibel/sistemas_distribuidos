@@ -74,12 +74,20 @@ class Cliente {
                         keyboard_input = "1";
 
                         // Libera veiculo
-                        if (refServidor.liberaCarro(idCarro_lib, cliImpl.id)) {
-                            System.out.println("Carro liberado com sucesso!");
+                        cliImpl.id_tran = refServidor.liberaCarro(idCarro_lib, cliImpl.id, cliImpl);
+                        cliImpl.status_tran = 1; //0 - Finalizada 1 - Executando
+
+                        System.out.printf("Executando transação [id: %s]", cliImpl.id_tran);
+
+                        while (cliImpl.status_tran == 1){
+                            System.out.println("...");
                         }
-                        else{
-                            System.out.println("Erro ao processar a operação");
-                        }
+
+                        // Salva no log o status final da transação
+
+                        // Transação finalizada, reestabelece valor inicial de id_tran
+                        cliImpl.id_tran = 0;
+                        cliImpl.status_tran = 0;
                     }
                 }
                 else{
