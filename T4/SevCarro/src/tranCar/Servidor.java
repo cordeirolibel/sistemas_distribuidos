@@ -11,7 +11,6 @@ public class Servidor {
         System.out.println("Hello World Servidor!");
         InterfaceSevCarro servImpl = null;
 
-        //todo: lincar a interface do banco
         try {
             //Cria servidor
             Registry referenciaServicoNomes = LocateRegistry.createRegistry(1099);

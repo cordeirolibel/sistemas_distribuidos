@@ -10,6 +10,8 @@ public interface InterfaceSevCarro extends Remote {
 
     LinkedList<Carro> carrosLivres() throws RemoteException;
 
+    void ref_banco(InterfaceBanco bancoImpl) throws RemoteException;
+
     public void atualizaTransacoes() throws RemoteException;
 
     //retorna o estado da transacao
