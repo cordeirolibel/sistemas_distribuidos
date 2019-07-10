@@ -1,9 +1,10 @@
 package tranCar;
 
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Cliente {
+public class Cliente implements Serializable {
     int id_clie;
     float saldo;
     ReentrantLock rlock;
@@ -11,6 +12,7 @@ public class Cliente {
     public Cliente(int id_clie,float saldo){
         this.id_clie = id_clie;
         this.saldo = saldo;
+        rlock = new ReentrantLock();
     }
 
     //Bloqueia o uso do cliente

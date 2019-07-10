@@ -13,7 +13,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
     LinkedList<InterfaceCli> lista_clieImpl;
     InterfaceBanco bancoImpl;
 
-    static float VALOR_CARRO = 12;
+    static float VALOR_CARRO = 10;
 
     public SevImpl() throws RemoteException {
         System.out.println("SevImpl executando!");
@@ -65,6 +65,12 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
 
         System.out.printf("Retornando lista de %d carros livres.\n",lista_carros_retorno.size());
         return lista_carros_retorno;
+    }
+
+    @Override
+    public void ref_banco(InterfaceBanco bancoImpl) throws RemoteException {
+        this.bancoImpl = bancoImpl;
+        System.out.printf("Referencia do Banco\n");
     }
 
     //retorna o estado da transacao
@@ -122,6 +128,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         if (!transacao.getVoto("banco").equals("sim")) {
             boolean voto_banco;
             try {
+                System.out.printf("%d %f %d <=========\n",clieImpl.id, VALOR_CARRO, id_tran);
                 voto_banco = bancoImpl.debitarValor(clieImpl.id, VALOR_CARRO, id_tran);
             } catch (RemoteException e) {
                 voto_banco = false;
@@ -160,13 +167,15 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
                 bancoImpl.efetiva(id_tran);
 
                 //avisa o cliente
+                System.out.println("Cliente id");
+                System.out.println(clieImpl.id);
+                clieImpl.echo("Antes do efetiva");
                 clieImpl.efetiva(id_tran);
 
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         }
-
     }
 
     public void loadTransacoes(){

@@ -17,8 +17,8 @@ public class BancoImpl extends UnicastRemoteObject implements InterfaceBanco {
 
         refServidor.ref_banco(this);
 
-        loadListas();
-        //initClientes();
+        //loadListas();
+        initClientes();
 
         saveListas();
         loadTransacoes();
@@ -51,10 +51,12 @@ public class BancoImpl extends UnicastRemoteObject implements InterfaceBanco {
 
         //cancela tudo
         if(transacao.estaAbortada()){
+            System.out.println("Return voto nao");
             return false; //voto  nao
 
         }
         else{
+            System.out.println("Return voto sim");
             return true; //voto  sim
         }
 
@@ -205,7 +207,7 @@ public class BancoImpl extends UnicastRemoteObject implements InterfaceBanco {
 
         lista_clientes.add(new Cliente(42,20));
         lista_clientes.add(new Cliente(43,20));
-        lista_clientes.add(new Cliente(44,20));
+        lista_clientes.add(new Cliente(0,20));
 
     }
 

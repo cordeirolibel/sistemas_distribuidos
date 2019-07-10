@@ -48,11 +48,7 @@ public class Carro implements Serializable {
 
     //Libera o recurso (carro)
     public void liberaRecurso() {
-        try {
-            rlock.unlock();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        rlock.unlock();
     }
 
 

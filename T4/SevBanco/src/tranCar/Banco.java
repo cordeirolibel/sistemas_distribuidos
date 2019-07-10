@@ -16,5 +16,6 @@ public class Banco {
 
         BancoImpl bancoImpl = new BancoImpl(refServidor);
 
+        while(true);
     }
 }
