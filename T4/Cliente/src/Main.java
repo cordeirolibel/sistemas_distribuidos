@@ -1,5 +1,6 @@
 package tranCar;
 
+import java.io.File;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -9,6 +10,7 @@ import java.rmi.registry.Registry;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 class Cliente {
     public static void main(String[] args) throws IOException, NotBoundException {
@@ -25,6 +27,8 @@ class Cliente {
         int menuScreen = 0;
         int i;
         int useKeyboard = 1;
+
+        Logger logger;
 
         // Cria lista de carros
         LinkedList<Carro> lista_carros = new LinkedList<Carro>();
@@ -79,13 +83,9 @@ class Cliente {
 
                         System.out.printf("Executando transação [id: %s]", cliImpl.id_tran);
 
-                        while (cliImpl.status_tran == 1){
-                            System.out.println("...");
-                        }
-
                         // Salva no log o status final da transação
 
-                        // Transação finalizada, reestabelece valor inicial de id_tran
+
                         cliImpl.id_tran = 0;
                         cliImpl.status_tran = 0;
                     }

@@ -23,14 +23,12 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         lista_transacao = new LinkedList<Transacao>();
         lista_clieImpl = new LinkedList<InterfaceCli>();
 
-
         //carrega arquivos locais
         //loadListas();
         initCarros();
         saveListas();
 
         loadTransacoes();
-
     }
 
     @Override
