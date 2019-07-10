@@ -1,6 +1,6 @@
 package tranCar;
 
-import java.io.File;
+import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
@@ -10,6 +10,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
 
     LinkedList<Carro> lista_carros;
     LinkedList<Transacao> lista_transacao;
+    LinkedList<InterfaceCli> lista_clieImpl;
     InterfaceBanco bancoImpl;
 
     static float VALOR_CARRO = 12;
@@ -20,14 +21,16 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         //cria todas as listas e filas
         lista_carros = new LinkedList<Carro>();
         lista_transacao = new LinkedList<Transacao>();
+        lista_clieImpl = new LinkedList<InterfaceCli>();
 
+
+        //carrega arquivos locais
+        //loadListas();
         initCarros();
+        saveListas();
 
-        //DELETEME
-        // Transacao t = new Transacao();
-        //t.save();
-        //Transacao t2 = new Transacao();
-        //t2.save();
+        loadTransacoes();
+
     }
 
     @Override
@@ -79,7 +82,6 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
 // --------------------------------------------------------------
 // --------------------------------------------------------------
 
-
     //verifica se tem alguma transacao pendente e atualiza
     public void atualizaTransacoes() throws RemoteException {
         int size = lista_transacao.size();
@@ -91,17 +93,6 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
             if (transacao.getStatus().equals("provisoria")){
                 //efetiva transacao
                 obterDecisao(transacao.getId_tran());
-            }
-        }
-    }
-
-    public void load_transacoes(){
-        File folder = new File("logs/");
-        File[] listOfFiles = folder.listFiles();
-
-        for (File file : listOfFiles) {
-            if (file.isFile()) {
-                System.out.println(file.getName());
             }
         }
     }
@@ -118,25 +109,29 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         //busca transacao, carro e interface do cliente
         Transacao transacao = buscaTransacao(id_tran);
         Carro carro = buscaCarro(transacao.getId_recurso());
-        InterfaceCli clieImpl = transacao.getInterfaceCli();
+        InterfaceCli clieImpl = buscaCliente(transacao.getId_clie());
 
         //  VOTO 1: Cordenador
-        // verifica se carro esta livre
-        if (!carro.isLivre()){
-            //se o carro nao esta livre
-            transacao.aborta();
+        if (!transacao.getVoto("coordenador").equals("sim")) {
+            // verifica se carro esta livre
+            if (!carro.isLivre()) {
+                //se o carro nao esta livre
+                transacao.aborta();
+            }
         }
 
         //  VOTO 2: Banco
-        boolean voto_banco;
-        try {
-            voto_banco = bancoImpl.debitarValor(clieImpl.id,VALOR_CARRO,id_tran);
-        } catch (RemoteException e) {
-            voto_banco = false;
-            e.printStackTrace();
-        }
-        if (voto_banco==false){
-            transacao.aborta();
+        if (!transacao.getVoto("banco").equals("sim")) {
+            boolean voto_banco;
+            try {
+                voto_banco = bancoImpl.debitarValor(clieImpl.id, VALOR_CARRO, id_tran);
+            } catch (RemoteException e) {
+                voto_banco = false;
+                e.printStackTrace();
+            }
+            if (voto_banco == false) {
+                transacao.aborta();
+            }
         }
 
 
@@ -176,7 +171,44 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
 
     }
 
+    public void loadTransacoes(){
+        File folder = new File("logs/");
+        Transacao transacao;
 
+        //somente arquivos de log (.txt)
+        File [] listOfFiles = folder.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".log");
+            }
+        });
+
+        //para cada log
+        for (File file : listOfFiles) {
+            if (file.isFile()) {
+                //carrega a transacao pelo log
+                transacao = new Transacao("logs/".concat(file.getName()));
+                lista_transacao.add(transacao);
+            }
+        }
+    }
+
+    //procura na lista_carros o carro com id_carro
+    public InterfaceCli buscaCliente(int id_clie){
+
+        int size = lista_clieImpl.size();
+        InterfaceCli clieImpl;
+
+        //procura as transacoes na lista
+        for (int i=0;i<size;i++) {
+            clieImpl = lista_clieImpl.get(i);
+            if (clieImpl.id == id_clie){
+                return clieImpl;
+            }
+        }
+
+        return null;
+    }
 
     // ----------------------
     //  Transacoes
@@ -191,14 +223,18 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         //cria transacao
         Transacao transacao = new Transacao();
         transacao.setId_recurso(carro.getId_carro());
-        transacao.setInterfaceCli(clieImpl);
+
+        transacao.setId_clie(clieImpl.id);
         lista_transacao.add(transacao);
+        lista_clieImpl.add(clieImpl);
+        saveListas();
 
         //trava carro (timeout 0.1s)
         if (!carro.bloqueiaRecurso()){
             //aborta se nao conseguir travar o recurso
             transacao.aborta();
         }
+        saveListas();
 
         System.out.printf(" => Aberto transacao %d \n",transacao.getId_tran());
         return transacao;
@@ -222,6 +258,8 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
 
         //remove a transacao
         lista_transacao.remove(transacao);
+
+        saveListas();
     }
 
     public void abortaTransacao(int id_tran){
@@ -240,7 +278,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
     }
 
     //procura na lista_carros o carro com id_carro
-    Transacao buscaTransacao(int id_tran){
+    public Transacao buscaTransacao(int id_tran){
 
         int size = lista_transacao.size();
         Transacao transacao;
@@ -256,6 +294,18 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         return null;
     }
 
+    //printa todas as transacoes
+    public void printaTransacoes(){
+
+        int size = lista_transacao.size();
+        Transacao transacao;
+
+        //procura as transacoes na lista
+        for (int i=0;i<size;i++) {
+            transacao = lista_transacao.get(i);
+            transacao.print();
+        }
+    }
 
     // ----------------------
     //  Auxiliares Carro
@@ -284,6 +334,58 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         lista_carros.add(new Carro(1,"BMW"));
         lista_carros.add(new Carro(2,"Fusca"));
         lista_carros.add(new Carro(3,"Duster"));
+
+    }
+
+    // ----------------------
+    //  listas
+    // ----------------------
+
+    //salva listas em um arquivo local
+    private void saveListas() {
+        try {
+            FileOutputStream f = new FileOutputStream(new File("myObjects.txt"));
+            ObjectOutputStream o = new ObjectOutputStream(f);
+
+            // Write objects to file
+            o.writeObject(lista_carros);
+            o.writeObject(lista_clieImpl);
+
+            //close
+            o.close();
+            f.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //carrega listas de um arquivo local
+    private void loadListas() {
+        try {
+            File f = new File("myObjects.txt");
+            //se arquivo existir
+            if(f.exists() && !f.isDirectory()) {
+                FileInputStream fi = new FileInputStream(f);
+                ObjectInputStream oi = new ObjectInputStream(fi);
+
+                // Read objects
+                lista_carros = (LinkedList<Carro>) oi.readObject();
+                lista_clieImpl = (LinkedList<InterfaceCli>) oi.readObject();
+
+                //close
+                oi.close();
+                fi.close();
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 
