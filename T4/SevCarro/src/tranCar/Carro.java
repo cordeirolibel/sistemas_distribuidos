@@ -59,8 +59,8 @@ public class Carro implements Serializable {
         }
     }
 
-    public void carInfo(){
-        System.out.printf("ID[%s] - Veiculo: %s\n", id_carro, modelo);
+    public String carInfo(){
+        return String.format(" ID[%s] - Veiculo: %s\n", id_carro, modelo);
     }
 
 }
