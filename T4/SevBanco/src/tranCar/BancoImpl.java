@@ -74,7 +74,7 @@ public class BancoImpl extends UnicastRemoteObject implements InterfaceBanco {
         cliente.liberaRecurso();
         saveListas();
 
-        System.out.printf("Transacao %d de cliente %d cancelada\n",id_tran,cliente.id_clie);
+        System.out.printf("Transacao %d de cliente %d efetivada\n",id_tran,cliente.id_clie);
         System.out.printf("Saldo %.2f\n",cliente.saldo);
 
     }

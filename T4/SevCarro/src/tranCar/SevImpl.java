@@ -11,6 +11,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
     LinkedList<Carro> lista_carros;
     LinkedList<Transacao> lista_transacao;
     LinkedList<InterfaceCli> lista_clieImpl;
+    LinkedList<Integer> lista_clie_ids;
     InterfaceBanco bancoImpl;
 
     static float VALOR_CARRO = 10;
@@ -22,6 +23,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         lista_carros = new LinkedList<Carro>();
         lista_transacao = new LinkedList<Transacao>();
         lista_clieImpl = new LinkedList<InterfaceCli>();
+        lista_clie_ids = new LinkedList<Integer>();
 
         //carrega arquivos locais
         //loadListas();
@@ -40,7 +42,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         Carro carro = buscaCarro(id_carro);
 
         //abrindo transacao
-        Transacao transacao = abreTransacao(carro,clieImpl);
+        Transacao transacao = abreTransacao(carro,clieImpl,id_clie);
 
         return transacao.getId_tran();
     }
@@ -128,8 +130,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         if (!transacao.getVoto("banco").equals("sim")) {
             boolean voto_banco;
             try {
-                System.out.printf("%d %f %d <=========\n",clieImpl.id, VALOR_CARRO, id_tran);
-                voto_banco = bancoImpl.debitarValor(clieImpl.id, VALOR_CARRO, id_tran);
+                voto_banco = bancoImpl.debitarValor(transacao.getId_clie(), VALOR_CARRO, id_tran);
             } catch (RemoteException e) {
                 voto_banco = false;
                 e.printStackTrace();
@@ -147,9 +148,11 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
             //retorno para o banco e cliete
             try {
                 //avisa o banco
+                System.out.printf("Avisa Banco que transacao %d foi abortada!\n",id_tran);
                 bancoImpl.aborta(id_tran);
 
                 //avisa o cliente
+                System.out.printf("Avisa cliente %d que transacao %d foi abortada!\n",transacao.getId_clie(),id_tran);
                 clieImpl.aborta(id_tran);
 
             } catch (RemoteException e) {
@@ -164,12 +167,11 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
             //retorno para o banco e cliete
             try {
                 //avisa o banco
+                System.out.printf("Avisa Banco que transacao %d foi efetivada!\n",id_tran);
                 bancoImpl.efetiva(id_tran);
 
                 //avisa o cliente
-                System.out.println("Cliente id");
-                System.out.println(clieImpl.id);
-                //clieImpl.echo("Antes do efetiva");
+                System.out.printf("Avisa cliente %d que transacao %d foi efetivada!\n",transacao.getId_clie(),id_tran);
                 clieImpl.efetiva(id_tran);
 
             } catch (RemoteException e) {
@@ -203,14 +205,14 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
     //procura na lista_carros o carro com id_carro
     public InterfaceCli buscaCliente(int id_clie){
 
-        int size = lista_clieImpl.size();
-        InterfaceCli clieImpl;
+        int size = lista_clie_ids.size();
+        Integer id;
 
         //procura as transacoes na lista
         for (int i=0;i<size;i++) {
-            clieImpl = lista_clieImpl.get(i);
-            if (clieImpl.id == id_clie){
-                return clieImpl;
+            id = lista_clie_ids.get(i);
+            if (id == id_clie){
+                return lista_clieImpl.get(i);
             }
         }
 
@@ -225,15 +227,16 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
 
     //cria uma transacao e adiciona a lista de transacoes
     //retorna o id da transacao
-    Transacao abreTransacao(Carro carro, InterfaceCli clieImpl){
+    Transacao abreTransacao(Carro carro, InterfaceCli clieImpl, int id_clie){
 
         //cria transacao
         Transacao transacao = new Transacao();
         transacao.setId_recurso(carro.getId_carro());
 
-        transacao.setId_clie(clieImpl.id);
+        transacao.setId_clie(id_clie);
         lista_transacao.add(transacao);
         lista_clieImpl.add(clieImpl);
+        lista_clie_ids.add(id_clie);
         saveListas();
 
         //trava carro (timeout 0.1s)
@@ -357,6 +360,8 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
             // Write objects to file
             o.writeObject(lista_carros);
             o.writeObject(lista_clieImpl);
+            o.writeObject(lista_clie_ids);
+
 
             //close
             o.close();
@@ -380,6 +385,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
                 // Read objects
                 lista_carros = (LinkedList<Carro>) oi.readObject();
                 lista_clieImpl = (LinkedList<InterfaceCli>) oi.readObject();
+                lista_clie_ids = (LinkedList<Integer>) oi.readObject();
 
                 //close
                 oi.close();

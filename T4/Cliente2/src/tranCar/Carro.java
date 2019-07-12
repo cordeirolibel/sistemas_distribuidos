@@ -33,7 +33,7 @@ public class Carro implements Serializable {
         livre = true;
     }
 
-    //Bloqueia o uso do carro
+    //Bloqueia o uso do carro como recurso
     //timeout de 0.1s
     //retorna true se foi possivel realizar a operacao
     public boolean bloqueiaRecurso() {
@@ -46,11 +46,18 @@ public class Carro implements Serializable {
         }
     }
 
-    //Libera o recurso (carro)
+    //Libera o uso do carro como recurso
     public void liberaRecurso() {
-        rlock.unlock();
-    }
+        //substitui o lock por um novo, pois foi definido em outra thread
 
+        if (rlock instanceof ReentrantLock) {
+            rlock = new ReentrantLock();
+        } else {
+            throw new UnsupportedOperationException(
+                    "Cannot force unlock of lock type "
+                            + rlock.getClass().getSimpleName());
+        }
+    }
 
     public void carInfo(){
         System.out.printf("ID[%s] - Veiculo: %s\n", id_carro, modelo);

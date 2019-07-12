@@ -26,7 +26,7 @@ public class CliImpl extends UnicastRemoteObject implements tranCar.InterfaceCli
 
 
     //finaliza a transacao, liberando os recursos
-    public void efetiva(int id_tran) {
+    public void efetiva(int id_tran) throws RemoteException  {
 
         //busca transacao e carro
         Transacao transacao = buscaTransacao(id_tran);
@@ -40,7 +40,7 @@ public class CliImpl extends UnicastRemoteObject implements tranCar.InterfaceCli
         lista_transacao.remove(transacao);
     }
 
-    public void aborta(int id_tran){
+    public void aborta(int id_tran) throws RemoteException {
 
         //busca transacao e carro
         Transacao transacao = buscaTransacao(id_tran);
