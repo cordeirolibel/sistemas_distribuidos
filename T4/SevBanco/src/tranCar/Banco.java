@@ -23,8 +23,8 @@ public class Banco {
             System.out.printf("==========BANCO [%3d s]==========\n",k*5);
             try {
                 //sleep
-                TimeUnit.MILLISECONDS.sleep(5000);
                 bancoImpl.printBanco();
+                TimeUnit.MILLISECONDS.sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

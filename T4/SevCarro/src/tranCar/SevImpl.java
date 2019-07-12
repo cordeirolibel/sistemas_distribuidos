@@ -43,6 +43,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
 
         //abrindo transacao
         Transacao transacao = abreTransacao(carro,clieImpl,id_clie);
+        transacao.setVoto("cliente","sim");
 
         return transacao.getId_tran();
     }
@@ -111,32 +112,54 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         ao coordenador.
         */
 
+        System.out.printf("==> Obter Decisao de transacao %d\n",id_tran);
+
 
         //busca transacao, carro e interface do cliente
         Transacao transacao = buscaTransacao(id_tran);
         Carro carro = buscaCarro(transacao.getId_recurso());
         InterfaceCli clieImpl = buscaCliente(transacao.getId_clie());
 
+        //sleep
+        //try{TimeUnit.MILLISECONDS.sleep(3000);
+        //}catch (InterruptedException e){}
+
         //  VOTO 1: Cordenador
-        if (!transacao.getVoto("coordenador").equals("sim")) {
+        if (transacao.getVoto("coordenador").equals("")) {
             // verifica se carro esta livre
             if (!carro.isLivre()) {
                 //se o carro nao esta livre
                 transacao.aborta();
+                transacao.setVoto("coordenador","nao");
+            }
+            else{
+                transacao.setVoto("coordenador","sim");
             }
         }
 
+        //sleep
+        try{TimeUnit.MILLISECONDS.sleep(3000);
+        }catch (InterruptedException e){}
+
         //  VOTO 2: Banco
-        if (!transacao.getVoto("banco").equals("sim")) {
+        if (transacao.getVoto("banco").equals("")) {
             boolean voto_banco;
+            //coleta voto do banco
             try {
                 voto_banco = bancoImpl.debitarValor(transacao.getId_clie(), VALOR_CARRO, id_tran);
             } catch (RemoteException e) {
                 voto_banco = false;
                 e.printStackTrace();
             }
+
+            //voto nao
             if (voto_banco == false) {
                 transacao.aborta();
+                transacao.setVoto("banco","nao");
+            }
+            //voto sim
+            else{
+                transacao.setVoto("banco","sim");
             }
         }
 
@@ -167,12 +190,13 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
             //retorno para o banco e cliete
             try {
                 //avisa o cliente
-                System.out.printf("Avisa cliente %d que transacao %d foi efetivada!\n",transacao.getId_clie(),id_tran);
+                System.out.printf("Avisa cliente %d que transacao %d foi efetivada!\n", transacao.getId_clie(), id_tran);
                 //clieImpl.echo("Testa cliente");
                 clieImpl.efetiva(id_tran);
 
                 //sleep
-                //TimeUnit.MILLISECONDS.sleep(3000);
+                //try{TimeUnit.MILLISECONDS.sleep(3000);
+                //}catch (InterruptedException e){}
 
                 //avisa o banco
                 System.out.printf("Avisa Banco que transacao %d foi efetivada!\n",id_tran);
@@ -180,9 +204,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
 
             } catch (RemoteException e) {
                 e.printStackTrace();
-            } //catch (InterruptedException e) {
-            //    e.printStackTrace();
-            //}
+            }
         }
     }
 
@@ -375,6 +397,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
             o.writeObject(lista_carros);
             o.writeObject(lista_clieImpl);
             o.writeObject(lista_clie_ids);
+            o.writeObject(bancoImpl);
 
 
             //close
@@ -400,6 +423,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
                 lista_carros = (LinkedList<Carro>) oi.readObject();
                 lista_clieImpl = (LinkedList<InterfaceCli>) oi.readObject();
                 lista_clie_ids = (LinkedList<Integer>) oi.readObject();
+                bancoImpl = (InterfaceBanco) oi.readObject();
 
                 //close
                 oi.close();

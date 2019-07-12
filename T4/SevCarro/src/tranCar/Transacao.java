@@ -143,6 +143,7 @@ public class Transacao implements Serializable {
     //voto = "sim","nao" ou ""
     //voto == "" siginifica voto em aberto, nao decido ainda
     public void setVoto(String quem,String voto){
+        System.out.printf("Voto de %s eh %s\n",quem,voto);
         if(quem.equals("banco")){
             voto_banco = voto;
             logger.info("banco".concat(" ").concat(voto));
