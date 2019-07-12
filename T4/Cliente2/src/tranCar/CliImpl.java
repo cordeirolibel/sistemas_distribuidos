@@ -22,6 +22,7 @@ public class CliImpl extends UnicastRemoteObject implements tranCar.InterfaceCli
         lista_transacao = new LinkedList<Transacao>();
 
         loadTransacoes();
+        atualizaTransacoes();
     }
 
 
@@ -63,6 +64,24 @@ public class CliImpl extends UnicastRemoteObject implements tranCar.InterfaceCli
 
         transacao.setId_clie(cli_id);
         lista_transacao.add(transacao);
+    }
+
+    //verifica se tem alguma transacao pendente e atualiza
+    public void atualizaTransacoes() throws RemoteException {
+        int size = lista_transacao.size();
+
+        Transacao transacao;
+        String status;
+
+        //procura os transacoes em aberto
+        for (int i=0;i<size;i++) {
+            transacao = lista_transacao.get(i);
+            if (transacao.getStatus().equals("provisoria")){
+                //efetiva transacao
+                status = iSev.obtemStatus(transacao.getId_tran());
+                transacao.setStatus(status);
+            }
+        }
     }
 
     public void loadTransacoes(){

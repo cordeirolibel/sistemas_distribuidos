@@ -57,11 +57,11 @@ class Cliente {
 
                 // Print informações recebidas
                 for (i = 0; i < carrosLen; i++) {
-                    lista_carros.get(i).carInfo();
+                    System.out.printf("[%s] - %s", i, lista_carros.get(i).carInfo());
                 }
 
                 if (carrosLen > 0) {
-                    // Escolhe oferta pelo id dela
+                    // Escolhe oferta pelo indice dela
                     System.out.println("Escolher numero do carro ou \'c\' para cancelar");
 
                     Scanner keyboard = new Scanner(System.in);
@@ -73,7 +73,7 @@ class Cliente {
                     }
                     else {
                         idCarro_lib = Integer.parseInt(keyboard_option);
-                        System.out.printf("Liberando veiculo " + lista_carros.get(idCarro_lib-1).id_carro + " ... \n");
+                        System.out.printf("Liberando veiculo " + lista_carros.get(idCarro_lib).id_carro + " ... \n");
                         useKeyboard = 0;
                         keyboard_input = "1";
 
