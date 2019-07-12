@@ -10,7 +10,6 @@ import java.util.Scanner;
 public class CliImpl extends UnicastRemoteObject implements tranCar.InterfaceCli {
     public int id;
     public int id_tran = 0;
-    public int status_tran = 0;
 
     LinkedList<Transacao> lista_transacao;
 
@@ -21,17 +20,10 @@ public class CliImpl extends UnicastRemoteObject implements tranCar.InterfaceCli
         iSev = refServidor;
 
         lista_transacao = new LinkedList<Transacao>();
+
+        loadTransacoes();
     }
 
-    Transacao abreTransacao(Carro carro, InterfaceCli clieImpl) {
-        //cria transacao
-        Transacao transacao = new Transacao();
-
-        transacao.setId_clie(clieImpl.id);
-        lista_transacao.add(transacao);
-
-        return transacao;
-    }
 
     //finaliza a transacao, liberando os recursos
     public void efetiva(int id_tran) {
@@ -39,6 +31,7 @@ public class CliImpl extends UnicastRemoteObject implements tranCar.InterfaceCli
         //busca transacao e carro
         Transacao transacao = buscaTransacao(id_tran);
 
+        // LOG: transação efetivada
         transacao.efetiva();
 
         System.out.printf(" => transacao %d efetivada\n",transacao.getId_tran());
@@ -52,12 +45,46 @@ public class CliImpl extends UnicastRemoteObject implements tranCar.InterfaceCli
         //busca transacao e carro
         Transacao transacao = buscaTransacao(id_tran);
 
+        // LOG: Transação abortada
         transacao.aborta();
 
         System.out.printf(" => transacao %d abortada\n",transacao.getId_tran());
 
         //remove a transacao
         lista_transacao.remove(transacao);
+    }
+
+    //==============================
+    // Internas
+
+    public void abreTransacao(int cli_id) {
+        //cria transacao
+        Transacao transacao = new Transacao();
+
+        transacao.setId_clie(cli_id);
+        lista_transacao.add(transacao);
+    }
+
+    public void loadTransacoes(){
+        File folder = new File("logs/");
+        Transacao transacao;
+
+        //somente arquivos de log (.txt)
+        File [] listOfFiles = folder.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".log");
+            }
+        });
+
+        //para cada log
+        for (File file : listOfFiles) {
+            if (file.isFile()) {
+                //carrega a transacao pelo log
+                transacao = new Transacao("logs/".concat(file.getName()));
+                lista_transacao.add(transacao);
+            }
+        }
     }
 
     public Transacao buscaTransacao(int id_tran){

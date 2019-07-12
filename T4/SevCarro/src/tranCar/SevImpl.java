@@ -169,7 +169,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
                 //avisa o cliente
                 System.out.println("Cliente id");
                 System.out.println(clieImpl.id);
-                clieImpl.echo("Antes do efetiva");
+                //clieImpl.echo("Antes do efetiva");
                 clieImpl.efetiva(id_tran);
 
             } catch (RemoteException e) {

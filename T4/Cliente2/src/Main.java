@@ -79,15 +79,11 @@ class Cliente {
 
                         // Libera veiculo
                         cliImpl.id_tran = refServidor.liberaCarro(idCarro_lib, cliImpl.id, cliImpl);
-                        cliImpl.status_tran = 1; //0 - Finalizada 1 - Executando
 
                         System.out.printf("Executando transação [id: %s]\n", cliImpl.id_tran);
 
                         // Salva no log o status final da transação
-
-
-                        cliImpl.id_tran = 0;
-                        cliImpl.status_tran = 0;
+                        cliImpl.abreTransacao(cliImpl.id);
                     }
                 }
                 else{
