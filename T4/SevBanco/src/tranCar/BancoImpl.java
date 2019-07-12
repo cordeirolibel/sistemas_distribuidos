@@ -88,7 +88,10 @@ public class BancoImpl extends UnicastRemoteObject implements InterfaceBanco {
         Cliente cliente = buscaCliente(transacao.getId_recurso());
 
         //efetiva transacao e libera recurso
-        transacao.setStatus("cancelada");
+        //atualiza status da transacao
+        if(!transacao.getStatus().equals("cancelada")) {
+            transacao.setStatus("cancelada");
+        }
         cliente.liberaRecurso();
         saveListas();
 

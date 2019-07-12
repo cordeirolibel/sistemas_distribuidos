@@ -30,7 +30,15 @@ public class Cliente implements Serializable {
 
     //Libera o recurso (cliente)
     public void liberaRecurso() {
-        rlock.unlock();
+        //rlock.unlock();
+        //substitui o lock por um novo, pois foi definido em outra thread
+        if (rlock instanceof ReentrantLock) {
+            rlock = new ReentrantLock();
+        } else {
+            throw new UnsupportedOperationException(
+                    "Cannot force unlock of lock type "
+                            + rlock.getClass().getSimpleName());
+        }
     }
 
     public boolean temSaldo(float valor){

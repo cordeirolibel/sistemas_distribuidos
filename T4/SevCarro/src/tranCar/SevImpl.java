@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 
 public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
 
@@ -26,8 +27,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         lista_clie_ids = new LinkedList<Integer>();
 
         //carrega arquivos locais
-        //loadListas();
-        initCarros();
+        loadListas();
         saveListas();
 
         loadTransacoes();
@@ -78,7 +78,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
     //retorna o estado da transacao
     //efetivada, cancelada ou provisoria.
     public String obtemStatus(int id_tran) throws RemoteException{
-        Transacao transacao = new Transacao();
+        Transacao transacao = buscaTransacao(id_tran);
         return transacao.getStatus();
     }
 
@@ -147,13 +147,13 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
 
             //retorno para o banco e cliete
             try {
-                //avisa o banco
-                System.out.printf("Avisa Banco que transacao %d foi abortada!\n",id_tran);
-                bancoImpl.aborta(id_tran);
-
                 //avisa o cliente
                 System.out.printf("Avisa cliente %d que transacao %d foi abortada!\n",transacao.getId_clie(),id_tran);
                 clieImpl.aborta(id_tran);
+
+                //avisa o banco
+                System.out.printf("Avisa Banco que transacao %d foi abortada!\n",id_tran);
+                bancoImpl.aborta(id_tran);
 
             } catch (RemoteException e) {
                 e.printStackTrace();
@@ -166,17 +166,23 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
 
             //retorno para o banco e cliete
             try {
+                //avisa o cliente
+                System.out.printf("Avisa cliente %d que transacao %d foi efetivada!\n",transacao.getId_clie(),id_tran);
+                //clieImpl.echo("Testa cliente");
+                clieImpl.efetiva(id_tran);
+
+                //sleep
+                //TimeUnit.MILLISECONDS.sleep(3000);
+
                 //avisa o banco
                 System.out.printf("Avisa Banco que transacao %d foi efetivada!\n",id_tran);
                 bancoImpl.efetiva(id_tran);
 
-                //avisa o cliente
-                System.out.printf("Avisa cliente %d que transacao %d foi efetivada!\n",transacao.getId_clie(),id_tran);
-                clieImpl.efetiva(id_tran);
-
             } catch (RemoteException e) {
                 e.printStackTrace();
-            }
+            } //catch (InterruptedException e) {
+            //    e.printStackTrace();
+            //}
         }
     }
 
@@ -209,13 +215,13 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         Integer id;
 
         //procura as transacoes na lista
-        for (int i=0;i<size;i++) {
+        //retorna a referencia mais recente
+        for (int i=size-1;i>=0;i--) {
             id = lista_clie_ids.get(i);
             if (id == id_clie){
                 return lista_clieImpl.get(i);
             }
         }
-
         return null;
     }
 
@@ -264,10 +270,13 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         //libera o recurso
         carro.liberaRecurso();
 
+        //atualiza status da transacao
+        transacao.setStatus("efetivada");
+
         System.out.printf(" => transacao %d efetivada\n",transacao.getId_tran());
 
         //remove a transacao
-        lista_transacao.remove(transacao);
+        //lista_transacao.remove(transacao);
 
         saveListas();
     }
@@ -281,10 +290,15 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
         //libera o recurso
         carro.liberaRecurso();
 
+        //atualiza status da transacao
+        if(!transacao.getStatus().equals("cancelada")) {
+            transacao.setStatus("cancelada");
+        }
+
         System.out.printf(" => transacao %d abortada\n",transacao.getId_tran());
 
         //remove a transacao
-        lista_transacao.remove(transacao);
+        //lista_transacao.remove(transacao);
     }
 
     //procura na lista_carros o carro com id_carro
@@ -390,6 +404,10 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
                 //close
                 oi.close();
                 fi.close();
+            }
+            else{
+                //se nao tiver o arquivo, faz uma inicializacao padrao
+                initCarros();
             }
 
         } catch (FileNotFoundException e) {

@@ -43,12 +43,14 @@ public class Transacao implements Serializable {
 
         //primeiro log
         logger.info("id ".concat(String.valueOf(id_tran)));
+        logger.info("valor ".concat(String.valueOf(valor)));
     }
 
     //carrega a transacao pelo log
     public Transacao(String log_path){
         id_tran = -1;
         id_recurso = -1;
+        valor = 0;
         status = "provisoria";
 
         //--------------------------
@@ -66,6 +68,10 @@ public class Transacao implements Serializable {
                 }
                 else if (words[1].equals("recurso")){
                     id_recurso = Integer.parseInt(words[2]);
+                }
+                // valor
+                else if (words[1].equals("valor")){
+                    valor = Float.parseFloat(words[2]);
                 }
 
                 // 2 Transacao

@@ -78,7 +78,7 @@ class Cliente {
                         keyboard_input = "1";
 
                         // Libera veiculo
-                        cliImpl.id_tran = refServidor.liberaCarro(idCarro_lib, cliImpl.id, cliImpl);
+                        cliImpl.id_tran = refServidor.liberaCarro(lista_carros.get(idCarro_lib).id_carro, cliImpl.id, cliImpl);
 
                         System.out.printf("Executando transação [id: %s]\n", cliImpl.id_tran);
 
