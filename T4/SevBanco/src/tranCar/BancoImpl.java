@@ -9,18 +9,19 @@ public class BancoImpl extends UnicastRemoteObject implements InterfaceBanco {
 
     LinkedList<Cliente> lista_clientes;
     LinkedList<Transacao> lista_transacao;
+    InterfaceSevCarro refServidor;
 
     protected BancoImpl(InterfaceSevCarro refServidor) throws RemoteException {
+        this.refServidor = refServidor;
 
         lista_transacao = new LinkedList<Transacao>();
         lista_clientes = new LinkedList<Cliente>();
 
         refServidor.ref_banco(this);
 
-        //loadListas();
-        initClientes();
-
+        loadListas();
         saveListas();
+
         loadTransacoes();
     }
 
@@ -95,10 +96,26 @@ public class BancoImpl extends UnicastRemoteObject implements InterfaceBanco {
         System.out.printf("Saldo %.2f\n",cliente.saldo);
     }
 
+    @Override
+    public void printBanco() throws RemoteException{
+        int size = lista_clientes.size();
+        Cliente cliente;
+
+        //procura os carro na lista
+        for (int i=0;i<size;i++) {
+            cliente = lista_clientes.get(i);
+            System.out.printf("Cliente %d com saldo de %.2f\n",cliente.getId_clie(),cliente.saldo);
+        }
+
+    }
+
     //==============================
     // Internas
 
     public void loadTransacoes(){
+
+        // Parte 1: Carrega os logs
+
         File folder = new File("logs/");
         Transacao transacao;
 
@@ -110,12 +127,45 @@ public class BancoImpl extends UnicastRemoteObject implements InterfaceBanco {
             }
         });
 
+
         //para cada log
         for (File file : listOfFiles) {
             if (file.isFile()) {
                 //carrega a transacao pelo log
                 transacao = new Transacao("logs/".concat(file.getName()));
                 lista_transacao.add(transacao);
+            }
+        }
+
+        //------------------------------
+        // Parte 2: verfica se tem alguma transacao pendente
+        //
+
+        int size = lista_transacao.size();
+        //procura as transacoes na lista
+        for (int i=0;i<size;i++) {
+            transacao = lista_transacao.get(i);
+            //se transacao esta pendente
+            if (transacao.getStatus().equals("provisoria")){
+                System.out.printf("Encontrado a transacao %d pendente\n",transacao.getId_tran());
+                //pergunta para o servidor o estado da transacao
+                try {
+                    String status = refServidor.obtemStatus(transacao.getId_tran());
+                    System.out.printf("Servidor retornou que seu status eh %s\n",status);
+                    //caso o status tenha mudado
+                    if(status.equals("efetivada")){
+                        efetiva(transacao.getId_tran());
+                        //define o novo status
+                        transacao.setStatus(status);
+                    }
+                    else if(status.equals("cancelada")){
+                        aborta(transacao.getId_tran());
+                        //define o novo status
+                        transacao.setStatus(status);
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -145,7 +195,7 @@ public class BancoImpl extends UnicastRemoteObject implements InterfaceBanco {
         int size = lista_clientes.size();
         Cliente cliente;
 
-        //procura os carro na lista
+        //procura os cliente na lista
         for (int i=0;i<size;i++) {
             cliente = lista_clientes.get(i);
             if (cliente.getId_clie() == id_clie){
@@ -189,6 +239,10 @@ public class BancoImpl extends UnicastRemoteObject implements InterfaceBanco {
                 //close
                 oi.close();
                 fi.close();
+            }
+            else{
+                //se nao tiver o arquivo, faz uma inicializacao padrao
+                initClientes();
             }
 
         } catch (FileNotFoundException e) {

@@ -11,5 +11,8 @@ public interface InterfaceBanco extends Remote {
 
     void aborta(int id_tran) throws RemoteException;
 
+
+    void printBanco() throws RemoteException;
+
 }
 
