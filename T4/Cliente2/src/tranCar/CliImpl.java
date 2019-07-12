@@ -19,20 +19,24 @@ public class CliImpl extends UnicastRemoteObject implements tranCar.InterfaceCli
         System.out.println("CliImpl executado!");
         iSev = refServidor;
 
+        //Cria lista de transacoes
         lista_transacao = new LinkedList<Transacao>();
 
+        //Carrega lista de transacoes da memoria
         loadTransacoes();
+
+        // Caso tenha alguma transacao pendente na lista, verifca seu status atual com o servidor
         atualizaTransacoes();
     }
 
 
-    //finaliza a transacao, liberando os recursos
+    //finaliza a transacao
     public void efetiva(int id_tran) throws RemoteException  {
 
-        //busca transacao e carro
+        //busca transacao
         Transacao transacao = buscaTransacao(id_tran);
 
-        // LOG: transação efetivada
+        // LOG: transacao efetivada
         transacao.efetiva();
 
         System.out.printf(" => transacao %d efetivada\n",transacao.getId_tran());
@@ -43,7 +47,7 @@ public class CliImpl extends UnicastRemoteObject implements tranCar.InterfaceCli
 
     public void aborta(int id_tran) throws RemoteException {
 
-        //busca transacao e carro
+        //busca transacao
         Transacao transacao = buscaTransacao(id_tran);
 
         // LOG: Transação abortada
@@ -62,7 +66,10 @@ public class CliImpl extends UnicastRemoteObject implements tranCar.InterfaceCli
         //cria transacao
         Transacao transacao = new Transacao();
 
+        //Set id do cliente no log da transacao
         transacao.setId_clie(cli_id);
+
+        // Adiciona transacao na lista de transacoes
         lista_transacao.add(transacao);
     }
 
@@ -85,6 +92,8 @@ public class CliImpl extends UnicastRemoteObject implements tranCar.InterfaceCli
     }
 
     public void loadTransacoes(){
+        //Carrega transacoes no log salvo
+
         File folder = new File("logs/");
         Transacao transacao;
 
@@ -99,14 +108,17 @@ public class CliImpl extends UnicastRemoteObject implements tranCar.InterfaceCli
         //para cada log
         for (File file : listOfFiles) {
             if (file.isFile()) {
-                //carrega a transacao pelo log
+                //Carrega a transacao pelo log
                 transacao = new Transacao("logs/".concat(file.getName()));
+
+                // Adiciona transacao a lista de transacoes
                 lista_transacao.add(transacao);
             }
         }
     }
 
     public Transacao buscaTransacao(int id_tran){
+        // Busca uma transacao na lista de transacoes
 
         int size = lista_transacao.size();
         Transacao transacao;

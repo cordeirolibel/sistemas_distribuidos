@@ -317,6 +317,7 @@ public class SevImpl extends UnicastRemoteObject implements InterfaceSevCarro {
             transacao.setStatus("cancelada");
         }
 
+        saveListas();
         System.out.printf(" => transacao %d abortada\n",transacao.getId_tran());
 
         //remove a transacao

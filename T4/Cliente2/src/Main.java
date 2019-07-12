@@ -51,7 +51,21 @@ class Cliente {
                 System.out.println("# ============== Car Sharing UTFPR ============== #");
 
                 // Recebe resultado da consulta ao servidor de carros (SC)
-                lista_carros = refServidor.carrosLivres();
+
+                try {
+                    lista_carros = refServidor.carrosLivres();
+                } catch (Exception e){
+                    System.out.println(e);
+
+                    try {
+                        // Cria referencia com servidor
+                        refServidor = (InterfaceSevCarro) refservicoNomes.lookup("servImpl");
+                        lista_carros = refServidor.carrosLivres();
+                    }catch (Exception f){
+                        System.out.println("Servidor offline");
+                    }
+
+                }
 
                 int carrosLen = lista_carros.size();
 
@@ -64,16 +78,19 @@ class Cliente {
                     // Escolhe oferta pelo indice dela
                     System.out.println("Escolher numero do carro ou \'c\' para cancelar");
 
+                    // Recebe entrada da escolha do veiculo
                     Scanner keyboard = new Scanner(System.in);
                     String keyboard_option = keyboard.nextLine();
 
                     // Print confirmação
                     if (keyboard_option.equals("c")) {
                         System.out.println("Operacao cancelada");
+                        useKeyboard =0;
                     }
                     else {
                         idCarro_lib = Integer.parseInt(keyboard_option);
                         System.out.printf("Liberando veiculo " + lista_carros.get(idCarro_lib).id_carro + " ... \n");
+
                         useKeyboard = 0;
                         keyboard_input = "1";
 
